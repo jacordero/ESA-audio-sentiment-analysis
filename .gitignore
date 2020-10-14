@@ -1,0 +1,7 @@
+.idea
+
+.ipybb_checkpoints
+*/.ipynb_checkpoints/*
+
+data/*
+models/*
