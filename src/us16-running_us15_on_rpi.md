@@ -1,9 +1,14 @@
 # Running us15_model_to_run_in_raspberry.py on the Raspberry Pi
 
 To run the script, some preparations needed to be made:
+
+## Loading the data and models
+
+The data and models used in the script (and any other script for that matter) are not and will not be stored in this repository. They are instead stored in the SharePoint. Specifically, the data and models can be found [here](https://tuenl.sharepoint.com/:f:/r/sites/gad_cbo/JPC/MC/ESA%20PDEng%20ST%20Project/ModelsAndData/Audio/Development?csf=1&web=1&e=Tflpy2). The repository does contain (empty) folders with the same name as the folders in the SharePoint. All code expects data and models to be located in this folder when you execute it. To use the data and models stored in the SharePoint, you have to copy the contents and of the `data` folder in the SharePoint into the `data` folder of your locally cloned copy of the git repository. The same should be done with the `models` folders in both locations.  
+
 ## Installation of dependencies
 
-   The script has quite a few dependencies. These dependencies are already installed in a Python Virtual Environment to avoid cluttering the Raspberry Pi's system libraries (https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/). This environment is located in the folder `~/Documents/esa/experiments/audio-sentiment-analysis`. 
+The script has quite a few dependencies. These dependencies are already installed in a Python Virtual Environment to avoid cluttering the Raspberry Pi's system libraries (https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/26/python-virtual-env/). This environment is located in the folder `~/Documents/esa/experiments/audio-sentiment-analysis`. 
 
 The following commands can be used to install all dependencies of the script:
 
