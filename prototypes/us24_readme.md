@@ -8,3 +8,18 @@
 * Numpy
 
 ## To run the script
+1. The following script generates the esa_datasets.csv, which is located [here](https://tuenl.sharepoint.com/sites/gad_cbo/JPC/MC/ESA%20PDEng%20ST%20Project/ModelsAndData/Audio/Development/data/esa_datasets.csv)
+
+> python us24_create_datasets.py 
+
+2. To train the model on the above datasets. 
+
+    step 1: Download the datasets
+
+    step 2: Run the following script
+    
+>   python us24_train_model.py path_datasets
+
+3. The following script predicts an input text, which is saved in [file](https://ooti-projects.win.tue.nl/gitlab/st-c2019/esa/audio-sentiment-analysis/-/blob/us24_text_based_model/data/empty.txt)
+
+> python us24_predict_emotion.py
