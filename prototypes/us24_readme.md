@@ -8,13 +8,11 @@
 * Numpy
 
 ## To run the script
-1. The following script generates the esa_datasets.csv, which is located [here](https://tuenl.sharepoint.com/sites/gad_cbo/JPC/MC/ESA%20PDEng%20ST%20Project/ModelsAndData/Audio/Development/data/esa_datasets.csv)
-
-> python us24_create_datasets.py 
+1. Download the esa_datasets.csv, which is located [here](https://tuenl.sharepoint.com/sites/gad_cbo/JPC/MC/ESA%20PDEng%20ST%20Project/ModelsAndData/Audio/Development/data/esa_datasets.csv). 
 
 2. To train the model on the above datasets. 
 
-    step 1: Download the datasets
+    step 1: Download the model from [here](https://tuenl.sharepoint.com/sites/gad_cbo/JPC/MC/ESA%20PDEng%20ST%20Project/ModelsAndData/Audio/Development/models/emotion_text_model) and place the model in **models** directory of audio-sentiment-analysis 
 
     step 2: Run the following script
     
