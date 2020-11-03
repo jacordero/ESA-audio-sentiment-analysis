@@ -53,7 +53,8 @@ def prepare_sentence_for_text_model(input_audio_filename):
 			text = r.recognize_google(audio_content)
 
 		output = np.array([[text]], dtype='object')
-	except: 
+	except Exception as e:
+		print(e) 
 		output = None
 
 	return output
@@ -122,7 +123,7 @@ def run(audio_model_path, text_model_path):
 		save_wav_pcm(myrecording, output_audio_filename)
 
 		print("Finished recording. Start playing message")	
-		sd.play(myrecording, fs)
+#		sd.play(myrecording, fs)
 
 		print("Preprocessing audio for tone model")
 		preprocessed_audio = prepare_audio_for_tone_model(np.squeeze(myrecording), fs)
