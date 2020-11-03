@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import time
+import sys
+import os
 import keyboard 
 import keras
 
@@ -11,31 +13,10 @@ import pandas as pd
 from scipy.io.wavfile import write
 from librosa.feature import mfcc
 
-
-ascii_art = """
-        _..._
-      .'     '.      _
-     /    .-""-\\   _/ \
-   .-|   /:.   |  |   |
-   |  \\  |:.   /.-'-./
-   | .-'-;:__.'    =/
-   .'=  *=|ESA  _.='
-  /   _.  |    ;
- ;-.-'|    \\   |
-/   | \\    _\\  _\
-\\__/'._;.  ==' ==\
-         \\    \\   |
-         /    /   /
-         /-._/-._/
-         \\   `\\  \
-          `-._/._/
-
-"""
-
 channels = 1 # recording monophonic audio
 fs = 44100
 seconds = 5
-output_filename = "../data/output_{:0>4}.wav"
+output_audio_filename_template = "../data/output_{:0>4}.wav"
 
 
 def load_text_model():
@@ -73,17 +54,20 @@ def print_emotions(title, emotion_probabilities):
 		print("{}: {:.2f}".format(e, p))
 	print("***************************************\n")
 
-def run(audio_model_filename, text_model_filename):
+def run(audio_model_path, text_model_path):
 
 	pause = 10
 	counter = 1
 
-	with open("ascii_astronaut.txt") as f:
+	parent_dir = os.path.dirname(os.path.abspath(__file__))
+	print(parent_dir)
+
+	with open(os.path.join(parent_dir, "ascii_astronaut.txt")) as f:
 		print(f.read())
 
 	print("\n\n\nLoading models")
 
-	audio_model = keras.models.load_model(audio_model_filename)
+	audio_model = keras.models.load_model(audio_model_path)
 	text_model = load_text_model()
 
 	print("Starting audio demo!")
@@ -100,7 +84,9 @@ def run(audio_model_filename, text_model_filename):
 		#recording message
 		myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=channels)
 		sd.wait()
-		write(output_filename.format(counter), fs, myrecording)
+
+		output_audio_filename = os.path.join(parent_dir, output_audio_filename_template.format(counter))
+		write(output_audio_filename, fs, myrecording)
 
 		print("Finished recording. Start playing message")	
 		sd.play(myrecording, fs)
@@ -132,5 +118,16 @@ def run(audio_model_filename, text_model_filename):
 
 
 if __name__ == "__main__":
-	audio_model_filename = "../models/tone_cnn_8_emotions/saved_models/Emotion_Voice_Detection_Model.h5"
-	run(audio_model_filename, "hoale")
+
+	usage_message = """"
+Usage of demo script.
+> python demo.py [audio model path] [text model path]
+"""
+
+	if len(sys.argv) != 3:
+		print(usage_message)
+		exit(0)
+		
+	audio_model_path = sys.argv[1]
+	text_model_path = sys.argv[2]
+	run(audio_model_path, text_model_path) 
