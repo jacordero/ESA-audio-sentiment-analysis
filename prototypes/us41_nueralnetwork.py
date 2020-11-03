@@ -24,18 +24,10 @@ from us41_feature_extraction import feature_extractor
 def create_model_new():
     model = Sequential()
     model.add(Conv1D(128, 5, padding='same',
-                     input_shape=(40, 1)))
+                     input_shape=(50, 1)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(Dropout(0.2))
-    '''
-    model.add(Conv1D(256, 5, padding='same',
-                     input_shape=(100, 1)))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
-    model.add(Dropout(0.2))
-    # model.add(MaxPooling1D(pool_size=(8)))
-    '''
     model.add(Flatten())
     model.add(Dense(8))
     model.add(Dense(8))
@@ -46,24 +38,23 @@ def create_model_new():
 def create_model():
     model = Sequential()
     model.add(Conv1D(32, 5, padding='same',
-                     input_shape=(40, 1)))
+                     input_shape=(50, 1)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(Dropout(0.2))
 
     model.add(Conv1D(128, 5, padding='same',
-                     input_shape=(40, 1)))
+                     input_shape=(50, 1)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(Dropout(0.2))
     model.add(MaxPooling1D(pool_size=(10)))
 
     model.add(Conv1D(256, 5, padding='same',
-                     input_shape=(40, 1)))
+                     input_shape=(50, 1)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(Dropout(0.2))
-    #model.add(MaxPooling1D(pool_size=(8)))
 
     model.add(Flatten())
     model.add(Dense(8))
