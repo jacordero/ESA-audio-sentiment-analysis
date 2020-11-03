@@ -69,6 +69,15 @@ emotions_dict = {0: 'neutral',
     			 6: 'disgust',
 			     7: 'surprised'}
 
+emotions_dict_text = {0: 'neutral',
+    			 7: 'calm',
+    			 1: 'happy',
+    			 2: 'sad',
+    			 3: 'angry',
+    			 4: 'fearful',
+    			 5: 'disgust',
+			     6: 'surprised'}
+
 
 def print_emotions(title, emotion_probabilities):
 	
@@ -147,7 +156,7 @@ def run(audio_model_path, text_model_path):
 			print(text_vector)
 
 			text_predictions = np.squeeze(text_model.predict(text_vector, batch_size=32))
-			text_emotion_probabilities = [(emotions_dict[i], text_predictions[i]) for i in range(len(text_predictions))]
+			text_emotion_probabilities = [(emotions_dict_text[i], text_predictions[i]) for i in range(len(text_predictions))]
 
 			print_emotions("Text prediction", text_emotion_probabilities)
 
