@@ -46,12 +46,17 @@ def save_wav_pcm(audio_array, output_audio_filename):
 
 def prepare_sentence_for_text_model(input_audio_filename):
 
-	r = sr.Recognizer()
-	with sr.AudioFile(input_audio_filename) as source:
-		audio_content = r.record(source)
-		text = r.recognize_google(audio_content)
+	try:
+		r = sr.Recognizer()
+		with sr.AudioFile(input_audio_filename) as source:
+			audio_content = r.record(source)
+			text = r.recognize_google(audio_content)
 
-	return np.array([[text]], dtype='object')
+		output = np.array([[text]], dtype='object')
+	except: 
+		output = None
+
+	return output
 
 
 emotions_dict = {0: 'neutral',
@@ -99,11 +104,15 @@ def run(audio_model_path, text_model_path):
 
 	while True:
 
-		print("To record for five seconds, press Enter.")
-		print("To stop program, press q.")
-		key_pressed = keyboard.read_key()
-		if (key_pressed == "q"):
-			exit(0)
+	#print("To record for five seconds, press Enter.")
+	#print("To stop program, press q.")
+	#key_pressed = keyboard.read_key()
+	#if (key_pressed == "q"):
+	#	exit(0)
+
+
+		print("Speak for the next five seconds")
+		time.sleep(1)
 
 		#recording message
 		myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=channels)
@@ -124,31 +133,24 @@ def run(audio_model_path, text_model_path):
 
 		argmax_audio_prediction = np.argmax(np.squeeze(audio_predictions), axis=-1)
 		predicted_emotion = emotions_dict.get(argmax_audio_prediction, "Unknown")		
+		print_emotions("Audio prediction", audio_emotion_probabilities)
 
 
 		print("Preprocessing audio for text-based model")
 		sentence = prepare_sentence_for_text_model(os.path.normpath(output_audio_filename))		
-		vectorizer = TextVectorization(max_tokens=max_features, output_mode="int", output_sequence_length=sequence_length)
-		text_vector = vectorizer(sentence)
-		print(sentence)
-		print(text_vector)
 
-		text_predictions = np.squeeze(text_model.predict(text_vector, batch_size=32))
-		text_emotion_probabilities = [(emotions_dict[i], text_predictions[i]) for i in range(len(text_predictions))]
+		if sentence != None:
+			vectorizer = TextVectorization(max_tokens=max_features, output_mode="int", output_sequence_length=sequence_length)
+			text_vector = vectorizer(sentence)
+			print(sentence)
+			print(text_vector)
 
-		#emotion_code = np.argmax(text_prediction)
-		
-		#print("SCORE FOR ALL 8 EMOTIONS", text_prediction)
-		#print("INPUT TEXT == ", sentence)
+			text_predictions = np.squeeze(text_model.predict(text_vector, batch_size=32))
+			text_emotion_probabilities = [(emotions_dict[i], text_predictions[i]) for i in range(len(text_predictions))]
 
-		print_emotions("Audio prediction", audio_emotion_probabilities)
-		print_emotions("Text prediction", text_emotion_probabilities)
+			print_emotions("Text prediction", text_emotion_probabilities)
 
-
-		#print(myrecording)
 		counter += 1
-
-		print("Wait 10 seconds before recording new message")
 		time.sleep(seconds)
 
 
