@@ -29,7 +29,7 @@ class feature_extractor:
                     X, sample_rate = librosa.load(os.path.join(subdir, file),
                                                   res_type='kaiser_fast')
                     mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate,
-                                                         n_mfcc=40).T, axis=0)
+                                                         n_mfcc=50).T, axis=0)
                     # The instruction below converts the labels (from 1 to 8) to a series from 0 to 7
                     # This is because our predictor needs to start from 0 otherwise it will try to predict also 0.
                     file = int(file[7:8]) - 1
