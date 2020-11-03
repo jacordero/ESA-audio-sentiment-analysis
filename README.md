@@ -54,6 +54,10 @@ dvc pull
 
 
 ### Deploy new model in the raspberry pi
-1. Pull changes from master ```git pull origin master```.
-2. Pull latest data and models using dvc ```dvc pull```.
-3. Run bash script ```run_sentiment_analyzer.sh```.
+1. Log into the raspberry pi.
+2. Go to **/home/pi/Documents/esa**.
+3. Activate virtual environment: ``` source venv/bin/activate ```.
+4. Go to the repository containing the source code.
+4. Pull changes from master ```git pull origin master```.
+5. Pull latest data and models using dvc ```dvc pull```.
+6. Run bash script ```run_sentiment_analyzer.sh```.
