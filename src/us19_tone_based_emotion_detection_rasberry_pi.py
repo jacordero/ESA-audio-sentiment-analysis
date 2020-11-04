@@ -37,7 +37,7 @@ class ToneBasedPredictions:
         Method to process the files and create your features.
         """
         data, sampling_rate = librosa.load(self.file)
-        mfccs = np.mean(librosa.feature.mfcc(y=data, sr=sampling_rate, n_mfcc=40).T, axis=0)
+        mfccs = np.mean(librosa.feature.mfcc(y=data, sr=sampling_rate, n_mfcc=50).T, axis=0)
         x = np.expand_dims(mfccs, axis=0)
         x = np.expand_dims(x, axis=2)
         predictions = np.argmax(self.loaded_model.predict(x), axis=-1)
