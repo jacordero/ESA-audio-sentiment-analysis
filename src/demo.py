@@ -140,7 +140,7 @@ def run(audio_model_path, text_model_path, parameters):
 
 	script_dir = os.path.dirname(os.path.abspath(__file__))
 	parameters['script_dir'] = script_dir
-	print("\n** Starting audio demo!\n **")
+	print("\n\n\n\n\n\n\n\n** Starting audio demo!\n **")
 	with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
 		print(f.read())
 
@@ -170,6 +170,7 @@ def run(audio_model_path, text_model_path, parameters):
 		print_emotions("Audio prediction", predicted_emotion_probs[0])
 		print_emotions("Text prediction", predicted_emotion_probs[1])
 
+		print("Pause for {} seconds".format(parameters['long_pause']))
 		time.sleep(parameters['long_pause'])
 
 	print("\n** Demo finished! **")
