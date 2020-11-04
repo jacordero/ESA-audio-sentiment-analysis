@@ -18,30 +18,20 @@ from librosa.feature import mfcc
 import tensorflow as tf
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 
-channels = 1 # recording monophonic audio
-fs = 44100
-seconds = 5
-output_audio_filename_template = "../data/output_{:0>4}.wav"
-
-
-def load_text_model():
-	return None
-
-def prepare_audio_for_tone_model(audio_array, sample_rate):
+def prepare_audio_for_tone_model(audio_array, sample_rate, _n_mfcc):
 	
-	mfccs = np.mean(mfcc(y=audio_array, sr=np.array(sample_rate), n_mfcc=40).T, axis=0)
+	mfccs = np.mean(mfcc(y=audio_array, sr=np.array(sample_rate), n_mfcc=_n_mfcc).T, axis=0)
 	x = np.expand_dims(mfccs, axis=0)
 	x = np.expand_dims(x, axis=2)
 	return x
 
-
-def save_wav_pcm(audio_array, output_audio_filename):
+def save_wav_pcm(audio_array, output_audio_filename, audio_frequency):
 	
 	tmp_audio = np.copy(audio_array)
 	tmp_audio /=1.414
 	tmp_audio *= 32767
 	int16_data = tmp_audio.astype(np.int16)
-	write(output_audio_filename, fs, int16_data)
+	write(output_audio_filename, audio_frequency, int16_data)
 
 
 def prepare_sentence_for_text_model(input_audio_filename):
@@ -58,7 +48,6 @@ def prepare_sentence_for_text_model(input_audio_filename):
 
 	return output
 
-
 emotions_dict = {0: 'neutral',
     			 1: 'calm',
     			 2: 'happy',
@@ -67,7 +56,6 @@ emotions_dict = {0: 'neutral',
     			 5: 'fearful',
     			 6: 'disgust',
 			     7: 'surprised'}
-
 
 def print_emotions(title, emotion_probabilities):
 	
@@ -79,93 +67,133 @@ def print_emotions(title, emotion_probabilities):
 		print("{}: {:.2f}".format(e, p))
 	print("***************************************")
 
-def run(audio_model_path, text_model_path):
 
-	pause = 10
-	counter = 1
-	max_features = 20000
-	embedding_dim = 128
-	sequence_length = 50
+def live_audio_analysis(audio_model, text_model, parameters):
 
-	sr_recognizer = sr.Recognizer()
+	myrecording = sd.rec(int(parameters['audio_length'] * parameters['audio_frequency']), 
+		                 samplerate=parameters['audio_frequency'], 
+		                 channels=parameters['audio_channels'])
+	sd.wait()
 
-	parent_dir = os.path.dirname(os.path.abspath(__file__))
-	print(parent_dir)
+	recorded_audio_filename = parameters['recorded_audio_filename_template'].format(parameters['recorded_audio_counter'])
+	recorded_audio_path = os.path.join(parameters['script_dir'], recorded_audio_filename)
+	save_wav_pcm(myrecording, recorded_audio_path, parameters['audio_frequency'])
 
-	with open(os.path.join(parent_dir, "ascii_astronaut.txt")) as f:
-		print(f.read())
+	print("Finished recording. Start playing message")	
+	sd.play(myrecording, parameters['audio_frequency'])
 
-	print("\n\n\nLoading models")
+	print("Preprocessing audio for tone model")
+	preprocessed_audio = prepare_audio_for_tone_model(np.squeeze(myrecording), 
+		 											  parameters['audio_frequency'],
+		 											  parameters['n_mfcc'])
+
+	## predictions happen here
+	audio_predictions = np.squeeze(audio_model.predict(preprocessed_audio))
+	audio_emotion_probabilities = [(emotions_dict[i], audio_predictions[i]) for i in range(len(audio_predictions))]
+
+	argmax_audio_prediction = np.argmax(np.squeeze(audio_predictions), axis=-1)
+	predicted_emotion = emotions_dict.get(argmax_audio_prediction, "Unknown")		
+
+
+	print("Preprocessing audio for text-based model")
+	sentence = prepare_sentence_for_text_model(os.path.normpath(recorded_audio_path))		
+
+	if sentence != None:
+		vectorizer = TextVectorization(max_tokens=parameters['text_model_max_features'], 
+									   output_mode="int", 
+									   output_sequence_length=parameters['text_model_sequence_length'])
+		text_vector = vectorizer(sentence)
+		print(sentence)
+		print(text_vector)
+
+		text_predictions = np.squeeze(text_model.predict(text_vector, batch_size=parameters['text_model_batch_size']))
+		text_emotion_probabilities = [(emotions_dict[i], text_predictions[i]) for i in range(len(text_predictions))]
+
+	else:
+		text_emotion_probabilities = []
+
+	return audio_emotion_probabilities, text_emotion_probabilities
+
+
+
+def recorded_audio_analysis():
+	return ([], [])
+
+
+
+def run(audio_model_path, text_model_path, parameters):
 
 	audio_model = keras.models.load_model(audio_model_path)
 	text_model =  tf.keras.models.load_model(text_model_path)
 
-	print("Starting audio demo!")
+	script_dir = os.path.dirname(os.path.abspath(__file__))
+	parameters['script_dir'] = script_dir
+	print("\n** Starting audio demo!\n **")
+	with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
+		print(f.read())
 
-	while True:
-
-	#print("To record for five seconds, press Enter.")
-	#print("To stop program, press q.")
-	#key_pressed = keyboard.read_key()
-	#if (key_pressed == "q"):
-	#	exit(0)
-
+	keep_running = True
+	while keep_running:
 
 		print("Speak for the next five seconds")
-		time.sleep(1)
+		time.sleep(parameters['short_pause'])
 
-		#recording message
-		myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=channels)
-		sd.wait()
-
-		output_audio_filename = os.path.join(parent_dir, output_audio_filename_template.format(counter))
-		save_wav_pcm(myrecording, output_audio_filename)
-
-		print("Finished recording. Start playing message")	
-		sd.play(myrecording, fs)
-
-		print("Preprocessing audio for tone model")
-		preprocessed_audio = prepare_audio_for_tone_model(np.squeeze(myrecording), fs)
-
-		## predictions happen here
-		audio_predictions = np.squeeze(audio_model.predict(preprocessed_audio))
-		audio_emotion_probabilities = [(emotions_dict[i], audio_predictions[i]) for i in range(len(audio_predictions))]
-
-		argmax_audio_prediction = np.argmax(np.squeeze(audio_predictions), axis=-1)
-		predicted_emotion = emotions_dict.get(argmax_audio_prediction, "Unknown")		
-		print_emotions("Audio prediction", audio_emotion_probabilities)
+		if parameters['mode'] == "live":
+			predicted_emotion_probs = live_audio_analysis(audio_model, 
+														  text_model, 
+														  parameters)
+			parameters['recorded_audio_counter'] += 1
+			if parameters['recorded_audio_counter'] > parameters['live_audio_iterations']:
+				keep_running = False 
 
 
-		print("Preprocessing audio for text-based model")
-		sentence = prepare_sentence_for_text_model(os.path.normpath(output_audio_filename))		
+		elif parameters['mode'] == "recorded":
+			predicted_emotion_probs = recorded_audio_analysis(audio_model, 
+															  text_model, 
+															  parameters)			
+		else:
+			print("Uknown mode. Valid modes are 'live' and 'recorded'")
+			exit(0)
 
-		if sentence != None:
-			vectorizer = TextVectorization(max_tokens=max_features, output_mode="int", output_sequence_length=sequence_length)
-			text_vector = vectorizer(sentence)
-			print(sentence)
-			print(text_vector)
+		print_emotions("Audio prediction", predicted_emotion_probs[0])
+		print_emotions("Text prediction", predicted_emotion_probs[1])
 
-			text_predictions = np.squeeze(text_model.predict(text_vector, batch_size=32))
-			text_emotion_probabilities = [(emotions_dict[i], text_predictions[i]) for i in range(len(text_predictions))]
+		time.sleep(parameters['long_pause'])
 
-			print_emotions("Text prediction", text_emotion_probabilities)
-
-		counter += 1
-		time.sleep(seconds)
-
+	print("\n** Demo finished! **")
 
 
 if __name__ == "__main__":
 
 	usage_message = """"
 Usage of demo script.
-> python demo.py [audio model path] [text model path]
+> python demo.py [audio model path] [text model path] [mode]
 """
 
-	if len(sys.argv) != 3:
+	if len(sys.argv) < 4:
 		print(usage_message)
 		exit(0)
 		
 	audio_model_path = sys.argv[1]
 	text_model_path = sys.argv[2]
-	run(audio_model_path, text_model_path) 
+
+	parameters = {
+		'mode': sys.argv[3],
+		'live_audio_iterations': 4,
+		'recorded_audio_counter': 1,
+		'audio_channels': 1,
+		'audio_frequency': 44100,
+		'audio_length': 5,
+		'n_mfcc': 40,
+		'recorded_audio_filename_template': "../data/output_{:0>4}.wav",
+		'long_pause': 10,
+		'short_pause': 1,
+		'text_model_max_features': 20000,
+		'text_model_embedding_dim': 128,
+		'text_model_sequence_length': 50,
+		'text_model_batch_size': 32,
+		'test_data_dir': '../data/test',
+		'test_data_filenames': []
+	}
+
+	run(audio_model_path, text_model_path, parameters) 
