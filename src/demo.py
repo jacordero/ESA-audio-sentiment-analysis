@@ -33,7 +33,6 @@ def save_wav_pcm(audio_array, output_audio_filename, audio_frequency):
 	int16_data = tmp_audio.astype(np.int16)
 	write(output_audio_filename, audio_frequency, int16_data)
 
-
 def prepare_sentence_for_text_model(input_audio_filename):
 
 	try:
@@ -66,19 +65,16 @@ emotions_dict_text = {0: 'neutral',
     			 	5: 'disgust',
 			     	6: 'surprised'}
 
-
-
 def print_emotions(title, emotion_probabilities):
 	
 	sorted_probabilities = sorted(emotion_probabilities, key=lambda x: x[1], reverse=True)
 	
-	print("\n***************************")
-	print(title)
-	print("***************************")
+	print("\n\t***************************")
+	print("\t" + title)
+	print("\t***************************")
 	for e, p in sorted_probabilities[:3]:
-		print("{}: {:.2f}".format(e, p))
-	print("****************************")
-
+		print("\t{}: {:.2f}".format(e, p))
+	print("\t****************************")
 
 def live_audio_analysis(audio_model, text_model, parameters):
 
@@ -91,7 +87,7 @@ def live_audio_analysis(audio_model, text_model, parameters):
 	recorded_audio_path = os.path.join(parameters['script_dir'], recorded_audio_filename)
 	save_wav_pcm(myrecording, recorded_audio_path, parameters['audio_frequency'])
 
-	print("<- Finished recording.")	
+	print("\n2) Finished recording. Starting analysis.")
 	#sd.play(myrecording, parameters['audio_frequency'])
 
 	#print("Preprocessing audio for tone model")
@@ -126,28 +122,27 @@ def live_audio_analysis(audio_model, text_model, parameters):
 
 	return audio_emotion_probabilities, text_emotion_probabilities
 
-
-
 def recorded_audio_analysis():
+	x = 2
 	return ([], [])
 
-
+def print_welcome_message(script_dir):
+	print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
+	with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
+		print(f.read())
 
 def run(audio_model_path, text_model_path, parameters):
 
 	audio_model = keras.models.load_model(audio_model_path)
 	text_model =  tf.keras.models.load_model(text_model_path)
 
-	script_dir = os.path.dirname(os.path.abspath(__file__))
-	parameters['script_dir'] = script_dir
-	print("\n\n\n\n\n\n\n\n** Starting audio demo!\n **")
-	with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
-		print(f.read())
+	print_welcome_message(parameters['script_dir'])
 
 	keep_running = True
 	while keep_running:
 
-		print("\n\n\n-> Speak for the next five seconds")
+		print("\n\n==================================================================\n")
+		print("1) Recording. Speak for the next five seconds")
 		time.sleep(parameters['short_pause'])
 
 		if parameters['mode'] == "live":
@@ -158,19 +153,20 @@ def run(audio_model_path, text_model_path, parameters):
 			if parameters['recorded_audio_counter'] > parameters['live_audio_iterations']:
 				keep_running = False 
 
-
 		elif parameters['mode'] == "recorded":
 			predicted_emotion_probs = recorded_audio_analysis(audio_model, 
 															  text_model, 
 															  parameters)			
+
 		else:
 			print("Uknown mode. Valid modes are 'live' and 'recorded'")
 			exit(0)
 
+		print("\n3) Predictions")
 		print_emotions("Audio prediction", predicted_emotion_probs[0])
 		print_emotions("Text prediction", predicted_emotion_probs[1])
 
-		print("Pause for {} seconds".format(parameters['long_pause']))
+		print("\n4) Pause for {} seconds".format(parameters['long_pause']))
 		time.sleep(parameters['long_pause'])
 
 	print("\n** Demo finished! **")
@@ -180,33 +176,35 @@ if __name__ == "__main__":
 
 	usage_message = """"
 Usage of demo script.
-> python demo.py [audio model path] [text model path] [mode]
+> python demo.py [audio model path] [text model path] [mode] [pause duration]
 """
 
-	if len(sys.argv) < 4:
+	if len(sys.argv) < 5:
 		print(usage_message)
 		exit(0)
 		
 	audio_model_path = sys.argv[1]
 	text_model_path = sys.argv[2]
+	#long_pause = 
 
 	parameters = {
 		'mode': sys.argv[3],
-		'live_audio_iterations': 4,
+		'live_audio_iterations': int(sys.argv[4]),
 		'recorded_audio_counter': 1,
 		'audio_channels': 1,
 		'audio_frequency': 44100,
 		'audio_length': 5,
 		'n_mfcc': 40,
 		'recorded_audio_filename_template': "../data/output_{:0>4}.wav",
-		'long_pause': 10,
+		'long_pause': int(sys.argv[5]),
 		'short_pause': 1,
 		'text_model_max_features': 20000,
 		'text_model_embedding_dim': 128,
 		'text_model_sequence_length': 50,
 		'text_model_batch_size': 32,
 		'test_data_dir': '../data/test',
-		'test_data_filenames': []
+		'test_data_filenames': [],
+		'script_dir': os.path.dirname(os.path.abspath(__file__))
 	}
 
 	run(audio_model_path, text_model_path, parameters) 
