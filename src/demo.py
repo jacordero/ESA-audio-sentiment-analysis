@@ -48,24 +48,36 @@ def prepare_sentence_for_text_model(input_audio_filename):
 
 	return output
 
-emotions_dict = {0: 'neutral',
-    			 1: 'calm',
-    			 2: 'happy',
-    			 3: 'sad',
-    			 4: 'angry',
-    			 5: 'fearful',
-    			 6: 'disgust',
-			     7: 'surprised'}
+emotions_dict_audio = {0: 'neutral',
+    			 	1: 'calm',
+    			 	2: 'happy',
+    			 	3: 'sad',
+    			 	4: 'angry',
+    			 	5: 'fearful',
+    			 	6: 'disgust',
+			     	7: 'surprised'}
+
+emotions_dict_text = {0: 'neutral',
+    			 	7: 'calm',
+    			 	1: 'happy',
+    			 	2: 'sad',
+    			 	3: 'angry',
+    			 	4: 'fearful',
+    			 	5: 'disgust',
+			     	6: 'surprised'}
+
+
 
 def print_emotions(title, emotion_probabilities):
 	
-	sorted_probabilities = sorted(emotion_probabilities, key=lambda x: x[1])
+	sorted_probabilities = sorted(emotion_probabilities, key=lambda x: x[1], reverse=True)
 	
-	print("\n***************************************")
+	print("\n***************************")
 	print(title)
-	for e, p in sorted_probabilities:
+	print("***************************")
+	for e, p in sorted_probabilities[:3]:
 		print("{}: {:.2f}".format(e, p))
-	print("***************************************")
+	print("****************************")
 
 
 def live_audio_analysis(audio_model, text_model, parameters):
@@ -79,23 +91,23 @@ def live_audio_analysis(audio_model, text_model, parameters):
 	recorded_audio_path = os.path.join(parameters['script_dir'], recorded_audio_filename)
 	save_wav_pcm(myrecording, recorded_audio_path, parameters['audio_frequency'])
 
-	print("Finished recording. Start playing message")	
-	sd.play(myrecording, parameters['audio_frequency'])
+	print("<- Finished recording.")	
+	#sd.play(myrecording, parameters['audio_frequency'])
 
-	print("Preprocessing audio for tone model")
+	#print("Preprocessing audio for tone model")
 	preprocessed_audio = prepare_audio_for_tone_model(np.squeeze(myrecording), 
 		 											  parameters['audio_frequency'],
 		 											  parameters['n_mfcc'])
 
 	## predictions happen here
 	audio_predictions = np.squeeze(audio_model.predict(preprocessed_audio))
-	audio_emotion_probabilities = [(emotions_dict[i], audio_predictions[i]) for i in range(len(audio_predictions))]
+	audio_emotion_probabilities = [(emotions_dict_audio[i], audio_predictions[i]) for i in range(len(audio_predictions))]
 
 	argmax_audio_prediction = np.argmax(np.squeeze(audio_predictions), axis=-1)
-	predicted_emotion = emotions_dict.get(argmax_audio_prediction, "Unknown")		
+	predicted_emotion = emotions_dict_audio.get(argmax_audio_prediction, "Unknown")		
 
 
-	print("Preprocessing audio for text-based model")
+	#print("Preprocessing audio for text-based model")
 	sentence = prepare_sentence_for_text_model(os.path.normpath(recorded_audio_path))		
 
 	if sentence != None:
@@ -103,11 +115,11 @@ def live_audio_analysis(audio_model, text_model, parameters):
 									   output_mode="int", 
 									   output_sequence_length=parameters['text_model_sequence_length'])
 		text_vector = vectorizer(sentence)
-		print(sentence)
-		print(text_vector)
+		print("Recognized text: {}".format(sentence))
+		#print(text_vector)
 
 		text_predictions = np.squeeze(text_model.predict(text_vector, batch_size=parameters['text_model_batch_size']))
-		text_emotion_probabilities = [(emotions_dict[i], text_predictions[i]) for i in range(len(text_predictions))]
+		text_emotion_probabilities = [(emotions_dict_text[i], text_predictions[i]) for i in range(len(text_predictions))]
 
 	else:
 		text_emotion_probabilities = []
@@ -135,7 +147,7 @@ def run(audio_model_path, text_model_path, parameters):
 	keep_running = True
 	while keep_running:
 
-		print("Speak for the next five seconds")
+		print("\n\n\n-> Speak for the next five seconds")
 		time.sleep(parameters['short_pause'])
 
 		if parameters['mode'] == "live":
