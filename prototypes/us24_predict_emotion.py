@@ -1,8 +1,11 @@
 import os, sys
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 import tensorflow as tf
+tf.get_logger().setLevel('INFO')
 import numpy as np
 
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
+
 
 class Decode_emotion(object):
     def emotion_decode(self, argument):
@@ -34,26 +37,18 @@ class Decode_emotion(object):
     def decode_7(self):
         return 'CALM'
 
-def predict_emotion(input_file):
+def predict_emotion(input_file_name):
     model = load_model()
     decoder = Decode_emotion()
 
     #model.summary()
     # text to predict emotion
-    text = load_text(input_file)
-    # Model constants.
-    max_features = 20000
-    embedding_dim = 128
-    sequence_length = 50
+    text = load_text(input_file_name)
+    print(text)
 
-    vectorizer = TextVectorization(max_tokens=max_features, output_mode="int", output_sequence_length=sequence_length)
-    text_vector = vectorizer(text)
-
-    prediction = model.predict(text_vector, batch_size=32)
+    prediction = model.predict(text)
     emotion_code = np.argmax(prediction)
-    print("SCORE FOR ALL 8 EMOTIONS", prediction)
-    print("INPUT TEXT == ", text)
-    print("PREDICTED EMOTION ==", decoder.emotion_decode(emotion_code))
+    print("PREDICTED EMOTION ==>", decoder.emotion_decode(emotion_code))
 
 def load_model():
     # to load the model
@@ -69,7 +64,7 @@ def load_model():
         if not os.path.isdir(model_path):
             print("NO MODEL")
         else:
-            model = tf.keras.models.load_model(model_path)
+            model = tf.keras.models.load_model(model_path, custom_objects={'TextVectorization':TextVectorization})
             return model
 
 def load_text(input_file):

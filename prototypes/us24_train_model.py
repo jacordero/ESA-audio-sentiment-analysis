@@ -11,6 +11,7 @@ from tensorflow.keras.layers import Embedding
 from tensorflow.keras import layers
 
 
+
 class Emotion(object):
     def emotion_encode(self, argument):
         method_name = 'encode_' + argument
@@ -31,6 +32,8 @@ class Emotion(object):
         return 5
     def encode_surprise(self):
         return 6
+    def encode_calm(self):
+        return 7
 
 # Divide datasets into sample and labels
 # Shuffle the sample and labels
@@ -43,8 +46,10 @@ def prepare_data(input_path):
         # to read the header
         header = next(reader)   
         for rows in reader:
-            samples.append([rows[1]])
-            labels.append([a.emotion_encode(rows[2])])
+            # ignore the empty line in datasets.csv file
+            if '' not in rows:
+                samples.append([rows[1]])
+                labels.append([a.emotion_encode(rows[2])])
     # to check labels and count the samples
     training_data = np.array(samples)
     training_labels = np.array(labels)
@@ -77,6 +82,9 @@ def prepare_data(input_path):
     print("================================================================")
     print("TEST ==:", len(test_samples))
     print("LABEL ==:", len(test_labels))
+
+    print(train_samples[:1])
+    print(training_labels[:1])
     
     # Model constants.
     max_features = 20000
@@ -87,27 +95,40 @@ def prepare_data(input_path):
     vectorizer.adapt(train_samples)
     vectorizer.adapt(test_samples)
 
-    train_labels = tf.keras.utils.to_categorical(train_labels, num_classes=7)
-    test_labels = tf.keras.utils.to_categorical(test_labels, num_classes=7)
+    train_labels = tf.keras.utils.to_categorical(train_labels, num_classes=8)
+    test_labels = tf.keras.utils.to_categorical(test_labels, num_classes=8)
     # vectorize the text to numbers.
-    integer_version_training_data = vectorizer(train_samples)
-    integer_version_testing_data = vectorizer(test_samples)
+    #integer_version_training_data = vectorizer(train_samples)
+    #integer_version_testing_data = vectorizer(test_samples)
 
-    model = build_model(max_features, embedding_dim, sequence_length )
+    #print(integer_version_training_data[:1])
+    #print(train_labels[:1])
+    #print(integer_version_training_data.shape)
+    #print(integer_version_testing_data.shape)
+    
+    #model = build_model(max_features, embedding_dim, sequence_length )
+    #model = build_model2()  
+    #model = build_model3()
+    
+    model = build_model4(vectorizer)
+    print(model)
 
-    model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+    opt = tf.keras.optimizers.Adam(learning_rate=0.001)
+    #model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+    model.compile(loss='categorical_crossentropy', optimizer= opt, metrics=["accuracy"])
 
-    model.summary()
 
     # to train the model 
-    model.fit(integer_version_training_data, train_labels, batch_size=32, epochs=10)
+    model.fit(train_samples, train_labels, batch_size=10, epochs=10, validation_data=(test_samples, test_labels))
 
+    model.summary()
     # to evaluate the model
     result = model.evaluate(integer_version_testing_data, test_labels)
 
     print(result)
 
     save_model(model)
+    
 
 
 def build_model(max_features, embedding_dim, sequence_length):
@@ -117,17 +138,63 @@ def build_model(max_features, embedding_dim, sequence_length):
     x = layers.Dropout(0.5)(x)
 
     # Conv1D + global max pooling
-    x = layers.Conv1D(128, 7, padding="valid", activation="relu")(x)
-    x = layers.Conv1D(128, 7, padding="valid", activation="relu")(x)
+    x = layers.Conv1D(128, 8, padding="valid", activation="relu")(x)
+    #x = tf.keras.layers.BatchNormalization()(x)
+    x = layers.Conv1D(128, 8, padding="valid", activation="relu")(x)
+    #x = tf.keras.layers.BatchNormalization()(x)
     x = layers.GlobalMaxPooling1D()(x)
 
     # We add a vanilla hidden layer:
     x = layers.Dense(128, activation="relu")(x)
     x = layers.Dropout(0.5)(x)
 
-    predictions = layers.Dense(7, activation="softmax", name="predictions")(x)
+    predictions = layers.Dense(8, activation="softmax", name="predictions")(x)
 
     model = tf.keras.Model(inputs, predictions)
+    return model
+
+def build_model3():
+    max_length = 20
+    vocab_size = 10000
+    embedding_length = 300
+    model = tf.keras.Sequential()
+    model.add(layers.Embedding(vocab_size, embedding_length, input_length=max_length))
+    model.add(layers.Flatten())
+    model.add(layers.Dense(8, activation="softmax"))
+    model.summary()
+    return model
+
+def build_model2():
+        model = tf.keras.Sequential()
+        model.add(layers.Conv1D(32, 5, padding='same',
+                                input_shape=(50, 1)))
+        model.add(tf.keras.layers.BatchNormalization())
+        model.add(layers.Activation('relu'))
+        model.add(layers.Dropout(0.2))
+        model.add(layers.Conv1D(128, 5, padding='same',
+                                input_shape=(40, 1)))
+        model.add(tf.keras.layers.BatchNormalization())
+        model.add(layers.Activation('relu'))
+        model.add(layers.Dropout(0.2))
+            #model.add(MaxPooling1D(pool_size=(8)))
+        model.add(layers.Flatten())
+        model.add(layers.Dense(7))
+        model.add(layers.Dense(7))
+        model.add(layers.Activation('softmax'))
+        return model
+
+def build_model4(encoder):
+    model = tf.keras.Sequential([
+    encoder,
+    tf.keras.layers.Embedding(
+        input_dim=len(encoder.get_vocabulary())+2,
+        output_dim=64,
+        # Use masking to handle the variable sequence lengths
+        mask_zero=True),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64)),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(8)
+    ])
 
     return model
    
@@ -152,6 +219,7 @@ def explore_datasets(input_path):
 def main():
     print("==== WELCOME to the EXPLORE DATASETS ====")
     datasets_file_name = str(sys.argv[1])
+    print(datasets_file_name)
     prepare_data(datasets_file_name)
     #explore_datasets(input_data_path)
 
