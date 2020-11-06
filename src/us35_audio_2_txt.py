@@ -5,8 +5,8 @@ import json
 
 class AudioToTxt:
     def __init__(self):
-        self.model_path = "./models/vosk-model-en-us-daanzu-20200905-lgraph"
-        self.wav_file = "./data/tone_cnn_happy_angry_dataset_sample_prediction_tracks/03-02-01-01-01-01-01.wav"
+        self.model_path = "../models/vosk-model-en-us-daanzu-20200905-lgraph"
+        self.wav_file = "../data/03-02-01-01-01-01-01.wav"
         self.model = Model(self.model_path)
         self.wf = wave.open(self.wav_file, "rb")
         self.rec = KaldiRecognizer(self.model, self.wf.getframerate())

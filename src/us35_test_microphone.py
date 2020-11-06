@@ -5,7 +5,7 @@ import os
 import pyaudio
 
 
-model_path = "./models/vosk-model-en-us-daanzu-20200905-lgraph" 
+model_path = "../models/vosk-model-en-us-daanzu-20200905-lgraph"
 
 if not os.path.exists(model_path):
     print ("Please download the model from https://alphacephei.com/vosk/models and unpack as 'model' in the current folder.")
