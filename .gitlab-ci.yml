@@ -1,0 +1,63 @@
+variables:
+  GIT_DEPTH: 10
+  ACCESS_LEY_ID: AKIA55GEKVQR3FCPU7PV
+  SECRET_ACCESS_KEY: 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
+  REGION: eu-central-1
+  OUTPUT: text
+
+stages:
+  - PEP8
+  - fetch
+  - data
+  - interface
+  - threholds
+  
+  
+  
+  
+#PEP8_Comformity:
+#  stage: PEP8
+#  image: CREATE A DOCKER IMAGE TO RUN ON SERVER
+#  script:
+#    - "pytest --pep8 --disable-warnings"
+#  tags:
+#    - jarvis
+  
+Fetch_data_and_models:
+  stage: fetch
+  script:
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "pwd"
+    - "aws configure set aws_access_key_id $ACCESS_LEY_ID"
+    - "aws configure set aws_secret_access_key $SECRET_ACCESS_KEY"
+    - "aws configure set region  $REGION"
+    - "aws configure set output  $OUTPUT"
+    - "aws configure list"
+    - "dvc pull"
+    - "ls -la"
+#    - "bash run_sentiment_analyzer.sh"
+  tags:
+    - audio
+
+Data_validation:
+  stage: data
+  script:
+    - "echo Testing data schema and values"
+  tags:
+    - audio
+    
+    
+Interface_validation: 
+  stage: interface
+  script:
+    - "echo Testing DNNs interface specificationTINY CHANGE"
+  tags:
+    - audio
+
+
+Threshold_validation: 
+  stage: threholds
+  script: 
+    - "echo Testing DNN metrics against threshold values"
+  tags:
+    - audio
