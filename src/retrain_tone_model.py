@@ -18,6 +18,11 @@ import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
+#!/usr/bin/env python
+
+#SBATCH --partition=mcs.gpu.q
+#SBATCH --output=results.out
+
 
 def get_path(dir_name):
     """Find path of requested directory such as 'models' and 'data'.
