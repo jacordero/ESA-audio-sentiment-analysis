@@ -21,6 +21,7 @@ import numpy as np
 
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 
 def get_path(dir_name):
     """Find path of requested directory such as 'models' and 'data'.
@@ -48,8 +49,15 @@ def load_model(model_name):
     model_path = os.path.join(get_path('models'), model_name)
     files = [files for files in os.listdir(model_path) if files.endswith(".h5")]
     if not files:
-        print("No model found")
+      files = [files for files in os.listdir(model_path) if files.endswith(".pb")]
+      if not files:
+        raise Exception("NO MODEL FOUND")
+      else:
+        # load .pb model (tensorflow 2.2.0)
+        model = tf.keras.models.load_model(model_path, custom_objects={'TextVectorization':TextVectorization})
+        return model
     else:
+      # load .h5 model (tensorflow 1.x.x)
         model_path = os.path.join(model_path, files[0])
         model = tf.keras.models.load_model(model_path)
         return model
@@ -118,7 +126,6 @@ def retrain_model(parameters):
       parameters: A set of parameters.
 
     """
-    print(parameters)
     model = load_model(parameters['model_name'])
     model.summary()
 
