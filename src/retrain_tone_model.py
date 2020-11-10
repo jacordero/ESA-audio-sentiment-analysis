@@ -54,7 +54,7 @@ def load_model(model_name):
         raise Exception("NO MODEL FOUND")
       else:
         # load .pb model (tensorflow 2.2.0)
-        model = tf.keras.models.load_model(model_path, custom_objects={'TextVectorization':TextVectorization})
+        model = tf.keras.models.load_model(model_path)
         return model
     else:
       # load .h5 model (tensorflow 1.x.x)
@@ -98,7 +98,6 @@ def prepare_datasets(dataset_name, n_mfcc):
                 # load librosa array, obtain mfcss, store the mfcc information in a new array
                 X, sample_rate = librosa.load(os.path.join(root, audio_file), res_type='kaiser_fast')
 
-                # n_mfcc is setted 40 because the model is trained with 40 previously.
                 mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=n_mfcc).T, axis=0)
                 # convert labels from (1 ->8) to (0->7)
                 # predict script has emotion index (0 to 7)
@@ -109,14 +108,13 @@ def prepare_datasets(dataset_name, n_mfcc):
             except ValueError as err:
                 print("ERROR ", err)
                 continue
-    print("======= Audio files loaded. Loading time: %s seconds==========" % (time.time() - start_time))
+    print('======= Audio files loaded. Loading time: {time} seconds=========='.format(time =(time.time() - start_time)))
     X, y = zip(*lst)
 
     # convert into arrays
     X = np.asarray(X)
     y = np.asarray(y)
-    print(X.shape)
-    print(y.shape)
+    print("TOTAL AUDIO FILE: ", len(X))
     return X, y
 
 def retrain_model(parameters):
@@ -134,17 +132,16 @@ def retrain_model(parameters):
 
     x_train_cnn = np.expand_dims(X_train, axis=parameters['axis'])
     x_validation_cnn = np.expand_dims(X_validation, axis=parameters['axis'])
-    print(x_train_cnn.shape)
-    print(x_validation_cnn.shape)
 
     opt = tf.keras.optimizers.Adam(learning_rate=parameters['learning_rate'])
     model.compile(loss='sparse_categorical_crossentropy',
                   optimizer=opt,
                   metrics=['accuracy'])
-
+    start_time = time.time()
     model.fit(x_train_cnn, y_train,
               batch_size=parameters['batch_size'], epochs=parameters['epochs'],
               validation_data=(x_validation_cnn, y_validation))
+    print('Training time: {time} with {epochs} epochs.'.format(time = (time.time()- start_time), epochs = parameters['epochs']))
     save_model(model, parameters['retrained_model_version'])
 
 if __name__ == "__main__":
@@ -158,7 +155,7 @@ if __name__ == "__main__":
       'ratio_of_validation': 0.33,
       'shuffle_random_seed': 42, 
       'axis': 2, 
-      'n_mfcc': 40,
+      'n_mfcc': 50,
       # retrain related parameters 
       'batch_size': 8, 
       'epochs': 1,
