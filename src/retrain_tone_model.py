@@ -9,9 +9,6 @@ Copyright (C) Tu/e.
 
 #!/usr/bin/env python
 
-#SBATCH --partition=mcs.gpu.q
-#SBATCH --output=results.out'
-
 import os
 import sys
 import time
@@ -70,7 +67,7 @@ def save_model(model, version):
       version: the version to save retrained model.
 
     """
-    model_path = os.path.join(get_path('models'), '{name}_v.{version}'.format(name='retrained_tone_model', version=str(version)))
+    model_path = os.path.join(get_path('models'), '{name}_v{version}'.format(name='retrained_tone_model', version=version))
     model.save(model_path)
     print("The retrained model is saved at {}.".format(model_path))
 
@@ -108,7 +105,7 @@ def prepare_datasets(dataset_name, n_mfcc):
             except ValueError as err:
                 print("ERROR ", err)
                 continue
-    print('======= Audio files loaded. Loading time: {time} seconds=========='.format(time =(time.time() - start_time)))
+    print('======= Audio files Loading time: {time} seconds=========='.format(time =(time.time() - start_time)))
     X, y = zip(*lst)
 
     # convert into arrays
@@ -141,7 +138,9 @@ def retrain_model(parameters):
     model.fit(x_train_cnn, y_train,
               batch_size=parameters['batch_size'], epochs=parameters['epochs'],
               validation_data=(x_validation_cnn, y_validation))
-    print('Training time: {time} with {epochs} epochs.'.format(time = (time.time()- start_time), epochs = parameters['epochs']))
+
+    print('======= Training time: {time} seconds with {epochs} epochs. ======='.format(time = (time.time()- start_time), epochs = parameters['epochs']))
+    
     save_model(model, parameters['retrained_model_version'])
 
 if __name__ == "__main__":
