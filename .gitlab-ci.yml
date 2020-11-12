@@ -33,6 +33,7 @@ Fetch_data_and_models:
     - "aws configure set output  $OUTPUT"
     - "aws configure list"
     - "dvc pull"
+    - "ls -la"
     - "cd data"
     - "ls -la"
 #    - "bash run_sentiment_analyzer.sh"
