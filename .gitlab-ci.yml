@@ -15,13 +15,13 @@ stages:
   
   
   
-#PEP8_Comformity:
-#  stage: PEP8
-#  image: CREATE A DOCKER IMAGE TO RUN ON SERVER
-#  script:
-#    - "pytest --pep8 --disable-warnings"
-#  tags:
-#    - jarvis
+PEP8_Comformity:
+  stage: PEP8
+  image: CREATE A DOCKER IMAGE TO RUN ON SERVER
+  script:
+    - "pytest --pep8 --disable-warnings"
+  tags:
+    - jarvis
   
 Fetch_data_and_models:
   stage: fetch
@@ -33,7 +33,8 @@ Fetch_data_and_models:
     - "aws configure set output  $OUTPUT"
     - "aws configure list"
     - "dvc pull"
-#    - "ls -la"
+    - "cd data"
+    - "ls -la"
 #    - "bash run_sentiment_analyzer.sh"
   tags:
     - audio
