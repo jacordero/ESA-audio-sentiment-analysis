@@ -27,6 +27,7 @@ Fetch_data_and_models:
   stage: fetch
   script:
     - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "dvc remote modify --local nielspi password projectesa"
     - "aws configure set aws_access_key_id $ACCESS_LEY_ID"
     - "aws configure set aws_secret_access_key $SECRET_ACCESS_KEY"
     - "aws configure set region  $REGION"
