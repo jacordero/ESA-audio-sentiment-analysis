@@ -24,7 +24,7 @@ def main(ARGS):
     eu.get_pi_resource_info(ARGS['process_name'])
 
 if __name__ == '__main__':
-    data = [ ['Angery'], ['I hate you.'], ['emotion distribution']]
+    
     ARGS = {
         'logging_file_name': 'testing_utils',
         'process_name': 'us19_tone_based_emotion_detection_rasberry_pi.py'

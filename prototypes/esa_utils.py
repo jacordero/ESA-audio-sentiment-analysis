@@ -31,7 +31,8 @@ def get_path(dir_name):
     path = os.path.join(os.path.dirname(os.path.normpath(os.getcwd())), dir_name)
     if path: 
       return path
-    raise Exception("NO DIRECTORY FOUND")
+    else:
+      raise Exception("NO DIRECTORY FOUND")
 
 def get_time():
     """Get the current local time in the Netherlands.
@@ -48,12 +49,12 @@ def logging(data, logging_file_name):
     """Write the data to logging file.
 
     Args:
-      data: list from prediction of models.
+      data: list parameters for example [["13-11-20 09:53:12"], ["emotion"], ["emotion distribution"], ["text"]].
       logging_file_name: A name of logging file.
 
     """  
     folder_name  = os.path.join(get_path('docs'), logging_file_name + '_' + str(date.today()))
-    
+    # if directory does not exist , create
     os.makedirs(folder_name, exist_ok=True)
       
     # create the file if not exist and write data to file.
@@ -74,6 +75,7 @@ def get_temperature():
     """
     temp = os.popen("vcgencmd measure_temp").readline()
     temp = temp.replace("temp=", "")
+    
     if temp is "85'C":
       print("WARNING: pi operating temperature is {}".format(temp) )
 
