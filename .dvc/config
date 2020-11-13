@@ -1,4 +1,9 @@
 [core]
-    remote = production
+    remote = nielspi
 ['remote "production"']
     url = s3://esa-testing-continuous-ml-sw
+['remote "nielspi"']
+    url = ssh://esapi@10.8.0.1:/esa/storage/audio
+    port = 22
+    ask_password = true
+
