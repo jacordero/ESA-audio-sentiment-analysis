@@ -29,7 +29,7 @@ class FeatureExtractor:
         self.crr_path = Path(os.getcwd())
         # self.parent_path = crr_path.parent
         # self.path = str(self.parent_path) + '\\data\\tone_cnn_8_emotions_dataset\\'
-        self.path = str(self.curr_path) + '/data/tone_cnn_8_emotions_dataset/'
+        self.path = str(self.crr_path) + '/data/tone_cnn_8_emotions_dataset/'
 
     def __calculate_nfft(samplerate, winlen):
         """
@@ -62,7 +62,7 @@ class FeatureExtractor:
                 except ValueError as err:
                     print(err)
                     continue
-    '''
+
     @staticmethod
     def lmfe_feature_extractor(sig, rate):
         
@@ -70,7 +70,7 @@ class FeatureExtractor:
         fbank_feat = logfbank(sig, rate, nfft=nfft)
         transposed_fbank_feat = fbank_feat.T
         return transposed_fbank_feat
-    '''
+
 
     def tone_mfcc_features_creator(self):
         """
@@ -78,7 +78,7 @@ class FeatureExtractor:
         """
         lst_mfcc = []
         lst_y = []
-        save_dir = str(self.parent_path) + '\\data\\features\\tone';
+        save_dir = str(self.crr_path) + '/data/features/tone';
         start_time = time.time()
 
         for subdir, dirs, files in os.walk(self.path):

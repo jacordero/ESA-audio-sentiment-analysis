@@ -20,6 +20,7 @@ import joblib
 from us52_utility import UtilityClass
 from us52_feature_extraction import FeatureExtractor
 from tensorflow.keras.utils import plot_model
+import tensorflow as tf
 
 # Package metadata
 __authors__ = "Raha Sadeghi, Parima Mirshafiei"
@@ -130,6 +131,15 @@ def train_neural_network(X, y):
 
     opt = keras.optimizers.Adam(learning_rate=0.001)
 
+    checkpoint_filepath = './models/checkpoint'
+    model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+        filepath=checkpoint_filepath,
+        save_weights_only=False,
+        monitor='val_accuracy',
+        mode='auto',
+        save_freq="epoch",
+        save_best_only=False)
+
     model.compile(loss='sparse_categorical_crossentropy',
                   optimizer=opt,
                   metrics=['accuracy'])
@@ -142,14 +152,15 @@ def train_neural_network(X, y):
     start_time = time.time()
     # usage = resource.getrusage(resource.resource.RUSAGE_SELF)
     cnn_history = model.fit(x=[x_mfcc_traincnn, x_lmfe_traincnn], y=y_mfcc_train,
-                            batch_size=8, epochs=5
-                            , validation_data=([x_mfcc_testcnn, x_lmfe_testcnn], y_mfcc_test))
+                            batch_size=8, epochs=80
+                            , validation_data=([x_mfcc_testcnn, x_lmfe_testcnn], y_mfcc_test),
+                            callbacks=[model_checkpoint_callback])
     elapsed_time = time.time() - start_time
     print("elapsed time for training phase: ", elapsed_time)
 
     UtilityClass.plot_trained_model(cnn_history)
 
-    UtilityClass.model_summary(model, x_mfcc_testcnn, y_mfcc_test)
+    #UtilityClass.model_summary(model, x_mfcc_testcnn, y_mfcc_test)
 
     return model
 
@@ -157,17 +168,17 @@ def train_neural_network(X, y):
 if __name__ == '__main__':
     crr_path = Path(os.getcwd())
     parent_path = crr_path.parent
-    save_dir = str(parent_path) + '\\data\\features\\tone'
+    save_dir = str(crr_path) + '/data/features/tone'
 
-    X_mfcc_file = save_dir + '\\Xmfcc.joblib'
-    y_mfcc_file = save_dir + '\\ymfcc.joblib'
+    X_mfcc_file = save_dir + '/Xmfcc.joblib'
+    y_mfcc_file = save_dir + '/ymfcc.joblib'
 
-    X_lmfe_file = save_dir + '\\Xlmfe.joblib'
-    y_lmfe_file = save_dir + '\\ylmfe.joblib'
+    X_lmfe_file = save_dir + '/Xlmfe.joblib'
+    y_lmfe_file = save_dir + '/ylmfe.joblib'
 
     feature_extractor = FeatureExtractor()
     # padding audio such that all have the same length
-    feature_extractor.preprocessing()
+    #feature_extractor.preprocessing()
     print("preprocessing done")
 
     if not Path(X_mfcc_file).exists() or not Path(y_mfcc_file).exists():
@@ -177,10 +188,10 @@ if __name__ == '__main__':
         print("Extracting lmfe feature .... ")
         feature_extractor.tone_lmfe_features_creator()
 
-    Xmfcc = joblib.load(save_dir + '\\Xmfcc.joblib')
-    Xlmfe = joblib.load(save_dir + '\\Xlmfe.joblib')
-    ymfcc = joblib.load(save_dir + '\\ymfcc.joblib')
-    ylmfe = joblib.load(save_dir + '\\ylmfe.joblib')
+    Xmfcc = joblib.load(save_dir + '/Xmfcc.joblib')
+    Xlmfe = joblib.load(save_dir + '/Xlmfe.joblib')
+    ymfcc = joblib.load(save_dir + '/ymfcc.joblib')
+    ylmfe = joblib.load(save_dir + '/ylmfe.joblib')
 
     trained_model = train_neural_network(X=[Xmfcc, Xlmfe], y=[ymfcc, ylmfe])
 

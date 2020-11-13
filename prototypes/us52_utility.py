@@ -76,13 +76,12 @@ class UtilityClass:
     @staticmethod
     def model_summary(model, x_testcnn, y_test):
         if len(x_testcnn) >1:
-
-        predictions = model.predict_classes(x_testcnn)
-        new_y_test = y_test.astype(int)
-        matrix = confusion_matrix(new_y_test, predictions)
-
-        print(classification_report(new_y_test, predictions))
-        print(matrix)
+            predict_vector = model.predict(x_testcnn)
+            predictions = np.argmax(predict_vector,axis=1)
+            new_y_test = y_test.astype(int)
+            matrix = confusion_matrix(new_y_test, predictions)
+            print(classification_report(new_y_test, predictions))
+            print(matrix)
 
     @staticmethod
     def audio_split(audio_file_path, chunk_length_in_sec= 5):
