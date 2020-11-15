@@ -1,9 +1,5 @@
 variables:
   GIT_DEPTH: 10
-  ACCESS_LEY_ID: AKIA55GEKVQR3FCPU7PV
-  SECRET_ACCESS_KEY: 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
-  REGION: eu-central-1
-  OUTPUT: text
 
 stages:
   - PEP8
@@ -27,11 +23,7 @@ Fetch_data_and_models:
   stage: fetch
   script:
     - "source /home/pi/Documents/esa/venv/bin/activate"
-    - "aws configure set aws_access_key_id $ACCESS_LEY_ID"
-    - "aws configure set aws_secret_access_key $SECRET_ACCESS_KEY"
-    - "aws configure set region  $REGION"
-    - "aws configure set output  $OUTPUT"
-    - "aws configure list"
+    - "dvc remote modify --local nielspi password projectesa"
     - "dvc pull"
 #    - "ls -la"
 #    - "bash run_sentiment_analyzer.sh"
