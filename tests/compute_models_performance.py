@@ -11,8 +11,7 @@ from librosa.feature import mfcc
 
 from context import tone_emotions
 from context import text_emotions
-from context import tone_model_preprocessing
-from context import load_tone_data
+from context import SequentialToneModelDataLoader
 
 
 def compute_text_model_performance(model_dir, test_data_dir):
@@ -67,9 +66,8 @@ def compute_tone_model_performance(model_name, test_data_dir):
 
     # load data
     print("Load: {}".format(test_data_dir))
-    
-    # loading and preprocessing is done here. TODO: separate later
-    audios, labels = load_tone_data(test_data_dir)
+    data_loader = SequentialToneModelDataLoader()
+    audios, labels = data_loader.load_test_data(test_data_dir)
     predictions = np.squeeze(model.predict(audios))
     
     # compute performance

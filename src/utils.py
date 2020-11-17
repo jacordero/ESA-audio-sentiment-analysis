@@ -1,7 +1,21 @@
+import os
 import librosa
 import numpy as np
-import os
-import pandas as pd
+import time
+import joblib
+import librosa
+from pathlib import Path
+import matplotlib.pyplot as plt
+import json
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from pydub import AudioSegment
+from pydub.utils import make_chunks
+import math
+
+__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero"
+__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl"
+__copyright__ = "TU/e ST2019"
 
 tone_emotions = {0: 'neutral',
                  1: 'calm',
@@ -21,53 +35,74 @@ text_emotions = {0: 'neutral',
                  5: 'disgust',
                  6: 'surprised'}
 
-
-def list_audios(data_directory):
-    audios = []
-    audio_formats = ['wav']
-
-    for filename in os.listdir(data_directory):
-        audio_format = filename.split('.')[1]
-        if audio_format in audio_formats:
-            audios.append(data_directory + "/" + filename)
-
-    return audios
-
-
-def load_audio(filename, audio_length=5, sample_rate=44010, _n_mfcc=40):
-    #raise Exception("TODO")
-
-    X, sample_rate = librosa.load(filename,
-                                  res_type='kaiser_fast',
-                                  duration=audio_length,
-                                  sr=sample_rate,
-                                  offset=0.5)
-    
-    sample_rate = np.array(sample_rate)
-    mfccs = np.mean(librosa.feature.mfcc(
-        y=X, sr=sample_rate, n_mfcc=_n_mfcc), axis=0)
-    
-    featurelive = mfccs
-    livedf2 = featurelive
-    livedf2 = pd.DataFrame(data=livedf2)
-    livedf2 = livedf2.stack().to_frame().T
-    twodim = np.expand_dims(livedf2, axis=2)
-
-    return twodim
-
-
-def load_audios(audio_directory):
-    """[summary]
-
-    Args:
-        audio_directory ([type]): [description]
+class Utils:
+    """
+    this class provides some functions that could be used for preprocessing, saving or sketching the model result
     """
 
-    audio_filenames = list_audios(audio_directory)
-    print(audio_filenames)
+    def __init__(self):
+        pass
 
-    audios = []
-    for audio_filename in audio_filenames:
-        audios.append(load_audio(audio_filename))
+    @staticmethod
+    def save_model(trained_model):
+        """
+        saving model as h5 file
+        :param trained_model the trained model to be saved
+        """
 
-    return audios
+        model_name = 'Emotion_Voice_Detection_Model.h5'
+        save_dir = os.path.join(os.getcwd(), 'saved_models')
+        # Save model and weights
+        if not os.path.isdir(save_dir):
+            os.makedirs(save_dir)
+        model_path = os.path.join(save_dir, model_name)
+        trained_model.save(model_path)
+        print('Saved trained model at %s ' % model_path)
+
+        model_json = trained_model.to_json()
+        with open("model.json", "w") as json_file:
+            json_file.write(model_json)
+
+    @staticmethod
+    def plot_trained_model(model_history):
+        """
+        plotting the model history, depicting its accuracy, useful in finding overfitting
+        :param model_history the history of the model (its accuracy in each epoch)
+        """
+        # Loss plotting
+        plt.plot(model_history.history['loss'])
+        plt.plot(model_history.history['val_loss'])
+        plt.title('model loss')
+        plt.ylabel('loss')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.savefig('loss.png')
+        plt.close()
+
+        # Accuracy plotting
+        plt.plot(model_history.history['accuracy'])
+        plt.plot(model_history.history['val_accuracy'])
+        plt.title('model accuracy')
+        plt.ylabel('acc')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.savefig('accuracy.png')
+
+    @staticmethod
+    def model_summary(model, x_testcnn, y_test):
+        if len(x_testcnn) >1:
+            predict_vector = model.predict(x_testcnn)
+            predictions = np.argmax(predict_vector,axis=1)
+            new_y_test = y_test.astype(int)
+            matrix = confusion_matrix(new_y_test, predictions)
+            print(classification_report(new_y_test, predictions))
+            print(matrix)
+
+    @staticmethod
+    def file_name_extractor(audio_file_path):
+        """
+        getting the file name, useful in case we want to replace a file.
+        :param audio_file_path: full path to the file (audio track)
+        """
+        name = (audio_file_path.split(".wav")[0]).split("/")[-1]
+        return name
