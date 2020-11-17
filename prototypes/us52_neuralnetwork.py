@@ -33,6 +33,10 @@ __status__ = "Prototype"
 def create_general_model(input_shape_x, input_shape_y):
     """
     creating a general model to be used for both mffc and lmfe
+    params: 
+        input_shape_x: input shape of X, should be passed to the first Conv2D layer
+        input_shape_y: input shape of y (labels), should be passed to the first Conv2D layer
+
     """
 
     input_ = Input(shape=[input_shape_x, input_shape_y, 1])
@@ -62,40 +66,14 @@ def create_general_model(input_shape_x, input_shape_y):
     return input_, bn
 
 
-'''
-def create_model():
-    model = Sequential()
-    model.add(Conv1D(32, 5, padding='same',
-                     input_shape=(50, 1)))
-    model.add(BatchNormalization())
-    model.add(activation('relu'))
-    model.add(Dropout(0.2))
-
-    model.add(Conv1D(128, 5, padding='same',
-                     input_shape=(50, 1)))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
-    model.add(Dropout(0.2))
-    model.add(MaxPooling1D(pool_size=(10)))
-
-    model.add(Conv1D(256, 5, padding='same',
-                     input_shape=(50, 1)))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
-    model.add(Dropout(0.2))
-
-    model.add(Flatten())
-    model.add(Dense(8))
-    model.add(Dense(8))
-    model.add(Dense(8))
-    model.add(Activation('softmax'))
-    return model
-'''
-
-
 def create_final_model(branch1, branch2, input1, input2):
     """
     creating the final model by concatinating two branches (mfcc and lmfe)
+    params:
+        branch1: the model in the first branch _ the model created with mfcc as an input
+        branch2: the model in the second branch _ the model created with lmfe as an input
+        input1: input to the mfcc model (mfcc features, the train dataset)
+        input2: input to the lmfe model (lmfe features, the train dataset)
     """
     concat_ = Concatenate()([branch1, branch2])
     output = Dense(8, activation='softmax')(concat_)
@@ -106,6 +84,9 @@ def create_final_model(branch1, branch2, input1, input2):
 def train_neural_network(X, y):
     """
     This function trains the neural network.
+    params:
+        X: the whole dataset, all features, a list of all features, namely mfccs and X_lmfe_test
+        y: the labels 
     """
 
     X_mfcc_train, X_mfcc_test, y_mfcc_train, y_mfcc_test = train_test_split(X[0], y[0], test_size=0.33, random_state=42)
@@ -131,6 +112,8 @@ def train_neural_network(X, y):
 
     opt = keras.optimizers.Adam(learning_rate=0.001)
 
+
+    # creating checkpoints to save the model status per epoch 
     checkpoint_filepath = './models/checkpoint'
     model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
         filepath=checkpoint_filepath,
@@ -148,7 +131,7 @@ def train_neural_network(X, y):
     cnn_history = model.fit(x=[x_mfcc_traincnn, x_lmfe_traincnn], y=y_mfcc_train,
                             batch_size=8, epochs=50, validation_split=0.2)
     '''
-
+    # evaluating the training time
     start_time = time.time()
     # usage = resource.getrusage(resource.resource.RUSAGE_SELF)
     cnn_history = model.fit(x=[x_mfcc_traincnn, x_lmfe_traincnn], y=y_mfcc_train,
@@ -158,14 +141,14 @@ def train_neural_network(X, y):
     elapsed_time = time.time() - start_time
     print("elapsed time for training phase: ", elapsed_time)
 
+    # plotting the model history
     UtilityClass.plot_trained_model(cnn_history)
-
-    #UtilityClass.model_summary(model, x_mfcc_testcnn, y_mfcc_test)
 
     return model
 
 
 if __name__ == '__main__':
+
     crr_path = Path(os.getcwd())
     parent_path = crr_path.parent
     save_dir = str(crr_path) + '/data/features/tone'
@@ -178,9 +161,10 @@ if __name__ == '__main__':
 
     feature_extractor = FeatureExtractor()
     # padding audio such that all have the same length
-    #feature_extractor.preprocessing()
+    feature_extractor.preprocessing()
     print("preprocessing done")
 
+    # check if we have extracted features, otherwise, first extract them
     if not Path(X_mfcc_file).exists() or not Path(y_mfcc_file).exists():
         print("Extracting mfcc feature .... ")
         feature_extractor.tone_mfcc_features_creator()
@@ -188,6 +172,7 @@ if __name__ == '__main__':
         print("Extracting lmfe feature .... ")
         feature_extractor.tone_lmfe_features_creator()
 
+    # loading extracted features
     Xmfcc = joblib.load(save_dir + '/Xmfcc.joblib')
     Xlmfe = joblib.load(save_dir + '/Xlmfe.joblib')
     ymfcc = joblib.load(save_dir + '/ymfcc.joblib')

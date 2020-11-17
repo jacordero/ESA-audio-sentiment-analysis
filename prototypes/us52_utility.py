@@ -91,13 +91,16 @@ class UtilityClass:
         :param audio_file_path: full path to the file
         :param chunk_length_in_sec: desired length for each chunk
         """
+
         audio_file = AudioSegment.from_file(audio_file_path, "wav")
+
         chunk_length_in_sec = chunk_length_in_sec
-        chunk_length_ms = chunk_length_in_sec * 1000
-        chunks = make_chunks(audio_file, chunk_length_ms)
+        chunk_length_in_ms = chunk_length_in_sec * 1000
+        chunks = make_chunks(audio_file, chunk_length_in_ms)
 
         # Export all of the individual chunks as wav files
         file_name = UtilityClass.file_name_extractor(audio_file_path)
+        
         for i, chunk in enumerate(chunks):
             chunk_name = file_name + "_" + str(i) + ".wav"
             print("exporting", chunk_name)
@@ -133,10 +136,7 @@ class UtilityClass:
 
         audio = AudioSegment.from_wav(audio_file_path)
 
-
         padded = audio + silence  # Adding silence after the audio
-        #file_name = UtilityClass.file_name_extractor(audio_file_path)  + ".wav"
-        #file_path = audio_file_path.split(file_name)[0] + file_name
 
         # rewriting the file with new length
         padded.export(audio_file_path, format='wav')

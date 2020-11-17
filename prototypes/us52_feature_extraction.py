@@ -27,8 +27,6 @@ class FeatureExtractor:
 
     def __init__(self):
         self.crr_path = Path(os.getcwd())
-        # self.parent_path = crr_path.parent
-        # self.path = str(self.parent_path) + '\\data\\tone_cnn_8_emotions_dataset\\'
         self.path = str(self.crr_path) + '/data/tone_cnn_8_emotions_dataset/'
 
     def __calculate_nfft(samplerate, winlen):
@@ -87,7 +85,7 @@ class FeatureExtractor:
                     # Load librosa array, obtain mfcss, store the file and the mcss information in a new array
                     X, sample_rate = librosa.load(os.path.join(subdir, file),
                                                   res_type='kaiser_fast')
-                    # mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=50).T, axis=0)
+                                                  
                     mfccs = librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=13)
                     lst_mfcc.append(mfccs)
 
@@ -104,7 +102,6 @@ class FeatureExtractor:
         print("--- Data loaded. Loading time: %s seconds ---" % (time.time() - start_time))
 
         Xmfcc, Ymfcc = FeatureExtractor.saving_features(save_dir, lst_mfcc, lst_y, "mfcc")
-        # Xlmfe, Ylmfe=feature_extractor.saving_features(save_dir, lst_lmfe, "lmfe")
         return Xmfcc, Ymfcc
 
     def tone_lmfe_features_creator(self):
@@ -131,8 +128,7 @@ class FeatureExtractor:
                     # This is because our predictor needs to start from 0 otherwise it will try to predict also 0.
                     label = int(file[7:8]) - 1
                     lst_y.append(label)
-                    # The instruction below converts the labels (from 1 to 8) to a series from 0 to 7
-                    # This is because our predictor needs to start from 0 otherwise it will try to predict also 0.
+                    
 
                 # If the file is not valid, skip it
                 except ValueError as err:
