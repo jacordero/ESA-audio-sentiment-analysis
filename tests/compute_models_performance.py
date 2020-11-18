@@ -53,22 +53,24 @@ def compute_tone_model_performance(model_name, test_data_dir):
     print("compute_tone_model_performance")    
     # load model
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    model_full_path =  os.path.normpath(os.path.join(script_dir, "../prod_models/candidate", model_name))
+    model_path =  os.path.normpath(os.path.join(script_dir, "../prod_models/candidate", model_name))
     print("Relative path: {}".format(model_name))
-    print("Full path: {}".format(model_full_path))
+    print("Full path: {}".format(model_path))
     
-    model = keras.models.load_model(model_full_path)
+    model = keras.models.load_model(model_path)
     print(model.summary())
+    
+    # load data
+    print("Load: {}".format(test_data_dir))
+    test_data_dir_path = os.path.normpath(os.path.join(script_dir, "../prod_data/test"))
+    data_loader = SequentialToneModelDataLoader()
+    mfcc_features, labels = data_loader.load_test_data(test_data_dir_path)
+    print(mfcc_features.shape)
+    print(labels.shape)
     
     time.sleep(5)
     return 
-    
-
-    # load data
-    print("Load: {}".format(test_data_dir))
-    data_loader = SequentialToneModelDataLoader()
-    audios, labels = data_loader.load_test_data(test_data_dir)
-    predictions = np.squeeze(model.predict(audios))
+    predictions = np.squeeze(model.predict(mfcc_features))
     
     # compute performance
     return compute_measures(predictions, labels)
