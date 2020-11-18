@@ -1,7 +1,12 @@
 .idea
+.vs
+.venv
+.vscode
 
 .ipybb_checkpoints
 */.ipynb_checkpoints/*
+*/__pycache__/*
+
 
 data/*
 models/*

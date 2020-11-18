@@ -18,12 +18,11 @@ from librosa.feature import mfcc
 import tensorflow as tf
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 
-def prepare_audio_for_tone_model(audio_array, sample_rate, _n_mfcc):
-	
-	mfccs = np.mean(mfcc(y=audio_array, sr=np.array(sample_rate), n_mfcc=_n_mfcc).T, axis=0)
-	x = np.expand_dims(mfccs, axis=0)
-	x = np.expand_dims(x, axis=2)
-	return x
+from feature_extractor import SiameseToneModelFeatureExtractor
+from feature_extractor import SequentialToneModelFeatureExtractor
+from feature_extractor import TextModelFeatureExtractor
+from stern_utils import tone_emotions
+from stern_utils import text_emotions
 
 def save_wav_pcm(audio_array, output_audio_filename, audio_frequency):
 	
@@ -91,9 +90,10 @@ def live_audio_analysis(audio_model, text_model, parameters):
 	#sd.play(myrecording, parameters['audio_frequency'])
 
 	#print("Preprocessing audio for tone model")
-	preprocessed_audio = prepare_audio_for_tone_model(np.squeeze(myrecording), 
-		 											  parameters['audio_frequency'],
-		 											  parameters['n_mfcc'])
+
+	tone_feature_extractor = SequentialToneModelFeatureExtractor()
+	preprocessed_audio = tone_feature_extractor.compute_features(np.squeeze(myrecording), 
+		 											  parameters['audio_frequency'])
 
 	## predictions happen here
 	audio_predictions = np.squeeze(audio_model.predict(preprocessed_audio))
@@ -122,18 +122,18 @@ def live_audio_analysis(audio_model, text_model, parameters):
 
 	return audio_emotion_probabilities, text_emotion_probabilities
 
-def recorded_audio_analysis():
-	x = 2
-	return ([], [])
-
 def print_welcome_message(script_dir):
 	print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
 	with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
 		print(f.read())
 
-def run(audio_model_path, text_model_path, parameters):
+def run(tone_model_name, text_model_path, parameters):
 
-	audio_model = keras.models.load_model(audio_model_path)
+	script_dir = os.path.dirname(os.path.abspath(__file__))
+	tone_model_path = os.path.normpath(os.path.join(script_dir, "../prod_models/deployed", tone_model_name))
+	print(tone_model_path)
+
+	audio_model = keras.models.load_model(tone_model_path)
 	text_model =  tf.keras.models.load_model(text_model_path)
 
 	print_welcome_message(parameters['script_dir'])
@@ -145,22 +145,13 @@ def run(audio_model_path, text_model_path, parameters):
 		print("1) Recording. Speak for the next five seconds")
 		time.sleep(parameters['short_pause'])
 
-		if parameters['mode'] == "live":
-			predicted_emotion_probs = live_audio_analysis(audio_model, 
-														  text_model, 
-														  parameters)
-			parameters['recorded_audio_counter'] += 1
-			if parameters['recorded_audio_counter'] > parameters['live_audio_iterations']:
+		predicted_emotion_probs = live_audio_analysis(audio_model, 
+													 text_model, 
+													 parameters)
+		parameters['recorded_audio_counter'] += 1
+		if parameters['recorded_audio_counter'] > parameters['live_audio_iterations']:
 				keep_running = False 
 
-		elif parameters['mode'] == "recorded":
-			predicted_emotion_probs = recorded_audio_analysis(audio_model, 
-															  text_model, 
-															  parameters)			
-
-		else:
-			print("Uknown mode. Valid modes are 'live' and 'recorded'")
-			exit(0)
 
 		print("\n3) Predictions")
 		print_emotions("Audio prediction", predicted_emotion_probs[0])
