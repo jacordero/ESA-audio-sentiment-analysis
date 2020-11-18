@@ -1,5 +1,11 @@
 models:
-  text_model: "emotion_text_model"
-  tone_model: "tone_cnn_8_emotions_v0_2/saved_models/Emotion_Voice_Detection_Model.h5"
+  text_model:
+    dir: "emotion_text_model_v0_2"
+    file: "saved_model.pb"
+    type: "Sequential"
+  tone_model:
+    dir: "tone_cnn_8_emotions_v0_2/saved_models"
+    file: "Emotion_Voice_Detection_Model.h5"
+    type: "Siamese"
 
 test_data_dir: "test"
