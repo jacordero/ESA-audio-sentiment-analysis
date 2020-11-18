@@ -1,7 +1,12 @@
 .idea
+.vs
+.venv
+.vscode
 
 .ipybb_checkpoints
 */.ipynb_checkpoints/*
+*/__pycache__/*
+
 
 data/*
 models/*
@@ -10,3 +15,4 @@ lib/*
 pyvenv.cfg
 /prod_data
 /prod_models
+
