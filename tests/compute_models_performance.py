@@ -53,7 +53,7 @@ def compute_tone_model_performance(model_name, test_data_dir):
     print("compute_tone_model_performance")    
     # load model
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    model_full_path =  os.path.normpath(os.path.join(script_dir, "../prod_models", model_name))
+    model_full_path =  os.path.normpath(os.path.join(script_dir, "../prod_models/candidate", model_name))
     print("Relative path: {}".format(model_name))
     print("Full path: {}".format(model_full_path))
     

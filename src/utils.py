@@ -11,6 +11,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from pydub import AudioSegment
 from pydub.utils import make_chunks
+from scipy.io import wavfile
+
 import math
 
 __authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero"
@@ -34,6 +36,21 @@ text_emotions = {0: 'neutral',
                  4: 'fearful',
                  5: 'disgust',
                  6: 'surprised'}
+
+def save_wav_pcm(audio_array, output_audio_filename, audio_frequency):
+    """Stores an audio signal as a pcm wav file
+
+    Args:
+        audio_array ([type]): Audio signal to be stored.
+        output_audio_filename ([type]): Path where the audio signal is stored.
+        audio_frequency ([type]): Frequency required to save the signal.
+    """
+    tmp_audio = np.copy(audio_array)
+    tmp_audio /= 1.414
+    tmp_audio *= 32767
+    int16_data = tmp_audio.astype(np.int16)
+    wavfile.write(output_audio_filename, audio_frequency, int16_data)
+
 
 class Utils:
     """
