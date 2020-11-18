@@ -177,7 +177,7 @@ def live_audio_analysis(audio_model, text_model, parameters):
 		text_emotion_probabilities = []
 
 	# To write the prediction output to logging file
-	emotion_logbook(sentence, audio_emotion_probabilities, text_emotion_probabilities )
+	emotion_logbook(sentence, audio_emotion_probabilities, text_emotion_probabilities)
 	
 	return audio_emotion_probabilities, text_emotion_probabilities
 
@@ -260,6 +260,8 @@ def emotion_logbook(sentence, audio_emotion_probabilities, text_emotion_probabil
 	"""
 	if sentence is None:
 		sentence = ['Empty']
+	else:
+		sentence = sentence.tolist()
 	data = []
 	data.append(sentence)
 	tone_emotion_dist = []
@@ -307,5 +309,7 @@ Usage of demo script.
 		'script_dir': os.path.dirname(os.path.abspath(__file__)), 
 		'logging_file_name': 'test_logging_file'
 	}
-	
+	#models_path = get_path('prod_models')
+	#audio_model_path = os.path.join(models_path, audio_model_path)
+	#text_model_path = os.path.join(models_path, text_model_path)
 	run(audio_model_path, text_model_path, parameters) 

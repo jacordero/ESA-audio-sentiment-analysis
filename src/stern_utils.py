@@ -53,9 +53,13 @@ def logging(data, logging_file_name):
       logging_file_name: A name of logging file.
 
     """  
-    folder_name  = os.path.join(get_path('docs'), logging_file_name + '_' + str(date.today()))
+    folder_path = os.path.join(os.getcwd(), 'src/logging')
+    folder_name  = os.path.join(folder_path, logging_file_name + '_' + str(date.today()))
     # if directory does not exist , create
-    os.makedirs(folder_name, exist_ok=True)
+    if not os.path.exists(folder_path):
+      os.makedirs(folder_path)
+    if not os.path.exists(folder_name):
+      os.makedirs(folder_name)
 
     log_input = {
       'time': datetime.now().strftime('%d-%m-%y %H:%M:%S'), 
@@ -65,7 +69,6 @@ def logging(data, logging_file_name):
        }
 
     log_file_name = os.path.join(folder_name, 'log_' + get_time() + '.json')
-    
     if os.path.exists(log_file_name):
       with open(log_file_name) as logging_file:
         temp = json.load(logging_file)
@@ -76,6 +79,7 @@ def logging(data, logging_file_name):
       # create the file if not exist and write data to file.
       with open(log_file_name, 'w+') as logging_file:
         json.dump([log_input], logging_file, indent=2)
+        
   
 def get_temperature():
     """Measure the operating temperature of pi.
@@ -116,4 +120,3 @@ def get_pi_resource_info(process):
     print("MEMORY = {} kilobytes.".format(after[2] - before[2]))
     print("==================================================================")
     print("TEMPERATURE: {}".format(get_temperature()))
-
