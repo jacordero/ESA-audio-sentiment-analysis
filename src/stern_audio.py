@@ -3,6 +3,8 @@ Copyright (C) Tu/e.
 
 @author  Jorge Cordero Cruzue  j.a.cordero.cruz@tue.nl
 
+@maintainers: Engineers
+
 ======================================================
 
 This is the STERN-AUDIO.
