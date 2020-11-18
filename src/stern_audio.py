@@ -307,7 +307,5 @@ Usage of demo script.
 		'script_dir': os.path.dirname(os.path.abspath(__file__)), 
 		'logging_file_name': 'test_logging_file'
 	}
-	models_path = get_path('prod_models')
-	audio_model_path = os.path.join(models_path, audio_model_path)
-	text_model_path = os.path.join(models_path, text_model_path)
+	
 	run(audio_model_path, text_model_path, parameters) 
