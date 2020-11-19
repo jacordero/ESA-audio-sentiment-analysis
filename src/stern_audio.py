@@ -45,14 +45,31 @@ class AudioAnalyzer:
 		self.frame_rate = parameters['audio_frequency']
 		self.recorded_audio_filename_template = parameters['recorded_audio_filename_template']
 		self.recorded_audio_counter = parameters['recorded_audio_counter']
-		self.logging_filename = parameters['logging_file_name']
-		self.text_model = text_model
+		
 		# TODO: remove hardcoded dependency by passing the appropriate predictors according 
 		# to the configuration
 		self.tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
 		self.text_predictor = TextSentimentPredictor(text_model, parameters)
 
+		# Logging functionality
+		self.logging_file_prefix = parameters['logging_file_prefix']
+		script_dir = os.path.dirname(os.path.abspath(__file__))
+		self.logging_directory = os.path.normpath(os.path.join(script_dir, parameters['logging_directory']))
+		self.__create_log_directory()
+
+	def __create_log_directory(self):
+		"""Create a logging directory if it does not exists yet.
+		"""
+		if not os.path.exists(self.logging_directory):
+			os.makedirs(self.logging_directory)
+
+
 	def get_new_recorded_audio_path(self):
+		"""
+
+		Returns:
+			[type]: [description]
+		"""		
 		recorded_audio_filename = self.recorded_audio_filename_template.format(self.recorded_audio_counter)
 		recorded_audio_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), recorded_audio_filename)
 		self.recorded_audio_counter += 1
@@ -81,7 +98,9 @@ class AudioAnalyzer:
 			text_emotion_dist.append('{}:{:.2f}'.format(e, p))
 		data.append(tone_emotion_dist)
 		data.append(text_emotion_dist)
-		logging(data, self.logging_filename)
+
+		logging_file_path = os.path.join(self.logging_directory, self.logging_file_prefix)
+		logging(data, logging_file_path)
 
 	def analyze(self, audio):
 
@@ -195,7 +214,8 @@ Usage of demo script.
 		'test_data_dir': '../data/test',
 		'test_data_filenames': [],
 		'script_dir': os.path.dirname(os.path.abspath(__file__)),
-		'logging_file_name': 'test_logging_file'
+		'logging_directory': '../logs',
+		'logging_file_prefix': 'test_logging_file'
 	}
 
 	run(audio_model_path, text_model_path, parameters)
