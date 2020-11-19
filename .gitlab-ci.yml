@@ -48,6 +48,8 @@ Interface_validation:
 
 Threshold_validation: 
   stage: threholds
+  dependencies:
+    - "fetch"
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
