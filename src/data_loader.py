@@ -1,5 +1,6 @@
 import os
 import joblib
+import numpy as np
 
 from src.feature_extractor import TextModelFeatureExtractor
 
@@ -21,13 +22,14 @@ class TextModelDataLoader():
         audio_formats = ['wav']
 
         for filename in os.listdir(data_directory):
+            print(filename)
             audio_format = filename.split('.')[1]
             if audio_format in audio_formats:
                 audios.append(data_directory + "/" + filename)
 
         return audios
 
-    def load_test_data(self, data_directory):
+    def load_test_data(self, filename):
         """Loads tests sentences used to evaluate the performance of text-based sentiment detection models.
 
         Args:
@@ -35,7 +37,7 @@ class TextModelDataLoader():
 
         Returns:
             A list of sentences corresponding to a set of test audios.
-        """
+        X
         audios_to_load = self.__list_audios(data_directory)
         feature_extractor = TextModelFeatureExtractor()
 
@@ -43,7 +45,8 @@ class TextModelDataLoader():
         for audio_filename in audios_to_load:
             sentence = feature_extractor.compute_features(audio_filename)
             sentences.append(sentence)
-
+        """
+        sentences = np.load(filename)['arr_0']
         return sentences
 
 
@@ -60,13 +63,17 @@ class SequentialToneModelDataLoader():
         Returns:
             Xmfcc features and their corresponding labels.
         """
-        mfcc_path = os.path.join(data_directory, "sequential", "mfcc_seq.joblib")
-        labels_path = os.path.join(data_directory, "sequential", "mfcc_seq_labels.joblib")
+        mfcc_path = os.path.join(data_directory, "sequential", "X.joblib")
+        labels_path = os.path.join(data_directory, "sequential", "y.joblib")
 
         mfcc = joblib.load(mfcc_path)
         labels = joblib.load(labels_path)
 
-        return mfcc, labels
+        # Expanding dimension
+        x = np.expand_dims(mfcc, axis=2)
+
+
+        return x, labels
 
 
 class SiameseToneModelDataLoader():
