@@ -168,7 +168,6 @@ Usage of demo script.
 		'long_pause': int(sys.argv[5]),
 		'short_pause': 1,
 		'test_data_dir': '../data/test',
-		'test_data_filenames': [],
 		'logging_directory': '../logs',
 		'logging_file_prefix': 'test_logging_file'
 	}
