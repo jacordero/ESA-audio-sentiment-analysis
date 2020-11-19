@@ -1,8 +1,0 @@
-models:
-  model: 
-    name:
-    type: 
-  text_model: "emotion_text_model"
-  tone_model: "tone_cnn_8_emotions_v0_2/saved_models/Emotion_Voice_Detection_Model.h5"
-
-test_data_dir: "test"

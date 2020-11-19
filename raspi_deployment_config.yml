@@ -1,0 +1,23 @@
+models:
+  tone_model:
+    dir: "tone_cnn_8_emotions_v0_1/saved_models"
+    file: "Emotion_Voice_Detection_Model.h5" #model name
+    type: "sequential"
+    n_mfcc: 40
+
+test_data_dir: "../prod_data/test"
+
+#audio recording properties
+audio_channels: 1
+audio_frequency: 44100
+audio_length: 5 # length of audio in seconds
+
+# interaction properties
+mode: 'live'
+live_audio_iterations: 15
+long_pause: 10 # length of pause in seconds
+short_pause: 1
+
+# logging
+logging_directory: '../logs'
+logging_file_prefix: 'test_logging_file'

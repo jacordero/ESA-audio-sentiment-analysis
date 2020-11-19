@@ -21,6 +21,7 @@ from pathlib import Path
 import sounddevice as sd
 import numpy as np
 import pandas as pd
+import yaml
 
 from scipy.io.wavfile import write
 from librosa.feature import mfcc
@@ -36,13 +37,11 @@ from stern_utils import Utils
 
 class AudioAnalyzer:
 
-	def __init__(self, tone_model, parameters):
+	def __init__(self, tone_predictor, parameters):
 		self.frame_rate = parameters['audio_frequency']
 
 		# TODO: remove hardcoded dependency by passing the appropriate predictors according
-		self.tone_predictor = SequentialToneSentimentPredictor(
-		    tone_model, parameters)
-
+		self.tone_predictor = tone_predictor
 		# Logging functionality
 		self.logging_file_prefix = parameters['logging_file_prefix']
 		script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -101,21 +100,44 @@ def print_welcome_message():
         print(f.read())
 
 
-def load_tone_model(tone_model_name):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    tone_model_path = os.path.normpath(os.path.join(
-        script_dir, "../prod_models/deployed", tone_model_name))
-    return keras.models.load_model(tone_model_path)
+def load_tone_model(tone_model_dir, tone_model_name):
+	script_dir = os.path.dirname(os.path.abspath(__file__))
+	tone_model_path = os.path.normpath(os.path.join(script_dir, "../prod_models/deployed", tone_model_dir, tone_model_name))
+	print(tone_model_path)
+	return keras.models.load_model(tone_model_path)
 
 
-def load_text_model(text_model_path):
-    return tf.keras.models.load_model(text_model_path)
+def create_tone_predictor(parameters):
+
+	tone_model = load_tone_model(parameters['model_dir'], parameters['model_name'])
+	if parameters['model_type'] == "sequential":
+		tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
+	elif parameters['model_type'] == "siamase":
+		tone_predictor = SiameseToneSentimentPredictor(tone_model, parameters)
+	else:
+		raise ValueError("Invalid tone model type: {}".format(parameters['model_type']))
+
+	return tone_predictor
 
 
-def run(tone_model_name, text_model_path, parameters):
+def run(parameters):
 
-	tone_model = load_tone_model(tone_model_name)
-	audio_analyzer = AudioAnalyzer(tone_model, parameters)
+	predictor_parameters = {
+		'model_name': parameters['models']['tone_model']['file'],
+		'model_dir': parameters['models']['tone_model']['dir'],
+		'model_type': parameters['models']['tone_model']['type'],
+		'audio_frequency': parameters['audio_frequency'],
+		'n_mfcc': parameters['models']['tone_model']['n_mfcc']
+	}
+
+	audio_analyzer_parameters = {
+		'logging_file_prefix': parameters['logging_file_prefix'],
+		'logging_directory': parameters['logging_directory'],
+		'audio_frequency': parameters['audio_frequency'],
+	}
+
+	tone_predictor = create_tone_predictor(predictor_parameters)
+	audio_analyzer = AudioAnalyzer(tone_predictor, audio_analyzer_parameters)
 	print_welcome_message()
 
 	keep_running = True
@@ -146,30 +168,9 @@ def run(tone_model_name, text_model_path, parameters):
 
 if __name__ == "__main__":
 
-	usage_message = """"
-Usage of demo script.
-> python demo.py [audio model path] [text model path] [mode] [pause duration]
-"""
-	if len(sys.argv) < 5:
-		print(usage_message)
-		exit(0)
+	prod_config_file = "raspi_deployment_config.yml"
+	with open(prod_config_file) as input_file:
+		config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)
 
-	audio_model_path = sys.argv[1]
-	text_model_path = sys.argv[2]
-
-	parameters = {
-		'mode': sys.argv[3],
-		'live_audio_iterations': int(sys.argv[4]),
-		'recorded_audio_counter': 1,
-		'audio_channels': 1,
-		'audio_frequency': 44100,
-		'audio_length': 5,
-		'n_mfcc': 40,
-		'long_pause': int(sys.argv[5]),
-		'short_pause': 1,
-		'test_data_dir': '../data/test',
-		'logging_directory': '../logs',
-		'logging_file_prefix': 'test_logging_file'
-	}
-
-	run(audio_model_path, text_model_path, parameters)
+	print(config_parameters)
+	run(config_parameters)
