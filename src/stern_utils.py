@@ -69,14 +69,13 @@ def logging(data, logging_file_name):
 
     log_file_name = os.path.join(folder_name, 'log_' + get_time() + '.json')
     if os.path.exists(log_file_name):
-      with open(log_file_name, 'a') as logging_file:
-        logging_file.write(log_input)
-        #temp = json.load(logging_file)
-        #temp.append(log_input)
-        #with open(log_file_name, 'w') as logging_file:
-        #  json.dump(temp, logging_file, indent=2)
+      with open(log_file_name) as logging_file:
+        temp = json.load(logging_file)
+        temp.append(log_input)
+        with open(log_file_name, 'w') as logging_file:
+          json.dump(temp, logging_file, indent=2)
     else:
       # create the file if not exist and write data to file.
       with open(log_file_name, 'w+') as logging_file:
-        json.dump(log_input, logging_file, indent=2)
+        json.dump([log_input], logging_file, indent=2)
         
