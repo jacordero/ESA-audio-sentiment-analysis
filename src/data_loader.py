@@ -60,13 +60,13 @@ class SequentialToneModelDataLoader():
         Returns:
             Xmfcc features and their corresponding labels.
         """
-        xmfcc_path = os.path.join(data_directory, "test", "xmfcc_seq.joblib")
-        labels_path = os.path.join(data_directory, "test", "xmfcc_seq_labels.joblib")
+        mfcc_path = os.path.join(data_directory, "sequential", "mfcc_seq.joblib")
+        labels_path = os.path.join(data_directory, "sequential", "mfcc_seq_labels.joblib")
 
-        xmfcc = joblib.load(xmfcc_path)
+        mfcc = joblib.load(mfcc_path)
         labels = joblib.load(labels_path)
 
-        return xmfcc, labels
+        return mfcc, labels
 
 
 class SiameseToneModelDataLoader():
@@ -82,16 +82,16 @@ class SiameseToneModelDataLoader():
         Returns:
             Xmfcc features, xlmfe features, and their corresponding labels.
         """
-        xmfcc_path = os.path.join(data_directory, "test", "xmfcc_siam.joblib")
-        xlmfe_path = os.path.join(data_directory, "test", "xlmfe_siam.joblib")
-        xmfcc_labels_path = os.path.join(
-            data_directory, "test", "xmfcc_siam_labels.joblib")
-        xlmfe_labels_path = os.path.join(
-            data_directory, "test", "xlme_siam_labels.joblib")
+        mfcc_path = os.path.join(data_directory, "siamese", "mfcc_siam.joblib")
+        lmfe_path = os.path.join(data_directory, "siamese", "lmfe_siam.joblib")
+        mfcc_labels_path = os.path.join(
+            data_directory, "siamese", "mfcc_siam_labels.joblib")
+        lmfe_labels_path = os.path.join(
+            data_directory, "siamese", "lmfe_siam_labels.joblib")
 
-        xmfcc = joblib.load(xmfcc_path)
-        xlmfe = joblib.load(xlmfe_path)
-        xmfcc_labels = joblib.load(xmfcc_labels_path)
-        xlmfe_labels = joblib.load(xlmfe_labels_path)
+        mfcc = joblib.load(mfcc_path)
+        lmfe = joblib.load(lmfe_path)
+        mfcc_labels = joblib.load(mfcc_labels_path)
+        lmfe_labels = joblib.load(lmfe_labels_path)
 
-        return xmfcc, xlmfe, xmfcc_labels, xlmfe_labels
+        return mfcc, lmfe, mfcc_labels, lmfe_labels
