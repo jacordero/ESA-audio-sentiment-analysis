@@ -186,7 +186,7 @@ def run(tone_model_name, text_model_path, parameters):
 
 if __name__ == "__main__":
 
-    usage_message = """"
+	usage_message = """"
 Usage of demo script.
 > python demo.py [audio model path] [text model path] [mode] [pause duration]
 """
