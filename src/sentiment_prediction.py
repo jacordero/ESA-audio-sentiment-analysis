@@ -204,4 +204,4 @@ class TextSentimentPredictor:
 
             text_predictions = np.squeeze(self.model.predict(text_vector, batch_size=self.batch_size))
 
-        return text_predictions
+        return text_predictions, sentence
