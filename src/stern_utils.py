@@ -122,11 +122,10 @@ class Utils:
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
 
+        #print(data)
         log_input = {
             'time': datetime.now().strftime('%d-%m-%y %H:%M:%S'),
-            'text': data[0],
-            'tone_emotion': data[1],
-            'text_emotion': data[2]
+            'tone_emotion': data[0]
         }
 
         log_file_name = os.path.join(
