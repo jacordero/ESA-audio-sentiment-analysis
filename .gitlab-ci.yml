@@ -50,6 +50,7 @@ Threshold_validation:
   stage: threholds
   script: 
     - "echo Testing DNN metrics against threshold values"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
     - "python tests/compute_models_performance.py"
   tags:
     - audio
