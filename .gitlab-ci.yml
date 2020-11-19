@@ -41,7 +41,7 @@ Data_validation:
 Interface_validation: 
   stage: interface
   script:
-    - "echo Testing DNNs interface specificationTINY CHANGE"
+    - "echo Testing DNNs interface specification"
   tags:
     - audio
 
@@ -50,5 +50,6 @@ Threshold_validation:
   stage: threholds
   script: 
     - "echo Testing DNN metrics against threshold values"
+    - "python tests/compute_models_performance.py"
   tags:
     - audio

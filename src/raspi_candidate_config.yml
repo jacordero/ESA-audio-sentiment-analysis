@@ -1,10 +1,10 @@
 models:
-  text_model:
-    dir: "emotion_text_model_v0_2"
-    file: "saved_model.pb"
-    type: "Sequential"
+#  text_model:
+#    dir: "emotion_text_model_v0_2"
+#    file: "saved_model.pb"
+#    type: "Sequential"
   tone_model:
-    dir: "tone_cnn_8_emotions_v0_2/saved_models"
+    dir: "siamese_tone_8_emotions/saved_models"
     file: "Emotion_Voice_Detection_Model.h5"
     type: "Siamese"
 
