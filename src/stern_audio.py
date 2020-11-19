@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 
+"""
+Copyright (C) Tu/e.
+
+@author  Jorge Cordero Cruzue  j.a.cordero.cruz@tue.nl
+
+@maintainers: Engineers
+
+======================================================
+
+This is the STERN-AUDIO.
+
+"""
+
 import time
 import sys
 import os
@@ -16,64 +29,52 @@ from scipy.io.wavfile import write
 from librosa.feature import mfcc
 
 import tensorflow as tf
-from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 
-from feature_extractor import SiameseToneModelFeatureExtractor
-from feature_extractor import SequentialToneModelFeatureExtractor
-from feature_extractor import TextModelFeatureExtractor
+from sentiment_prediction import SiameseToneSentimentPredictor
+from sentiment_prediction import SequentialToneSentimentPredictor
+from sentiment_prediction import TextSentimentPredictor
 from stern_utils import tone_emotions
 from stern_utils import text_emotions
 from stern_utils import save_wav_pcm
 
+from stern_utils import logging, get_path
 
 class AudioAnalyzer:
 
 	def __init__(self, tone_model, text_model, parameters):
-		self.parameters = parameters.copy()
-		self.tone_model = tone_model
+		self.frame_rate = parameters['audio_frequency']
+		self.recorded_audio_filename_template = parameters['recorded_audio_filename_template']
+		self.recorded_audio_counter = parameters['recorded_audio_counter']
 		self.text_model = text_model
-		self.tone_feature_extractor = SequentialToneModelFeatureExtractor()
-		self.text_feature_extractor = TextModelFeatureExtractor()
+		# TODO: remove hardcoded dependency by passing the appropriate predictors according 
+		# to the configuration
+		self.tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
+		self.text_predictor = TextSentimentPredictor(text_model, parameters)
 
 	def get_new_recorded_audio_path(self):
-		recorded_audio_filename = self.parameters['recorded_audio_filename_template'].format(self.parameters['recorded_audio_counter'])
-		recorded_audio_path = os.path.join(self.parameters['script_dir'], recorded_audio_filename)
-		self.parameters['recorded_audio_counter'] += 1
+		recorded_audio_filename = self.recorded_audio_filename_template.format(self.recorded_audio_counter)
+		recorded_audio_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), recorded_audio_filename)
+		self.recorded_audio_counter += 1
 		return recorded_audio_path
 
 	def analyze(self, audio):
 
 		recorded_audio_path = self.get_new_recorded_audio_path()
-		save_wav_pcm(audio, recorded_audio_path, self.parameters['audio_frequency'])
+		save_wav_pcm(audio, recorded_audio_path, self.frame_rate)
 
-		preprocessed_audio = self.tone_feature_extractor.compute_features(np.squeeze(audio), self.parameters['audio_frequency'])
+		tone_predictions = self.tone_predictor.predict(np.squeeze(audio))
+		tone_emotion_probabilities = [
+			(tone_emotions[i], tone_predictions[i]) for i in range(len(tone_predictions))]
 
-		# predictions happen here
-		audio_predictions = np.squeeze(self.tone_model.predict(preprocessed_audio))
-		audio_emotion_probabilities = [
-			(tone_emotions[i], audio_predictions[i]) for i in range(len(audio_predictions))]
-
-		#print("Preprocessing audio for text-based model")
-		sentence = self.text_feature_extractor.compute_features(
-			os.path.normpath(recorded_audio_path))
-
-		if sentence != None:
-			vectorizer = TextVectorization(max_tokens=self.parameters['text_model_max_features'],
-										output_mode="int",
-										output_sequence_length=self.parameters['text_model_sequence_length'])
-			text_vector = vectorizer(sentence)
-			print("Recognized text: {}".format(sentence))
-			# print(text_vector)
-
-			text_predictions = np.squeeze(self.text_model.predict(
-				text_vector, batch_size=self.parameters['text_model_batch_size']))
+		text_predictions, sentence = self.text_predictor.predict(os.path.normpath(recorded_audio_path))
+		if text_predictions.size != 0:
 			text_emotion_probabilities = [
 				(text_emotions[i], text_predictions[i]) for i in range(len(text_predictions))]
-
 		else:
 			text_emotion_probabilities = []
 
-		return audio_emotion_probabilities, text_emotion_probabilities
+		emotion_logbook(sentence, tone_emotion_probabilities, text_emotion_probabilities)
+		return tone_emotion_probabilities, text_emotion_probabilities
 
 
 def print_emotions(title, emotion_probabilities):
@@ -88,7 +89,6 @@ def print_emotions(title, emotion_probabilities):
 		print("\t{}: {:.2f}".format(e, p))
 	print("\t****************************")
 
-
 def print_welcome_message(script_dir):
 	print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
 	with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
@@ -102,6 +102,31 @@ def load_tone_model(tone_model_name):
 
 def load_text_model(text_model_path):
 	return tf.keras.models.load_model(text_model_path)
+
+def emotion_logbook(sentence, audio_emotion_probabilities, text_emotion_probabilities):
+	"""Write utterances of the audio and detected emotions in logbook.
+
+	Args:
+		sentence: An utterances of audio.
+		audio_emotion_probabilities: Predicted tone model emotions.
+		text_emotion_probabilities: Predicted text model emotions.
+		
+	"""
+	if sentence is None:
+		sentence = ['Empty']
+	else:
+		sentence = sentence.tolist()
+	data = []
+	data.append(sentence)
+	tone_emotion_dist = []
+	text_emotion_dist = []
+	for e, p in audio_emotion_probabilities:
+		tone_emotion_dist.append('{}:{:.2f}'.format(e, p))
+	for e, p in text_emotion_probabilities:
+		text_emotion_dist.append('{}:{:.2f}'.format(e, p))
+	data.append(tone_emotion_dist)
+	data.append(text_emotion_dist)
+	logging(data, parameters['logging_file_name'])
 
 
 def run(tone_model_name, text_model_path, parameters):
@@ -169,7 +194,8 @@ Usage of demo script.
 		'text_model_batch_size': 32,
 		'test_data_dir': '../data/test',
 		'test_data_filenames': [],
-		'script_dir': os.path.dirname(os.path.abspath(__file__))
+		'script_dir': os.path.dirname(os.path.abspath(__file__)),
+		'logging_file_name': 'test_logging_file'
 	}
 
 	run(audio_model_path, text_model_path, parameters)
