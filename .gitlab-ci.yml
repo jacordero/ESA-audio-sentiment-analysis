@@ -24,7 +24,7 @@ Fetch_data_and_models:
   script:
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "dvc remote modify --local nielspi password projectesa"
-    - "dvc pull -v"
+    - "dvc pull"
 #    - "ls -la"
 #    - "bash run_sentiment_analyzer.sh"
   tags:
@@ -51,6 +51,7 @@ Threshold_validation:
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "ls -la"
     - "python tests/compute_models_performance.py"
   tags:
     - audio
