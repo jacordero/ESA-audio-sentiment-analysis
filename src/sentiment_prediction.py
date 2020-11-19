@@ -169,19 +169,37 @@ class TextSentimentPredictor:
             input_audio_filename : Path of the wav file used to extract a sentence from the audio.
 
         Returns:
-            Text array containing a sentence obtained from an audio file.
+            Encoded text array and text array containing a sentence obtained from an audio file.
         """
         try:
             r = sr.Recognizer()
             with sr.AudioFile(input_audio_filename) as source:
                 audio_content = r.record(source)
-                text = r.recognize_google(audio_content)
+                sentence = r.recognize_google(audio_content)
+                encoded_sentence = self.encode_sentence(sentence)
+            print("Recognized text: {}".format(sentence))
 
-            output = np.array([[text]], dtype='object')
         except:
-            output = None
+            encoded_sentence = None
+            sentence = None
 
-        return output
+        return encoded_sentence, sentence
+
+    def encode_sentence(self, sentence):
+        """[summary]
+
+        Args:
+            sentence ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        sentence_array = np.array([[sentence]], dtype='object')
+        vectorizer = TextVectorization(max_tokens=self.max_tokens,
+        output_mode="int", output_sequence_length=self.output_sequence_length)
+        text_vector = vectorizer(sentence_array)
+ 
+        return text_vector
 
     def predict(self, input_audio_path):
         """Predicts the sentiment in the text obtained from an audio
@@ -192,16 +210,45 @@ class TextSentimentPredictor:
         Returns:
             Probabilities of the emotions that can be predicted by a text based model
         """        
-        sentence = self.__compute_features(input_audio_path)
-        
+        text_vector, sentence = self.__compute_features(input_audio_path)
         text_predictions = np.array([])
-        if sentence != None:
-            vectorizer = TextVectorization(max_tokens=self.max_tokens,
-            output_mode="int", output_sequence_length=self.output_sequence_length)
-			
-            text_vector = vectorizer(sentence)
-            print("Recognized text: {}".format(sentence))
-
+        if text_vector != None:
             text_predictions = np.squeeze(self.model.predict(text_vector, batch_size=self.batch_size))
 
         return text_predictions, sentence
+
+
+if __name__ == "__main__":
+
+    #TODO: remove this code when the test scripts are working as expected
+    sentences = [
+        "The weather is good.",
+        "Stay away from me.",
+        "Why did you do this to me?",
+        "Oh man, this food really sucks.",
+        "Mmm, I don't care about anything.",
+        "Hey, you, let's go shopping.",
+        "It is almost my birthday!",
+        "Today I don't want to do anything.",
+        "Chris is the best architect ever!",
+        "We have the best engineers!",
+        "No, no, no. It is not ok.",
+        "The weather is reaaaally bad today.",
+        "Really, where is my solution direction?",
+        "Where are my tacos?"]
+
+    parameters = {
+   		'text_model_max_features': 20000,
+		'text_model_embedding_dim': 128,
+		'text_model_sequence_length': 50,
+		'text_model_batch_size': 32
+    }
+
+    sentiment_predictor = TextSentimentPredictor(None, parameters)
+    
+    encoded_sentences = []
+    for sentence in sentences:
+        encoded_sentence = sentiment_predictor.encode_sentence(sentence)
+        encoded_sentences.append(encoded_sentence.numpy())
+
+    np.savez("test_encoded_sentences.npz", np.array(encoded_sentences))

@@ -70,7 +70,7 @@ class AudioAnalyzer:
 		if sentence is None:
 			sentence = ['Empty']
 		else:
-			sentence = sentence.tolist()
+			sentence = [sentence]
 		data = []
 		data.append(sentence)
 		tone_emotion_dist = []
