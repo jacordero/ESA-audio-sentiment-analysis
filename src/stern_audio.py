@@ -45,6 +45,7 @@ class AudioAnalyzer:
 		self.frame_rate = parameters['audio_frequency']
 		self.recorded_audio_filename_template = parameters['recorded_audio_filename_template']
 		self.recorded_audio_counter = parameters['recorded_audio_counter']
+		self.logging_filename = parameters['logging_file_name']
 		self.text_model = text_model
 		# TODO: remove hardcoded dependency by passing the appropriate predictors according 
 		# to the configuration
@@ -56,6 +57,31 @@ class AudioAnalyzer:
 		recorded_audio_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), recorded_audio_filename)
 		self.recorded_audio_counter += 1
 		return recorded_audio_path
+
+	def emotion_logbook(self, sentence, audio_emotion_probabilities, text_emotion_probabilities):
+		"""Write utterances of the audio and detected emotions in logbook.
+
+		Args:
+			sentence: An utterances of audio.
+			audio_emotion_probabilities: Predicted tone model emotions.
+			text_emotion_probabilities: Predicted text model emotions.
+			
+		"""
+		if sentence is None:
+			sentence = ['Empty']
+		else:
+			sentence = sentence.tolist()
+		data = []
+		data.append(sentence)
+		tone_emotion_dist = []
+		text_emotion_dist = []
+		for e, p in audio_emotion_probabilities:
+			tone_emotion_dist.append('{}:{:.2f}'.format(e, p))
+		for e, p in text_emotion_probabilities:
+			text_emotion_dist.append('{}:{:.2f}'.format(e, p))
+		data.append(tone_emotion_dist)
+		data.append(text_emotion_dist)
+		logging(data, self.logging_filename)
 
 	def analyze(self, audio):
 
@@ -73,7 +99,7 @@ class AudioAnalyzer:
 		else:
 			text_emotion_probabilities = []
 
-		emotion_logbook(sentence, tone_emotion_probabilities, text_emotion_probabilities)
+		self.emotion_logbook(sentence, tone_emotion_probabilities, text_emotion_probabilities)
 		return tone_emotion_probabilities, text_emotion_probabilities
 
 
@@ -102,32 +128,6 @@ def load_tone_model(tone_model_name):
 
 def load_text_model(text_model_path):
 	return tf.keras.models.load_model(text_model_path)
-
-def emotion_logbook(sentence, audio_emotion_probabilities, text_emotion_probabilities):
-	"""Write utterances of the audio and detected emotions in logbook.
-
-	Args:
-		sentence: An utterances of audio.
-		audio_emotion_probabilities: Predicted tone model emotions.
-		text_emotion_probabilities: Predicted text model emotions.
-		
-	"""
-	if sentence is None:
-		sentence = ['Empty']
-	else:
-		sentence = sentence.tolist()
-	data = []
-	data.append(sentence)
-	tone_emotion_dist = []
-	text_emotion_dist = []
-	for e, p in audio_emotion_probabilities:
-		tone_emotion_dist.append('{}:{:.2f}'.format(e, p))
-	for e, p in text_emotion_probabilities:
-		text_emotion_dist.append('{}:{:.2f}'.format(e, p))
-	data.append(tone_emotion_dist)
-	data.append(text_emotion_dist)
-	logging(data, parameters['logging_file_name'])
-
 
 def run(tone_model_name, text_model_path, parameters):
 
