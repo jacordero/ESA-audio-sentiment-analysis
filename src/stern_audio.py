@@ -16,19 +16,17 @@ This is the STERN-AUDIO.
 import time
 import sys
 import os
-import keyboard
-import keras
 from pathlib import Path
 
 import sounddevice as sd
 import numpy as np
 import pandas as pd
 
-import speech_recognition as sr
 from scipy.io.wavfile import write
 from librosa.feature import mfcc
 
 import tensorflow as tf
+import keras
 
 from sentiment_prediction import SiameseToneSentimentPredictor
 from sentiment_prediction import SequentialToneSentimentPredictor

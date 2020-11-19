@@ -26,7 +26,7 @@ class SiameseToneSentimentPredictor:
     def __init__(self, model, parameters):
         self.model = model
         self.sample_rate = parameters['audio_frequency']
-        self.n_mfcc = parameters['n_mfcc']    
+        self.n_mfcc = parameters['n_mfcc']
 
     def __calculate_nfft(self, samplerate, winlen):
         """
@@ -82,9 +82,11 @@ class SiameseToneSentimentPredictor:
 
         Returns:
             The mfcc and lmfe features computed from the input audio signal.
-        """        
-        mfcc_features = self.__compute_mfcc_features(audio_array, self.sample_rate, self.n_mfcc)
-        lmfe_features = self.__compute_lmfe_features(audio_array, self.sample_rate)
+        """
+        mfcc_features = self.__compute_mfcc_features(
+            audio_array, self.sample_rate, self.n_mfcc)
+        lmfe_features = self.__compute_lmfe_features(
+            audio_array, self.sample_rate)
         return mfcc_features, lmfe_features
 
     def predict(self, audio_array):
@@ -97,7 +99,7 @@ class SiameseToneSentimentPredictor:
             probabilities of the emotions that can be predicted by a siamese tone model
         """
         mfcc_features, lmfe_features = self.__compute_features(audio_array)
-        return np.squezee(self.model.predict(mfcc_features, lmfe_features))        
+        return np.squezee(self.model.predict(mfcc_features, lmfe_features))
 
 
 class SequentialToneSentimentPredictor:
@@ -106,7 +108,7 @@ class SequentialToneSentimentPredictor:
 
     def __init__(self, model, parameters):
         self.model = model
-        self.sample_rate = parameters['audio_frequency']   
+        self.sample_rate = parameters['audio_frequency']
         self.n_mfcc = parameters['n_mfcc']
 
     def __compute_mfcc_features(self, audio_array, sample_rate, _n_mfcc=40):
@@ -135,7 +137,7 @@ class SequentialToneSentimentPredictor:
 
         Returns:
             The mfcc features computed from the input audio signal.
-        """        
+        """
         return self.__compute_mfcc_features(audio_array, self.sample_rate, self.n_mfcc)
 
     def predict(self, audio_array):
@@ -149,12 +151,12 @@ class SequentialToneSentimentPredictor:
         """
 
         mfcc_features = self.__compute_features(audio_array)
-        return np.squeeze(self.model.predict(mfcc_features))        
+        return np.squeeze(self.model.predict(mfcc_features))
 
 
 class TextSentimentPredictor:
     """Feature extractor that computes text features required for emotion detection using text models.
-    """    
+    """
 
     def __init__(self, model, parameters):
         self.model = model
@@ -196,9 +198,9 @@ class TextSentimentPredictor:
         """
         sentence_array = np.array([[sentence]], dtype='object')
         vectorizer = TextVectorization(max_tokens=self.max_tokens,
-        output_mode="int", output_sequence_length=self.output_sequence_length)
+                                       output_mode="int", output_sequence_length=self.output_sequence_length)
         text_vector = vectorizer(sentence_array)
- 
+
         return text_vector
 
     def predict(self, input_audio_path):
@@ -209,18 +211,19 @@ class TextSentimentPredictor:
 
         Returns:
             Probabilities of the emotions that can be predicted by a text based model
-        """        
+        """
         text_vector, sentence = self.__compute_features(input_audio_path)
         text_predictions = np.array([])
         if text_vector != None:
-            text_predictions = np.squeeze(self.model.predict(text_vector, batch_size=self.batch_size))
+            text_predictions = np.squeeze(self.model.predict(
+                text_vector, batch_size=self.batch_size))
 
         return text_predictions, sentence
 
 
 if __name__ == "__main__":
 
-    #TODO: remove this code when the test scripts are working as expected
+    # TODO: remove this code when the test scripts are working as expected
     sentences = [
         "The weather is good.",
         "Stay away from me.",
@@ -238,14 +241,14 @@ if __name__ == "__main__":
         "Where are my tacos?"]
 
     parameters = {
-   		'text_model_max_features': 20000,
-		'text_model_embedding_dim': 128,
-		'text_model_sequence_length': 50,
-		'text_model_batch_size': 32
+        'text_model_max_features': 20000,
+        'text_model_embedding_dim': 128,
+        'text_model_sequence_length': 50,
+        'text_model_batch_size': 32
     }
 
     sentiment_predictor = TextSentimentPredictor(None, parameters)
-    
+
     encoded_sentences = []
     for sentence in sentences:
         encoded_sentence = sentiment_predictor.encode_sentence(sentence)
