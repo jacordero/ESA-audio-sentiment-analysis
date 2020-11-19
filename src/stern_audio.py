@@ -33,11 +33,8 @@ import tensorflow as tf
 from sentiment_prediction import SiameseToneSentimentPredictor
 from sentiment_prediction import SequentialToneSentimentPredictor
 from sentiment_prediction import TextSentimentPredictor
-from stern_utils import tone_emotions
-from stern_utils import text_emotions
-from stern_utils import save_wav_pcm
+from stern_utils import Utils
 
-from stern_utils import logging, get_path
 
 class AudioAnalyzer:
 
@@ -100,21 +97,21 @@ class AudioAnalyzer:
 		data.append(text_emotion_dist)
 
 		logging_file_path = os.path.join(self.logging_directory, self.logging_file_prefix)
-		logging(data, logging_file_path)
+		Utils.logging(data, logging_file_path)
 
 	def analyze(self, audio):
 
 		recorded_audio_path = self.get_new_recorded_audio_path()
-		save_wav_pcm(audio, recorded_audio_path, self.frame_rate)
+		Utils.save_wav_pcm(audio, recorded_audio_path, self.frame_rate)
 
 		tone_predictions = self.tone_predictor.predict(np.squeeze(audio))
 		tone_emotion_probabilities = [
-			(tone_emotions[i], tone_predictions[i]) for i in range(len(tone_predictions))]
+			(Utils.tone_emotions[i], tone_predictions[i]) for i in range(len(tone_predictions))]
 
 		text_predictions, sentence = self.text_predictor.predict(os.path.normpath(recorded_audio_path))
 		if text_predictions.size != 0:
 			text_emotion_probabilities = [
-				(text_emotions[i], text_predictions[i]) for i in range(len(text_predictions))]
+				(Utils.text_emotions[i], text_predictions[i]) for i in range(len(text_predictions))]
 		else:
 			text_emotion_probabilities = []
 
@@ -124,68 +121,72 @@ class AudioAnalyzer:
 
 def print_emotions(title, emotion_probabilities):
 
-	sorted_probabilities = sorted(
-		emotion_probabilities, key=lambda x: x[1], reverse=True)
+    sorted_probabilities = sorted(
+        emotion_probabilities, key=lambda x: x[1], reverse=True)
 
-	print("\n\t***************************")
-	print("\t" + title)
-	print("\t***************************")
-	for e, p in sorted_probabilities[:3]:
-		print("\t{}: {:.2f}".format(e, p))
-	print("\t****************************")
+    print("\n\t***************************")
+    print("\t" + title)
+    print("\t***************************")
+    for e, p in sorted_probabilities[:3]:
+        print("\t{}: {:.2f}".format(e, p))
+    print("\t****************************")
+
 
 def print_welcome_message(script_dir):
-	print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
-	with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
-		print(f.read())
+    print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
+    with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
+        print(f.read())
+
 
 def load_tone_model(tone_model_name):
-	script_dir = os.path.dirname(os.path.abspath(__file__))
-	tone_model_path = os.path.normpath(os.path.join(
-		script_dir, "../prod_models/deployed", tone_model_name))
-	return keras.models.load_model(tone_model_path)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    tone_model_path = os.path.normpath(os.path.join(
+        script_dir, "../prod_models/deployed", tone_model_name))
+    return keras.models.load_model(tone_model_path)
+
 
 def load_text_model(text_model_path):
-	return tf.keras.models.load_model(text_model_path)
+    return tf.keras.models.load_model(text_model_path)
+
 
 def run(tone_model_name, text_model_path, parameters):
 
-	tone_model = load_tone_model(tone_model_name)
-	text_model = load_text_model(text_model_path)
-	audio_analyzer = AudioAnalyzer(tone_model, text_model, parameters)
+    tone_model = load_tone_model(tone_model_name)
+    text_model = load_text_model(text_model_path)
+    audio_analyzer = AudioAnalyzer(tone_model, text_model, parameters)
 
-	print_welcome_message(parameters['script_dir'])
+    print_welcome_message(parameters['script_dir'])
 
-	keep_running = True
-	while keep_running:
+    keep_running = True
+    while keep_running:
 
-		print("\n\n==================================================================\n")
-		print("1) Recording. Speak for the next five seconds")
-		time.sleep(parameters['short_pause'])
+        print("\n\n==================================================================\n")
+        print("1) Recording. Speak for the next five seconds")
+        time.sleep(parameters['short_pause'])
 
-		recorded_audio = sd.rec(int(parameters['audio_length'] * parameters['audio_frequency']),
-								samplerate=parameters['audio_frequency'],
-								channels=parameters['audio_channels'])
-		sd.wait()
+        recorded_audio = sd.rec(int(parameters['audio_length'] * parameters['audio_frequency']),
+                                samplerate=parameters['audio_frequency'],
+                                channels=parameters['audio_channels'])
+        sd.wait()
 
-		predicted_emotion_probs = audio_analyzer.analyze(recorded_audio)
-		print("\n2) Predictions")
-		print_emotions("Audio prediction", predicted_emotion_probs[0])
-		print_emotions("Text prediction", predicted_emotion_probs[1])
+        predicted_emotion_probs = audio_analyzer.analyze(recorded_audio)
+        print("\n2) Predictions")
+        print_emotions("Audio prediction", predicted_emotion_probs[0])
+        print_emotions("Text prediction", predicted_emotion_probs[1])
 
-		parameters['recorded_audio_counter'] += 1
-		if parameters['recorded_audio_counter'] > parameters['live_audio_iterations']:
-			keep_running = False
+        parameters['recorded_audio_counter'] += 1
+        if parameters['recorded_audio_counter'] > parameters['live_audio_iterations']:
+            keep_running = False
 
-		print("\n3) Pause for {} seconds".format(parameters['long_pause']))
-		time.sleep(parameters['long_pause'])
+        print("\n3) Pause for {} seconds".format(parameters['long_pause']))
+        time.sleep(parameters['long_pause'])
 
-	print("\n** Demo finished! **")
+    print("\n** Demo finished! **")
 
 
 if __name__ == "__main__":
 
-	usage_message = """"
+    usage_message = """"
 Usage of demo script.
 > python demo.py [audio model path] [text model path] [mode] [pause duration]
 """
