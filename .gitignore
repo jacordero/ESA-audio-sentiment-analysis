@@ -5,6 +5,7 @@
 
 data/*
 models/*
+src/logs/*
 bin/*
 lib/*
 pyvenv.cfg
