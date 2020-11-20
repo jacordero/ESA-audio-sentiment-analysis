@@ -1,0 +1,8 @@
+models:
+  tone_model:
+    dir: "siamese_tone_8_emotions/saved_models"
+    file: "Emotion_Voice_Detection_Model.h5"
+    type: "Siamese"
+
+test_data_dir: "test"
+
