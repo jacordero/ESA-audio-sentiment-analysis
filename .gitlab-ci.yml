@@ -27,8 +27,11 @@ Fetch_data_and_models:
         - prod_data/test/
         - prod_models/candidate/
   script:
-#    - "cd /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/"
-#    - "ls -la"
+    - "cd /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/"
+    - "ls -la"
+    - "cd default"
+    - "ls -la"
+    - "du"
 #    - "rm -rf us75-candidate-model-performance"
 #    - "ls -la"
     - "source /home/pi/Documents/esa/venv/bin/activate"
