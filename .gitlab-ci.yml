@@ -22,9 +22,7 @@ stages:
 Fetch_data_and_models:
   stage: fetch
   cache:
-    paths:
-        - prod_data
-        - prod_models
+    untracked: true
 #  artifacts:
 #    paths:
 #        - prod_models
