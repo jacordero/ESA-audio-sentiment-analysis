@@ -24,8 +24,8 @@ Fetch_data_and_models:
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-        - prod_data/
-        - prod_models/
+        - prod_data/tests/
+        - prod_models/candidate/
   script:
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "dvc remote modify --local nielspi password projectesa"
