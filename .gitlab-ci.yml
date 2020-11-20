@@ -22,18 +22,12 @@ stages:
 Fetch_data_and_models:
   stage: fetch
   cache:
-    key: ${CI_COMMIT_REF_SLUG}
+    key: default
     paths:
         - prod_data/test/
         - prod_models/candidate/
   script:
-    - "cd /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/"
-    - "ls -la"
-    - "cd default"
-    - "ls -la"
-    - "du"
-#    - "rm -rf us75-candidate-model-performance"
-#    - "ls -la"
+    - "rm -rf /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/us75-candidate-model-performance"
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "dvc remote modify --local nielspi password projectesa"
     - "dvc pull"
