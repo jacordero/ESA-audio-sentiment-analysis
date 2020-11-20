@@ -37,6 +37,7 @@ Data_validation:
   stage: data
   script:
     - "echo Testing data schema and values"
+    - "ls -la"
   tags:
     - audio
     
@@ -45,6 +46,7 @@ Interface_validation:
   stage: interface
   script:
     - "echo Testing DNNs interface specification"
+    - "ls -la"
   tags:
     - audio
 
