@@ -37,7 +37,6 @@ Data_validation:
   stage: data
   script:
     - "echo Testing data schema and values"
-    - "ls -la"
   tags:
     - audio
     
@@ -46,7 +45,6 @@ Interface_validation:
   stage: interface
   script:
     - "echo Testing DNNs interface specification"
-    - "ls -la"
   tags:
     - audio
 
@@ -61,7 +59,8 @@ Threshold_validation:
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
-#    - "unzip /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/default/cache.zip"
     - "python tests/compute_models_performance.py"
+    - "rm -rf prod_data"
+    - "rm -rf prod_models"
   tags:
     - audio
