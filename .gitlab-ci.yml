@@ -22,17 +22,14 @@ stages:
 Fetch_data_and_models:
   stage: fetch
   cache:
-    untracked: true
-#  artifacts:
-#    paths:
-#        - prod_models
-#        - prod_data
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+        - prod_data/
+        - prod_models/
   script:
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "dvc remote modify --local nielspi password projectesa"
     - "dvc pull"
-#    - "ls -la"
-#    - "bash run_sentiment_analyzer.sh"
   tags:
     - audio
 
@@ -54,8 +51,6 @@ Interface_validation:
 
 Threshold_validation: 
   stage: threholds
-#  dependencies:
-#    - "Fetch_data_and_models"
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
