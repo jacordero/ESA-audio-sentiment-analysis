@@ -7,6 +7,7 @@ stages:
   - data
   - interface
   - threholds
+  - updating
   
   
   
@@ -64,3 +65,25 @@ Threshold_validation:
     - "rm -rf prod_models"
   tags:
     - audio
+    
+# Copy accepted model from candidate to deployment push to dvc and git
+# Update configuration values
+
+# Updating_deployed_model:
+# stage: updating
+#  cache:
+#    key: default
+#    paths:
+#        - prod_data/test/
+#        - prod_models/candidate/
+# script:
+#   - "source /home/pi/Documents/esa/venv/bin/activate"
+#   - "python update_configuration_file.py"
+#   - "python copy_to_deployment.py"
+#   - "remove from candidate folder"
+#   - "dvc commit"
+#   - "dvc push"
+# We need to find out how gitlab runner pushes to gitlab
+#   - "git add ."
+#   - "git commit -m "${userstory}"
+#   - "git push"
