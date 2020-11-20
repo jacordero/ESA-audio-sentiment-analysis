@@ -6,6 +6,7 @@ models:
     n_mfcc: 40
 
 test_data_dir: "../prod_data/test"
+prod_models_dir: "../prod_models/deployed"
 
 #audio recording properties
 audio_channels: 1
@@ -13,10 +14,9 @@ audio_frequency: 44100
 audio_length: 5 # length of audio in seconds
 
 # interaction properties
-mode: 'live'
-live_audio_iterations: 15
-long_pause: 10 # length of pause in seconds
-short_pause: 1
+iterations: -1 # for an infinite number of iterations, use -1
+after_audio_analysis_pause: 1 # length of pause in seconds
+before_recording_pause: 1
 
 # logging
 logging_directory: '../logs'

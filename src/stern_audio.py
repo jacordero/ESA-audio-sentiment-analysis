@@ -33,83 +33,105 @@ from sentiment_prediction import SiameseToneSentimentPredictor
 from sentiment_prediction import SequentialToneSentimentPredictor
 from sentiment_prediction import TextSentimentPredictor
 from stern_utils import Utils
+from sentiment_analyzer import AudioAnalyzer
 
 
-class AudioAnalyzer:
+class SternAudio:
+	""" Class that records and analyses audio using tone sentiment analysis modules.
+	"""
+	def __init__(self, audio_analyzer, parameters):
+		self.audio_analyzer = audio_analyzer
+		self.audio_length = parameters['audio_length']
+		self.audio_channels = parameters['audio_channels']
+		self.audio_frequency = parameters['audio_frequency']
+		self.before_recording_pause = parameters['before_recording_pause']
+		self.after_audio_analysis_pause = parameters['after_audio_analysis_pause']
+		self.iterations = parameters['iterations'] ## -1 indicates an infinite number of iterations
 
-	def __init__(self, tone_predictor, parameters):
-		self.frame_rate = parameters['audio_frequency']
-
-		# TODO: remove hardcoded dependency by passing the appropriate predictors according
-		self.tone_predictor = tone_predictor
-		# Logging functionality
-		self.logging_file_prefix = parameters['logging_file_prefix']
-		script_dir = os.path.dirname(os.path.abspath(__file__))
-		self.logging_directory = os.path.normpath(
-		    os.path.join(script_dir, parameters['logging_directory']))
-		self.__create_log_directory()
-
-	def __create_log_directory(self):
-		"""Create a logging directory if it does not exists yet.
-		"""
-		if not os.path.exists(self.logging_directory):
-			os.makedirs(self.logging_directory)
-
-	def emotion_logbook(self, audio_emotion_probabilities):
-		"""Write utterances of the audio and detected emotions in logbook.
+	def print_emotions(self, title, emotion_probabilities):
+		""" Prints a formatted message showing the top 3 emotions detected in an audio frame.
 
 		Args:
-			audio_emotion_probabilities: Predicted tone model emotions.
+			title: Title of the message to be displayed.
+			emotion_probabilities: Tuple containing emotions and probabilities to be displayed.
 		"""
-		data = []
-		tone_emotion_dist = []
-		for e, p in audio_emotion_probabilities:
-			tone_emotion_dist.append('{}:{:.2f}'.format(e, p))
-		data.append(tone_emotion_dist)
+		sorted_probabilities = sorted(emotion_probabilities, key=lambda x: x[1], reverse=True)
 
-		logging_file_path = os.path.join(
-		    self.logging_directory, self.logging_file_prefix)
-		Utils.logging(data, logging_file_path)
+		print("\n\t***************************")
+		print("\t" + title)
+		print("\t***************************")
+		for e, p in sorted_probabilities[:3]:
+			print("\t{}: {:.2f}".format(e, p))
+		print("\t****************************")
 
-	def analyze(self, audio):
+	def print_welcome_message(self):
+		""" Supporting function that prints a welcome message.
+		"""		
+		print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
+		script_dir = os.path.dirname(os.path.abspath(__file__))
+		with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
+			print(f.read())
 
-		tone_predictions = self.tone_predictor.predict(np.squeeze(audio))
-		tone_emotion_probabilities = [
-			(Utils.tone_emotions[i], tone_predictions[i]) for i in range(len(tone_predictions))]
+	def run(self):
+		""" Main function that peforms continuous emotion detection from audios.
+		"""
+		self.print_welcome_message()
 
-		self.emotion_logbook(tone_emotion_probabilities)
-		return tone_emotion_probabilities
+		keep_running = True
+		recorded_audio_counter = 0
+		while keep_running:
+
+			print("\n\n==================================================================\n")
+			print("1) Recording. Speak for the next five seconds")
+			time.sleep(self.before_recording_pause)
+
+			recorded_audio = sd.rec(int(self.audio_length * self.audio_frequency),
+									samplerate=self.audio_frequency, channels=self.audio_channels)
+			sd.wait()
+
+			predicted_emotion_probs = audio_analyzer.analyze(recorded_audio)
+			print("\n2) Predictions")
+			self.print_emotions("Audio prediction", predicted_emotion_probs)
+
+			recorded_audio_counter += 1
+			if self.iterations > -1 and recorded_audio_counter >= self.iterations:
+				keep_running = False
+
+			print("\n3) Pause for {} seconds".format(self.after_audio_analysis_pause))
+			time.sleep(self.after_audio_analysis_pause)
+
+		print("\n** Demo finished! **")
 
 
-def print_emotions(title, emotion_probabilities):
+def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
+	""" Supporting function that loads tone models 
 
-	sorted_probabilities = sorted(emotion_probabilities, key=lambda x: x[1], reverse=True)
+	Args:
+		prod_models_dir : relative path of the production models directory
+		tone_model_dir : name of the directory containing the tone model to be loaded
+		tone_model_name : name of the tone model
 
-	print("\n\t***************************")
-	print("\t" + title)
-	print("\t***************************")
-	for e, p in sorted_probabilities[:3]:
-		print("\t{}: {:.2f}".format(e, p))
-	print("\t****************************")
-
-
-def print_welcome_message():
-    print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
-        print(f.read())
-
-
-def load_tone_model(tone_model_dir, tone_model_name):
+	Returns:
+		A tone model
+	"""
 	script_dir = os.path.dirname(os.path.abspath(__file__))
-	tone_model_path = os.path.normpath(os.path.join(script_dir, "../prod_models/deployed", tone_model_dir, tone_model_name))
-	print(tone_model_path)
+	tone_model_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir, tone_model_name))
 	return keras.models.load_model(tone_model_path)
 
-
 def create_tone_predictor(parameters):
+	""" Factory function that creates a tone predictor.
 
-	tone_model = load_tone_model(parameters['model_dir'], parameters['model_name'])
+	Args:
+		parameters : Dictionary containing the parameters required to initialize the
+		appropriate tone predictor.
+
+	Raises:
+		ValueError: model type is not yet supported
+
+	Returns:
+		Tone predictor.
+	"""
+	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
 	if parameters['model_type'] == "sequential":
 		tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
 	elif parameters['model_type'] == "siamase":
@@ -119,10 +141,17 @@ def create_tone_predictor(parameters):
 
 	return tone_predictor
 
+def parse_parameters(parameters):
+	"""Supporting function that parses the configuration parameters loaded from the configuration file.
 
-def run(parameters):
+	Args:
+		parameters : Dictionary containing the parameters of the configuration file
 
+	Returns:
+		Three dictionaries containing parameters to initialize model predictors, the audio analyzer class, and the stern audio class.
+	"""	
 	predictor_parameters = {
+		'prod_models_dir': parameters['prod_models_dir'],
 		'model_name': parameters['models']['tone_model']['file'],
 		'model_dir': parameters['models']['tone_model']['dir'],
 		'model_type': parameters['models']['tone_model']['type'],
@@ -130,41 +159,22 @@ def run(parameters):
 		'n_mfcc': parameters['models']['tone_model']['n_mfcc']
 	}
 
-	audio_analyzer_parameters = {
+	analyzer_parameters = {
 		'logging_file_prefix': parameters['logging_file_prefix'],
 		'logging_directory': parameters['logging_directory'],
 		'audio_frequency': parameters['audio_frequency'],
 	}
 
-	tone_predictor = create_tone_predictor(predictor_parameters)
-	audio_analyzer = AudioAnalyzer(tone_predictor, audio_analyzer_parameters)
-	print_welcome_message()
+	stern_audio_parameters = {
+		'audio_length': int(parameters['audio_length']),
+		'audio_frequency': int(parameters['audio_frequency']),
+		'audio_channels': int(parameters['audio_channels']),
+		'before_recording_pause': int(parameters['before_recording_pause']),
+		'after_audio_analysis_pause': int(parameters['after_audio_analysis_pause']),
+		'iterations': int(parameters['iterations'])
+	}
 
-	keep_running = True
-	recorded_audio_counter = 0
-	while keep_running:
-
-		print("\n\n==================================================================\n")
-		print("1) Recording. Speak for the next five seconds")
-		time.sleep(parameters['short_pause'])
-
-		recorded_audio = sd.rec(int(parameters['audio_length'] * parameters['audio_frequency']),
-                                samplerate=parameters['audio_frequency'], channels=parameters['audio_channels'])
-		sd.wait()
-
-		predicted_emotion_probs = audio_analyzer.analyze(recorded_audio)
-		print("\n2) Predictions")
-		print_emotions("Audio prediction", predicted_emotion_probs)
-
-		recorded_audio_counter += 1
-		if recorded_audio_counter > parameters['live_audio_iterations']:
-			keep_running = False
-
-		print("\n3) Pause for {} seconds".format(parameters['long_pause']))
-		time.sleep(parameters['long_pause'])
-
-	print("\n** Demo finished! **")
-
+	return (predictor_parameters, analyzer_parameters, stern_audio_parameters)
 
 if __name__ == "__main__":
 
@@ -172,5 +182,9 @@ if __name__ == "__main__":
 	with open(prod_config_file) as input_file:
 		config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)
 
-	print(config_parameters)
-	run(config_parameters)
+	parsed_parameters = parse_parameters(config_parameters)
+	tone_predictor = create_tone_predictor(parsed_parameters[0])
+	audio_analyzer = AudioAnalyzer(tone_predictor, parsed_parameters[1])
+	stern_audio = SternAudio(audio_analyzer, parsed_parameters[2])
+
+	stern_audio.run()

@@ -1,4 +1,3 @@
-""" Extracting features of the audio data set. """
 import os
 import librosa
 import numpy as np
@@ -9,7 +8,6 @@ from python_speech_features import logfbank
 from librosa.feature import mfcc as lb_mfcc
 import speech_recognition as sr
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
-
 
 # Package metadata
 __authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero"
@@ -220,38 +218,3 @@ class TextSentimentPredictor:
 
         return text_predictions, sentence
 
-
-if __name__ == "__main__":
-
-    # TODO: remove this code when the test scripts are working as expected
-    sentences = [
-        "The weather is good.",
-        "Stay away from me.",
-        "Why did you do this to me?",
-        "Oh man, this food really sucks.",
-        "Mmm, I don't care about anything.",
-        "Hey, you, let's go shopping.",
-        "It is almost my birthday!",
-        "Today I don't want to do anything.",
-        "Chris is the best architect ever!",
-        "We have the best engineers!",
-        "No, no, no. It is not ok.",
-        "The weather is reaaaally bad today.",
-        "Really, where is my solution direction?",
-        "Where are my tacos?"]
-
-    parameters = {
-        'text_model_max_features': 20000,
-        'text_model_embedding_dim': 128,
-        'text_model_sequence_length': 50,
-        'text_model_batch_size': 32
-    }
-
-    sentiment_predictor = TextSentimentPredictor(None, parameters)
-
-    encoded_sentences = []
-    for sentence in sentences:
-        encoded_sentence = sentiment_predictor.encode_sentence(sentence)
-        encoded_sentences.append(encoded_sentence.numpy())
-
-    np.savez("test_encoded_sentences.npz", np.array(encoded_sentences))
