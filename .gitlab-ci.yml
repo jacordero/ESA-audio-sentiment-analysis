@@ -57,6 +57,7 @@ Threshold_validation:
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "dvc pull"
     - "ls -la"
     - "python tests/compute_models_performance.py"
   tags:
