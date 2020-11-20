@@ -13,7 +13,7 @@ However, before running this command please make sure you have installed all the
     pip install pydub
   
 ## Loading the data and models
-please make sure that you have already created a directory called features/tone inside your data directory. The extracted features will be saved in this directory. In case you decided to make some changes in your data, please first remove the joblib files created in this directory and rerun the python script [us52_neuralnetwork.py].
+please make sure that you have already created a directory called `features/tone` inside your data directory. The extracted features will be saved in this directory. Also make sure that you have a directory called `tone_test` in your data directory with testing data. In case you decided to make some changes in your data, please first remove the joblib files created in this directory and rerun the python script [us52_neuralnetwork.py](prototypes/us52_neuralnetwork.py).
 
 Using the joblib files you only need to extract features once, and use them for later training in the future, which could save a lot of time.
 
