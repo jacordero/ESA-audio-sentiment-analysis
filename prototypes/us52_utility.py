@@ -1,24 +1,17 @@
 import os
-import time
-import joblib
-import librosa
 import numpy as np
-from pathlib import Path
 import matplotlib.pyplot as plt
-import json
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from pydub import AudioSegment
 from pydub.utils import make_chunks
-import math
-
-
 
 __authors__ = "Raha Sadeghi, Parima Mirshafiei"
 __email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl"
 __copyright__ = "TU/e ST2019"
 __version__ = "1.0"
 __status__ = "Prototype"
+
 
 class UtilityClass:
     """
@@ -34,7 +27,6 @@ class UtilityClass:
         saving model as h5 file
         :param trained_model the trained model to be saved
         """
-
         model_name = 'Emotion_Voice_Detection_Model.h5'
         save_dir = os.path.join(os.getcwd(), 'saved_models')
         # Save model and weights
@@ -75,32 +67,29 @@ class UtilityClass:
 
     @staticmethod
     def model_summary(model, x_testcnn, y_test):
-        if len(x_testcnn) >1:
+        if len(x_testcnn) > 1:
             predict_vector = model.predict(x_testcnn)
-            predictions = np.argmax(predict_vector,axis=1)
+            predictions = np.argmax(predict_vector, axis=1)
             new_y_test = y_test.astype(int)
             matrix = confusion_matrix(new_y_test, predictions)
             print(classification_report(new_y_test, predictions))
             print(matrix)
 
     @staticmethod
-    def audio_split(audio_file_path, chunk_length_in_sec= 5):
+    def audio_split(audio_file_path, chunk_length_in_sec=5):
         """
         splitting audio files into chunks with specific length.
         default length is 5 seconds.
         :param audio_file_path: full path to the file
         :param chunk_length_in_sec: desired length for each chunk
         """
-
         audio_file = AudioSegment.from_file(audio_file_path, "wav")
-
         chunk_length_in_sec = chunk_length_in_sec
-        chunk_length_in_ms = chunk_length_in_sec * 1000
-        chunks = make_chunks(audio_file, chunk_length_in_ms)
+        chunk_length_ms = chunk_length_in_sec * 1000
+        chunks = make_chunks(audio_file, chunk_length_ms)
 
         # Export all of the individual chunks as wav files
         file_name = UtilityClass.file_name_extractor(audio_file_path)
-        
         for i, chunk in enumerate(chunks):
             chunk_name = file_name + "_" + str(i) + ".wav"
             print("exporting", chunk_name)
@@ -112,32 +101,32 @@ class UtilityClass:
         getting the file name, useful in case we want to replace a file.
         :param audio_file_path: full path to the file (audio track)
         """
-        name = (audio_file_path.split(".wav")[0]).split("/")[-1]
+        path_separator = os.path.sep
+        name = (audio_file_path.split(".wav")[0]).split(path_separator)[-1]
         return name
 
     @staticmethod
-    def audio_padding(audio_file_path, chunk_length_in_sec= 5000):
+    def audio_padding(audio_file_path, chunk_length_in_sec=7000):
         """
         this function add silence to audio tracks with length less than 5 seconds.
         the new files will be saved with the same name in the same path.
         :param audio_file_path: full path to the file (audio track)
         :param chunk_length_in_sec: desired length for each chunk
         """
-        print("audio_file_path" , audio_file_path)
+        print("audio_file_path", audio_file_path)
 
         audio_file = AudioSegment.from_file(audio_file_path, "wav")
-        duration_in_sec = len(audio_file)   # Length of audio in milli-seconds
+        duration_in_sec = len(audio_file)  # Length of audio in milli-seconds
         if chunk_length_in_sec > duration_in_sec:
-            pad_ms = (chunk_length_in_sec - duration_in_sec)   # milliseconds of silence needed
+            pad_ms = (chunk_length_in_sec - duration_in_sec)  # milliseconds of silence needed
+            pad_ms = (chunk_length_in_sec - duration_in_sec)  # milliseconds of silence needed
         else:
+            pad_ms = 0
             print("no padding needed")
-            return
         silence = AudioSegment.silent(duration=pad_ms)
 
         audio = AudioSegment.from_wav(audio_file_path)
 
-        padded = audio + silence  # Adding silence after the audio
-
-        # rewriting the file with new length
+        # Adding silence after the audio
+        padded = audio + silence
         padded.export(audio_file_path, format='wav')
-
