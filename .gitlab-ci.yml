@@ -51,6 +51,11 @@ Interface_validation:
 
 Threshold_validation: 
   stage: threholds
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
