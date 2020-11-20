@@ -48,7 +48,7 @@ class FeatureExtractor:
         changing the file length
         """
         utility = UtilityClass()
-        for subdir, files in os.walk(self.dataset_path):
+        for subdir, dirs, files in os.walk(self.dataset_path):
             for file in files:
                 try:
                     utility.audio_padding(str(os.path.join(subdir, file)))
@@ -56,7 +56,7 @@ class FeatureExtractor:
                     print(err)
                     continue
 
-        for subdir, files in os.walk(self.test_feature_path):
+        for subdir, dirs, files in os.walk(self.test_feature_path):
             for file in files:
                 try:
                     utility.audio_padding(str(os.path.join(subdir, file)))
@@ -91,7 +91,7 @@ class FeatureExtractor:
         else:
             file_path = self.dataset_path
 
-        for subdir, files in os.walk(file_path):
+        for subdir, dirs, files in os.walk(file_path):
             for file in files:
                 try:
                     # Load librosa array, obtain mfcss, store the file and the mcss information in a new array
@@ -132,7 +132,7 @@ class FeatureExtractor:
         else:
             file_path = self.dataset_path
 
-        for subdir, files in os.walk(file_path):
+        for subdir, dirs, files in os.walk(file_path):
             for file in files:
                 try:
                     # Load librosa array, obtain lmfe, store the file and the lmfe information in a new array
