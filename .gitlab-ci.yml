@@ -27,7 +27,7 @@ Fetch_data_and_models:
         - prod_data/test/
         - prod_models/candidate/
   script:
-    - "cd /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/us75-candidate-model-performance/"
+    - "cd /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/"
     - "ls -la"
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "dvc remote modify --local nielspi password projectesa"
