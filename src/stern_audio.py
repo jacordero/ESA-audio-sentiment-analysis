@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Copyright (C) Tu/e.
 
@@ -10,306 +12,178 @@ Copyright (C) Tu/e.
 This is the STERN-AUDIO.
 
 """
-#!/usr/bin/env python
 
 import time
 import sys
 import os
-import keyboard 
-import keras
 from pathlib import Path
 
 import sounddevice as sd
 import numpy as np
 import pandas as pd
+import yaml
 
-import speech_recognition as sr
 from scipy.io.wavfile import write
 from librosa.feature import mfcc
 
 import tensorflow as tf
-from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
+import keras
 
-from stern_utils import logging, get_path
+from sentiment_prediction import SiameseToneSentimentPredictor
+from sentiment_prediction import SequentialToneSentimentPredictor
+from stern_utils import Utils
+from sentiment_analyzer import AudioAnalyzer
 
-def prepare_audio_for_tone_model(audio_array, sample_rate,_n_mfcc):
-	"""Extract the mfcc feature from the audio.
-	
+
+class SternAudio:
+	""" Class that records and analyses audio using tone sentiment analysis modules.
+	"""
+	def __init__(self, audio_analyzer, parameters):
+		self.audio_analyzer = audio_analyzer
+		self.audio_length = parameters['audio_length']
+		self.audio_channels = parameters['audio_channels']
+		self.audio_frequency = parameters['audio_frequency']
+		self.before_recording_pause = parameters['before_recording_pause']
+		self.after_audio_analysis_pause = parameters['after_audio_analysis_pause']
+		self.iterations = parameters['iterations'] ## -1 indicates an infinite number of iterations
+
+	def print_emotions(self, title, emotion_probabilities):
+		""" Prints a formatted message showing the top 3 emotions detected in an audio frame.
+
+		Args:
+			title: Title of the message to be displayed.
+			emotion_probabilities: Tuple containing emotions and probabilities to be displayed.
+		"""
+		sorted_probabilities = sorted(emotion_probabilities, key=lambda x: x[1], reverse=True)
+
+		print("\n\t***************************")
+		print("\t" + title)
+		print("\t***************************")
+		for e, p in sorted_probabilities[:3]:
+			print("\t{}: {:.2f}".format(e, p))
+		print("\t****************************")
+
+	def print_welcome_message(self):
+		""" Supporting function that prints a welcome message.
+		"""		
+		print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
+		script_dir = os.path.dirname(os.path.abspath(__file__))
+		with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
+			print(f.read())
+
+	def run(self):
+		""" Main function that peforms continuous emotion detection from audios.
+		"""
+		self.print_welcome_message()
+
+		keep_running = True
+		recorded_audio_counter = 0
+		while keep_running:
+
+			print("\n\n==================================================================\n")
+			print("1) Recording. Speak for the next five seconds")
+			time.sleep(self.before_recording_pause)
+
+			recorded_audio = sd.rec(int(self.audio_length * self.audio_frequency),
+									samplerate=self.audio_frequency, channels=self.audio_channels)
+			sd.wait()
+
+			predicted_emotion_probs = audio_analyzer.analyze(recorded_audio)
+			print("\n2) Predictions")
+			self.print_emotions("Audio prediction", predicted_emotion_probs)
+
+			recorded_audio_counter += 1
+			if self.iterations > -1 and recorded_audio_counter >= self.iterations:
+				keep_running = False
+
+			print("\n3) Pause for {} seconds".format(self.after_audio_analysis_pause))
+			time.sleep(self.after_audio_analysis_pause)
+
+		print("\n** Demo finished! **")
+
+
+def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
+	""" Supporting function that loads tone models 
+
 	Args:
-		audio_array: An array of the audio file.
-		sample_rate: An audio frequency (rate).
-		_n_mfcc: Mel frequency cepstral coefficients.
-	
+		prod_models_dir : relative path of the production models directory
+		tone_model_dir : name of the directory containing the tone model to be loaded
+		tone_model_name : name of the tone model
+
 	Returns:
-		The arry of mfcc features of the audio array.
-
+		A tone model
 	"""
-	mfccs = np.mean(mfcc(y=audio_array, sr=np.array(sample_rate), n_mfcc=_n_mfcc).T, axis=0)
-	x = np.expand_dims(mfccs, axis=0)
-	x = np.expand_dims(x, axis=2)
-	return x
+	script_dir = os.path.dirname(os.path.abspath(__file__))
+	tone_model_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir, tone_model_name))
+	return keras.models.load_model(tone_model_path)
 
-def save_wav_pcm(audio_array, output_audio_filename, audio_frequency):
-	"""Save the audio array with .wav format.
-	
-	Args:
-		audio_array: An array of the audio file.
-		output_audio_filename: A name of the output file.
-		audio_frequency: An audio frequency.
-		
-	"""
-	tmp_audio = np.copy(audio_array)
-	tmp_audio /=1.414	
-	tmp_audio *= 32767
-	int16_data = tmp_audio.astype(np.int16)
-	write(output_audio_filename, audio_frequency, int16_data)
-
-def prepare_sentence_for_text_model(input_audio_filename):
-	"""Convert speech to text.
+def create_tone_predictor(parameters):
+	""" Factory function that creates a tone predictor.
 
 	Args:
-		input_audio_filename: A name of the audio file.
+		parameters : Dictionary containing the parameters required to initialize the
+		appropriate tone predictor.
+
+	Raises:
+		ValueError: model type is not yet supported
 
 	Returns:
-		The array of texts.
-
+		Tone predictor.
 	"""
-	try:
-		r = sr.Recognizer()
-		with sr.AudioFile(input_audio_filename) as source:
-			audio_content = r.record(source)
-			text = r.recognize_google(audio_content)
-
-		output = np.array([[text]], dtype='object')
-	except: 
-		output = None
-
-	return output
-
-emotions_dict_audio = {0: 'neutral',
-    			 	1: 'calm',
-    			 	2: 'happy',
-    			 	3: 'sad',
-    			 	4: 'angry',
-    			 	5: 'fearful',
-    			 	6: 'disgust',
-			     	7: 'surprised'}
-
-emotions_dict_text = {0: 'neutral',
-    			 	7: 'calm',
-    			 	1: 'happy',
-    			 	2: 'sad',
-    			 	3: 'angry',
-    			 	4: 'fearful',
-    			 	5: 'disgust',
-			     	6: 'surprised'}
-
-def print_emotions(title, emotion_probabilities):
-	"""Display predicted emotions human readable format.
-
-	Args:
-		title: A name of models such as tone and text.
-		emotion_probabilities: An array of emotion distributions.
-		
-	"""
-	sorted_probabilities = sorted(emotion_probabilities, key=lambda x: x[1], reverse=True)
-	
-	print("\n\t***************************")
-	print("\t" + title)
-	print("\t***************************")
-	for e, p in sorted_probabilities[:3]:
-		print("\t{}: {:.2f}".format(e, p))
-	print("\t****************************")
-
-def live_audio_analysis(audio_model, text_model, parameters):
-	"""Load data stream from microphone.
-
-	Args:
-		audio_model: A path of the audio model .
-		text_model: A path of the text model.
-		parameters: A dictionary of parameters.
-	
-	Returns:
-		audio emotion probabilities and text emotion probabilities.
-		
-	"""
-	myrecording = sd.rec(int(parameters['audio_length'] * parameters['audio_frequency']), 
-		                 samplerate=parameters['audio_frequency'], 
-		                 channels=parameters['audio_channels'])
-	sd.wait()
-
-	recorded_audio_filename = parameters['recorded_audio_filename_template'].format(parameters['recorded_audio_counter'])
-	recorded_audio_path = os.path.join(parameters['script_dir'], recorded_audio_filename)
-	save_wav_pcm(myrecording, recorded_audio_path, parameters['audio_frequency'])
-
-	print("\n2) Finished recording. Starting analysis.")
-	#sd.play(myrecording, parameters['audio_frequency'])
-
-	#print("Preprocessing audio for tone model")
-	preprocessed_audio = prepare_audio_for_tone_model(np.squeeze(myrecording), 
-		 											  parameters['audio_frequency'],
-		 											  parameters['n_mfcc'])
-
-	## predictions happen here
-	audio_predictions = np.squeeze(audio_model.predict(preprocessed_audio))
-	audio_emotion_probabilities = [(emotions_dict_audio[i], audio_predictions[i]) for i in range(len(audio_predictions))]
-
-	argmax_audio_prediction = np.argmax(np.squeeze(audio_predictions), axis=-1)
-	predicted_emotion = emotions_dict_audio.get(argmax_audio_prediction, "Unknown")		
-
-
-	#print("Preprocessing audio for text-based model")
-	sentence = prepare_sentence_for_text_model(os.path.normpath(recorded_audio_path))	
-
-
-	if sentence != None:
-		vectorizer = TextVectorization(max_tokens=parameters['text_model_max_features'], 
-									   output_mode="int", 
-									   output_sequence_length=parameters['text_model_sequence_length'])
-		text_vector = vectorizer(sentence)
-		print("Recognized text: {}".format(sentence))
-		#print(text_vector)
-
-		text_predictions = np.squeeze(text_model.predict(text_vector, batch_size=parameters['text_model_batch_size']))
-		text_emotion_probabilities = [(emotions_dict_text[i], text_predictions[i]) for i in range(len(text_predictions))]
-
+	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
+	if parameters['model_type'] == "sequential":
+		tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
+	elif parameters['model_type'] == "siamase":
+		tone_predictor = SiameseToneSentimentPredictor(tone_model, parameters)
 	else:
-		text_emotion_probabilities = []
+		raise ValueError("Invalid tone model type: {}".format(parameters['model_type']))
 
-	# To write the prediction output to logging file
-	emotion_logbook(sentence, audio_emotion_probabilities, text_emotion_probabilities)
-	
-	return audio_emotion_probabilities, text_emotion_probabilities
+	return tone_predictor
 
-def recorded_audio_analysis():
-	"""Keep this function for future use.
+def parse_parameters(parameters):
+	"""Supporting function that parses the configuration parameters loaded from the configuration file.
+
+	Args:
+		parameters : Dictionary containing the parameters of the configuration file
 
 	Returns:
-		None.
-		
-	"""
-	return None
+		Three dictionaries containing parameters to initialize model predictors, the audio analyzer class, and the stern audio class.
+	"""	
+	predictor_parameters = {
+		'prod_models_dir': parameters['prod_models_dir'],
+		'model_name': parameters['models']['tone_model']['file'],
+		'model_dir': parameters['models']['tone_model']['dir'],
+		'model_type': parameters['models']['tone_model']['type'],
+		'audio_frequency': parameters['audio_frequency'],
+		'n_mfcc': parameters['models']['tone_model']['n_mfcc']
+	}
 
-def print_welcome_message(script_dir):
-	"""Print welcome message and astronaut's image.
+	analyzer_parameters = {
+		'logging_file_prefix': parameters['logging_file_prefix'],
+		'logging_directory': parameters['logging_directory'],
+		'audio_frequency': parameters['audio_frequency'],
+	}
 
-	Args:
-		script_dir: A path of the script.
-		
-	"""
-	print("\n\n\n\n\n\n\n\n** Starting audio demo!**\n")
-	with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
-		print(f.read())
+	stern_audio_parameters = {
+		'audio_length': int(parameters['audio_length']),
+		'audio_frequency': int(parameters['audio_frequency']),
+		'audio_channels': int(parameters['audio_channels']),
+		'before_recording_pause': int(parameters['before_recording_pause']),
+		'after_audio_analysis_pause': int(parameters['after_audio_analysis_pause']),
+		'iterations': int(parameters['iterations'])
+	}
 
-def run(audio_model_path, text_model_path, parameters):
-	"""Run the models.
-
-	Args:
-		audio_model_path: A path of the audio model.
-		text_model_path: A path of the text model.
-		parameters: A dictionary of parameters.
-		
-	"""
-	audio_model = keras.models.load_model(audio_model_path)
-
-	text_model =  tf.keras.models.load_model(text_model_path)
-
-	print_welcome_message(parameters['script_dir'])
-
-	keep_running = True
-	while keep_running:
-
-		print("\n\n==================================================================\n")
-		print("1) Recording. Speak for the next five seconds")
-		time.sleep(parameters['short_pause'])
-
-		if parameters['mode'] == "live":
-			predicted_emotion_probs = live_audio_analysis(audio_model, 
-														  text_model, 
-														  parameters)
-			parameters['recorded_audio_counter'] += 1
-			if parameters['recorded_audio_counter'] > parameters['live_audio_iterations']:
-				keep_running = False 
-
-		elif parameters['mode'] == "recorded":
-			predicted_emotion_probs = recorded_audio_analysis(audio_model, 
-															  text_model, 
-															  parameters)			
-
-		else:
-			print("Uknown mode. Valid modes are 'live' and 'recorded'")
-			exit(0)
-
-		print("\n3) Predictions")
-		print_emotions("Audio prediction", predicted_emotion_probs[0])
-		print_emotions("Text prediction", predicted_emotion_probs[1])
-
-		print("\n4) Pause for {} seconds".format(parameters['long_pause']))
-		time.sleep(parameters['long_pause'])
-
-	print("\n** Demo finished! **")
-
-def emotion_logbook(sentence, audio_emotion_probabilities, text_emotion_probabilities):
-	"""Write utterances of the audio and detected emotions in logbook.
-
-	Args:
-		sentence: An utterances of audio.
-		audio_emotion_probabilities: Predicted tone model emotions.
-		text_emotion_probabilities: Predicted text model emotions.
-		
-	"""
-	if sentence is None:
-		sentence = ['Empty']
-	else:
-		sentence = sentence.tolist()
-	data = []
-	data.append(sentence)
-	tone_emotion_dist = []
-	text_emotion_dist = []
-	for e, p in audio_emotion_probabilities:
-		tone_emotion_dist.append('{}:{:.2f}'.format(e, p))
-	for e, p in text_emotion_probabilities:
-		text_emotion_dist.append('{}:{:.2f}'.format(e, p))
-	data.append(tone_emotion_dist)
-	data.append(text_emotion_dist)
-	logging(data, parameters['logging_file_name'])
+	return (predictor_parameters, analyzer_parameters, stern_audio_parameters)
 
 if __name__ == "__main__":
 
-	usage_message = """"
-Usage of demo script.
-> python demo.py [audio model path] [text model path] [mode] [pause duration]
-"""
+	prod_config_file = "raspi_deployment_config.yml"
+	with open(prod_config_file) as input_file:
+		config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)
 
-	if len(sys.argv) < 5:
-		print(usage_message)
-		exit(0)
-		
-	audio_model_path = sys.argv[1]
-	text_model_path = sys.argv[2]
-	#long_pause = 
+	parsed_parameters = parse_parameters(config_parameters)
+	tone_predictor = create_tone_predictor(parsed_parameters[0])
+	audio_analyzer = AudioAnalyzer(tone_predictor, parsed_parameters[1])
+	stern_audio = SternAudio(audio_analyzer, parsed_parameters[2])
 
-	parameters = {
-		'mode': sys.argv[3],
-		'live_audio_iterations': int(sys.argv[4]),
-		'recorded_audio_counter': 1,
-		'audio_channels': 1,
-		'audio_frequency': 44100,
-		'audio_length': 5,
-		'n_mfcc': 40,
-		'recorded_audio_filename_template': "../data/output_{:0>4}.wav",
-		'long_pause': int(sys.argv[5]),
-		'short_pause': 1,
-		'text_model_max_features': 20000,
-		'text_model_embedding_dim': 128,
-		'text_model_sequence_length': 50,
-		'text_model_batch_size': 32,
-		'test_data_dir': '../data/test',
-		'test_data_filenames': [],
-		'script_dir': os.path.dirname(os.path.abspath(__file__)), 
-		'logging_file_name': 'test_logging_file'
-	}
-	#models_path = get_path('prod_models')
-	#audio_model_path = os.path.join(models_path, audio_model_path)
-	#text_model_path = os.path.join(models_path, text_model_path)
-	run(audio_model_path, text_model_path, parameters) 
+	stern_audio.run()
