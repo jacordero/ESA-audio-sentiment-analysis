@@ -2,9 +2,9 @@
 
 To run the script, you need to run us52_neuralnetwork from the audio_sentiment_analysis directory using the following command:
 
-> linux:`python prototypes/us52_neuralnetwork.py`
+> linux:`python prototypes\us52_neuralnetwork.py`
 
-> windows: `python prototypes\us52_neuralnetwork.py`
+> windows: `python prototypes/us52_neuralnetwork.py`
 
 ## Installation of dependencies
 However, before running this command please make sure you have installed all the required libraries. The new libraries that you might need to install in compare to the previous ones are listed below:
