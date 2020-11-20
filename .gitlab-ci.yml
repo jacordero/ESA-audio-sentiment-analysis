@@ -59,7 +59,7 @@ Threshold_validation:
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
-    - "unzip /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/default/cache.zip"
+#    - "unzip /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/default/cache.zip"
     - "python tests/compute_models_performance.py"
   tags:
     - audio
