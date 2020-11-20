@@ -27,7 +27,6 @@ Fetch_data_and_models:
         - prod_data/test/
         - prod_models/candidate/
   script:
-    - "rm -rf /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/us75-candidate-model-performance"
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "dvc remote modify --local nielspi password projectesa"
     - "dvc pull"
@@ -55,9 +54,7 @@ Threshold_validation:
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
-#    - "dvc remote modify --local nielspi password projectesa"
-#    - "dvc pull"
-    - "ls -la"
+    - "unzip /home/gitlab-runner/cache/gitlab/st-c2019/esa/audio-sentiment-analysis/default/cache.zip
     - "python tests/compute_models_performance.py"
   tags:
     - audio
