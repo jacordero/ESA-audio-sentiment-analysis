@@ -31,7 +31,6 @@ import keras
 
 from sentiment_prediction import SiameseToneSentimentPredictor
 from sentiment_prediction import SequentialToneSentimentPredictor
-from sentiment_prediction import TextSentimentPredictor
 from stern_utils import Utils
 from sentiment_analyzer import AudioAnalyzer
 

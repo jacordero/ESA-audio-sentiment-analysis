@@ -6,8 +6,6 @@ from python_speech_features import mfcc as psf_mfcc
 from python_speech_features import delta
 from python_speech_features import logfbank
 from librosa.feature import mfcc as lb_mfcc
-import speech_recognition as sr
-from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 
 # Package metadata
 __authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero"
@@ -151,70 +149,4 @@ class SequentialToneSentimentPredictor:
         mfcc_features = self.__compute_features(audio_array)
         return np.squeeze(self.model.predict(mfcc_features))
 
-
-class TextSentimentPredictor:
-    """Feature extractor that computes text features required for emotion detection using text models.
-    """
-
-    def __init__(self, model, parameters):
-        self.model = model
-        self.max_tokens = parameters['text_model_max_features']
-        self.output_sequence_length = parameters['text_model_sequence_length']
-        self.batch_size = parameters['text_model_batch_size']
-
-    def __compute_features(self, input_audio_filename):
-        """Computes a text array from an audio signal stored in the filesystem.
-
-        Args:
-            input_audio_filename : Path of the wav file used to extract a sentence from the audio.
-
-        Returns:
-            Encoded text array and text array containing a sentence obtained from an audio file.
-        """
-        try:
-            r = sr.Recognizer()
-            with sr.AudioFile(input_audio_filename) as source:
-                audio_content = r.record(source)
-                sentence = r.recognize_google(audio_content)
-                encoded_sentence = self.encode_sentence(sentence)
-            print("Recognized text: {}".format(sentence))
-
-        except:
-            encoded_sentence = None
-            sentence = None
-
-        return encoded_sentence, sentence
-
-    def encode_sentence(self, sentence):
-        """[summary]
-
-        Args:
-            sentence ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        sentence_array = np.array([[sentence]], dtype='object')
-        vectorizer = TextVectorization(max_tokens=self.max_tokens,
-                                       output_mode="int", output_sequence_length=self.output_sequence_length)
-        text_vector = vectorizer(sentence_array)
-
-        return text_vector
-
-    def predict(self, input_audio_path):
-        """Predicts the sentiment in the text obtained from an audio
-
-        Args:
-            input_audio_path : Path of the audio to be analyzed
-
-        Returns:
-            Probabilities of the emotions that can be predicted by a text based model
-        """
-        text_vector, sentence = self.__compute_features(input_audio_path)
-        text_predictions = np.array([])
-        if text_vector != None:
-            text_predictions = np.squeeze(self.model.predict(
-                text_vector, batch_size=self.batch_size))
-
-        return text_predictions, sentence
 
