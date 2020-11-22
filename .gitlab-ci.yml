@@ -46,6 +46,8 @@ Interface_validation:
   stage: interface
   script:
     - "echo Testing DNNs interface specification"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "pytest tests/test_cases/test_model_interface.py"
   tags:
     - audio
 
