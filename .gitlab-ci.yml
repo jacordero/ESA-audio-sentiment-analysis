@@ -48,6 +48,11 @@ Data_validation:
     
 Interface_validation: 
   stage: interface
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
   script:
     - "echo Testing DNNs interface specification"
     - "source /home/pi/Documents/esa/venv/bin/activate"
