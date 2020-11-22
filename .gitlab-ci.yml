@@ -12,13 +12,17 @@ stages:
   
   
   
-#PEP8_Comformity:
+# Conformity Checks
+#PEP8_Conformity:
 #  stage: PEP8
-#  image: CREATE A DOCKER IMAGE TO RUN ON SERVER
+#  image: geoazis/sentimentanalysis
 #  script:
+#    - "echo Running PEP8 Conformity checks to src folder"
+#    - "cd src"
 #    - "pytest --pep8 --disable-warnings"
 #  tags:
 #    - jarvis
+
   
 Fetch_data_and_models:
   stage: fetch
