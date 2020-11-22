@@ -56,7 +56,7 @@ Interface_validation:
   script:
     - "echo Testing DNNs interface specification"
     - "source /home/pi/Documents/esa/venv/bin/activate"
-    - "pytest tests/test_cases/test_model_interface.py"
+    - "pytest tests/test_cases/test_model_interface.py --disable-warnings"
   tags:
     - audio
 
