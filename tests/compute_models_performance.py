@@ -83,7 +83,7 @@ def compute_measures(predicted_values, truth_values):
     print("Accuracy: {}".format(accuracy))
     
     measures['general_metrics'] = {}
-#   measures['perclass_metrics'] = {}
+    measures['perclass_metrics'] = {}
 
     measures['general_metrics']['accuracy'] = float(accuracy)
 
@@ -144,8 +144,6 @@ def predict_siamese_tone_model(model, mfcc_features, lmfe_features):
 def predict_text_model(model, test_data_dir_path):
     data_loader = TextModelDataLoader()
     sentences = data_loader.load_test_data(test_data_dir_path)
-    #print(sentences['arr_0'])
-    #print(sentences.shape)
     return model.predict(np.squeeze(sentences))
 
 
