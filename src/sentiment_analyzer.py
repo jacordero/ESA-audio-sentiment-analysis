@@ -1,94 +1,55 @@
-import keras
-from keras.models import model_from_json
-import json
-import librosa
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
-
-import sys
 import os
+import numpy as np
+from stern_utils import Utils
 
+class AudioAnalyzer:
+	""" This class is used to analyze audio recordings using tone model predictors.
+	"""
+	def __init__(self, tone_predictor, parameters):
+		self.frame_rate = parameters['audio_frequency']
+		self.tone_predictor = tone_predictor
+		# Logging functionality
+		self.logging_file_prefix = parameters['logging_file_prefix']
+		script_dir = os.path.dirname(os.path.abspath(__file__))
+		self.logging_directory = os.path.normpath(
+		    os.path.join(script_dir, parameters['logging_directory']))
+		self.__create_log_directory()
 
-def load_model(model_weights_filename, model_architecture_filename):
-	# load model architecture
-	json_file = open(model_architecture_filename, 'r')
-	loaded_model_json = json_file.read()
-	json_file.close()
-	loaded_model = model_from_json(loaded_model_json)
+	def __create_log_directory(self):
+		"""Creates a logging directory if it does not exists yet.
+		"""
+		if not os.path.exists(self.logging_directory):
+			os.makedirs(self.logging_directory)
 
-	# load weights into new model
-	loaded_model.load_weights(model_weights_filename)
-	print("Loaded model from disk")
-	print(loaded_model.summary())
-	return loaded_model
+	def emotion_logbook(self, audio_emotion_probabilities):
+		"""Writes utterances of the audio and detected emotions in logbook.
 
-def list_audios(data_directory):
-	audios = []
-	audio_formats = ['wav']
+		Args:
+			audio_emotion_probabilities: Predicted tone model emotions.
+		"""
+		data = []
+		tone_emotion_dist = []
+		for e, p in audio_emotion_probabilities:
+			tone_emotion_dist.append('{}:{:.2f}'.format(e, p))
+		data.append(tone_emotion_dist)
 
-	for filename in os.listdir(data_directory):
-		audio_format = filename.split('.')[1]
-		if audio_format in audio_formats:
-			audios.append(data_directory + "/" + filename)
+		logging_file_path = os.path.join(
+		    self.logging_directory, self.logging_file_prefix)
+		Utils.logging(data, logging_file_path)
 
-	return audios
+	def analyze(self, audio):
+		"""Predicts emotions in an audio using tone based sentiment prediction models.
 
+		Args:
+			audio : Audio to be analyzed.
 
-def load_audio(filename):
+		Returns:
+			List containing pairs of sentiments and their corresponding predictions.
+		"""		
+		tone_predictions = self.tone_predictor.predict(np.squeeze(audio))
+		tone_emotion_probabilities = [
+			(Utils.tone_emotions[i], tone_predictions[i]) for i in range(len(tone_predictions))]
 
-	X, sample_rate = librosa.load(filename, 
-		res_type='kaiser_fast',
-		duration=2.5,
-		sr=22050*2,
-		offset=0.5)
+		self.emotion_logbook(tone_emotion_probabilities)
+		return tone_emotion_probabilities
 
-	sample_rate = np.array(sample_rate)
-	mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=13), axis=0)
-	featurelive = mfccs
-	livedf2 = featurelive
-	livedf2= pd.DataFrame(data=livedf2)
-	livedf2 = livedf2.stack().to_frame().T
-	twodim= np.expand_dims(livedf2, axis=2)
-
-	return twodim
-
-
-def run(model_directory, data_directory):
-
-	model_weights_filename = model_directory + "/weights.h5"
-	model_architecture_filename = model_directory + "/model_architecture.json"
-	audio_encoder_filename =  model_directory + "/encoder.npy"
-
-	model = load_model(model_weights_filename, model_architecture_filename)
-	audio_filenames = list_audios(data_directory)
-	print (audio_filenames)
-
-	for audio_filename in audio_filenames:
-		audio = load_audio(audio_filename)
-
-		lb = LabelEncoder()
-		lb.classes_ = np.load(audio_encoder_filename, allow_pickle=True)
-
-		livepreds = model.predict(audio, batch_size=32, verbose=1)
-		livepreds1 = livepreds.argmax(axis=1)
-		liveabc = livepreds1.astype(int).flatten()
-
-		livepredictions = (lb.inverse_transform((liveabc)))
-		print(livepredictions)
-
-
-if __name__ == "__main__":
-
-	usage_message = """"
-Usage of sentiment_analyzer script.
-> python sentiment_analyzer.py [model directory] [data directory]
-"""
-
-	if len(sys.argv) != 3:
-		print(usage_message)
-		exit(0)
-		
-	model_directory = sys.argv[1]
-	data_directory = sys.argv[2]
-	run(model_directory, data_directory) 

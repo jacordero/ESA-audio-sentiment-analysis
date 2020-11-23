@@ -60,4 +60,4 @@ dvc pull
 4. Go to the repository containing the source code.
 4. Pull changes from master ```git pull origin master```.
 5. Pull latest data and models using dvc ```dvc pull```.
-6. Run bash script ```run_sentiment_analyzer.sh```.
+6. Run stern audio script ```python src/stern_audio.py```.
