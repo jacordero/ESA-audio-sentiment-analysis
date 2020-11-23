@@ -1,11 +1,1 @@
-{
-    "tone_model": {
-        "general_metrics": {
-            "accuracy": 0.0, 
-            "f1_score": 0.0, 
-            "performance": -1
-        }, 
-    "model_name": "Emotion_Voice_Detection_Model.h5", 
-    "model_type": "Siamese"
-    }
-}
+{"tone_model": {"general_metrics": {"accuracy": 0.0, "f1_score": 0.0, "performance": -1}, "model_name": "Emotion_Voice_Detection_Model.h5", "model_type": "Siamese"}}

@@ -248,5 +248,5 @@ def generate_performance_summary(prod_config_file):
 
 if __name__ == "__main__":
     
-    prod_config_file = "src/raspi_candidate_config.yml"
+    prod_config_file = "raspi_candidate_config.yml"
     generate_performance_summary(prod_config_file)
