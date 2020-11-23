@@ -2,7 +2,6 @@ import os
 import joblib
 import numpy as np
 
-from src.feature_extractor import TextModelFeatureExtractor
 
 
 class TextModelDataLoader():

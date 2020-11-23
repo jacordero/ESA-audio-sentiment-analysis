@@ -8,10 +8,6 @@ import tensorflow as tf
 
 import numpy as np
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score, f1_score, classification_report
-from librosa.feature import mfcc
-
-from context import tone_emotions
-from context import text_emotions
 from context import SequentialToneModelDataLoader, SiameseToneModelDataLoader, TextModelDataLoader
 
 
