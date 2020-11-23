@@ -35,7 +35,7 @@ def test_model_interface():
     conf_parameters = load_configuration("tests/configuration.yml")
     # load candidate configuration
     # This file contains all the information for the candidate model
-    candidate = load_configuration("src/raspi_candidate_config.yml")
+    candidate = load_configuration("raspi_candidate_config.yml")
 
     # load candidate model
     models = candidate['models']
