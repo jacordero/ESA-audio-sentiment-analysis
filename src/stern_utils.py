@@ -1,8 +1,6 @@
 """
 Copyright (C) Tu/e.
 
-@author Tuvi Purevsuren t.purevsuren@tue.nl
-
 ======================================================
 
 This is the util library.
@@ -31,8 +29,8 @@ from scipy.io import wavfile
 
 import math
 
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero", "Niels Rood", "Tuvi Purevsuren"
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl", "n.rood@tue.nl", "t.purevsuren@tue.nl"
+__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero", "Niels Rood"
+__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl", "n.rood@tue.nl"
 __copyright__ = "TU/e ST2019"
 
 
