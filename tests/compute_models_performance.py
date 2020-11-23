@@ -2,13 +2,14 @@ import json
 import yaml
 import os
 import time
+from statistics import mean
 
 import keras
 import tensorflow as tf
 
 import numpy as np
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score, f1_score, classification_report
-from context import SequentialToneModelDataLoader, SiameseToneModelDataLoader, TextModelDataLoader
+from context import SequentialToneModelDataLoader, SiameseToneModelDataLoader, TextModelDataLoader, Utils
 
 
 def compute_text_model_performance(model_dir, model_name, model_type, test_data_dir):
@@ -52,6 +53,7 @@ def compute_measures(predicted_values, truth_values):
             accuracy:
             f1_score:
             performance:
+            confidence:
         perclass_metrics:
             confidence:
                 happy:
@@ -100,17 +102,40 @@ def compute_measures(predicted_values, truth_values):
     # F1 Score
     f1 = f1_score(truth_values, predicted_sentiment, average = 'weighted')
     print("F1 Score: {}".format(f1))
-    measures['general_metrics']['f1_score'] = float(accuracy)
+    measures['general_metrics']['f1_score'] = float(f1)
+
+    # Confidence
+    sum = 0.0
+    for prediction,truth in zip(predicted_values, truth_values):
+        sum += prediction[truth]
+    avg = sum / len(truth_values)
+    measures['general_metrics']['confidence'] = float(avg)
 
 
+    label_lists = {}
+    for label in set(truth_values):
+        label_lists[label] = []
+
+    for prediction, truth in zip(predicted_values, truth_values):
+        label_lists[truth].append(prediction[truth])
+
+    avg = {l: mean(v) for l, v in label_lists.items()}
+    
+    avg = {Utils.tone_emotions[k]: float(v) for k,v in avg.items()}
+    print('++++++++++++++++++++++++++++++++++++++++++++++++++++==')
+    print(avg)
+    measures['perclass_metrics']['confidence'] = avg
+
+
+    #
     # Confidence 
-    print(predicted_values)
-    i = 0
-    confidence = []
-    for prediction in predicted_sentiment:
-        confidence.append(predicted_values[i][prediction])
-        i = i + 1
-    print("Condidence: {}". format(confidence))
+    #print(predicted_values)
+    #i = 0
+    #confidence = []
+    #for prediction in predicted_sentiment:
+    #    confidence.append(predicted_values[i][prediction])
+    #    i = i + 1
+    #
  
     return measures
 
