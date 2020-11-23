@@ -131,11 +131,11 @@ def load_tone_model(model_dir, model_name, script_dir):
     model = keras.models.load_model(full_path_to_model)
     return model
 
-def predict_sequential_tone_model(model, test_data_dir_path, mfcc_features):
+def predict_sequential_tone_model(model, mfcc_features):
     print(mfcc_features.shape)
     return np.squeeze(model.predict(mfcc_features))
 
-def predict_siamese_tone_model(model, test_data_dir_path, mfcc_features, lmfe_features):
+def predict_siamese_tone_model(model, mfcc_features, lmfe_features):
     print(mfcc_features.shape)
     print(lmfe_features.shape)
     return np.squeeze(model.predict([mfcc_features, lmfe_features]))
@@ -166,36 +166,37 @@ def compute_tone_model_performance(model_dir, model_name, model_type, test_data_
 
     test_data_dir_path = os.path.normpath(os.path.join(script_dir, "../prod_data/test"))
     print(model.summary())
-    
+
     if "Sequential" in model_type:
         data_loader = SequentialToneModelDataLoader()
         mfcc_features, labels = data_loader.load_test_data(test_data_dir_path)
         print(mfcc_features.shape)
         print(labels.shape)
-        predictions = predict_sequential_tone_model(model, test_data_dir_path, mfcc_features)
+        start = time.time_ns()
+        predictions = predict_sequential_tone_model(model, mfcc_features)
+        end = time.time_ns()
     elif "Siamese" in model_type:
         data_loader = SiameseToneModelDataLoader()
         mfcc_features, lmfe_features, labels, labels_lmfe = data_loader.load_test_data(test_data_dir_path)
-        predictions = predict_siamese_tone_model(model, test_data_dir_path, mfcc_features, lmfe_features)
+        start = time.time_ns()
+        predictions = predict_siamese_tone_model(model, mfcc_features, lmfe_features)
+        end = time.time_ns()
     else:
         raise ValueError("Value in configuration file {} is not supported".format('type'))
 
-   
+
+
     
     # load data
-    # print("Load: {}".format(test_data_dir))
     print("Printing predictions")
     print(predictions)
     print(labels)
     
-    # compute performance
-    #return None
     performance_metrics = compute_measures(predictions, labels)
     performance_metrics['model_name'] = model_name
     performance_metrics['model_type'] = model_type
-    # TODO calculate performance
-    performance_metrics['general_metrics']['performance'] = -1
-    #print(performance_metrics)
+    time_in_s_per_input = (end - start) / ((10 ** 9)*(labels.shape[0]))
+    performance_metrics['general_metrics']['performance'] = time_in_s_per_input
     print(json.dumps(performance_metrics, indent=4))
 
     return performance_metrics
