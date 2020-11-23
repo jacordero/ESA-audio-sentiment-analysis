@@ -9,9 +9,6 @@ stages:
   - threholds
   - updating
   
-  
-  
-  
 # Conformity Checks
 #PEP8_Conformity:
 #  stage: PEP8
@@ -23,7 +20,6 @@ stages:
 #  tags:
 #    - jarvis
 
-  
 Fetch_data_and_models:
   stage: fetch
   cache:
@@ -44,7 +40,6 @@ Data_validation:
     - "echo Testing data schema and values"
   tags:
     - audio
-    
     
 Interface_validation: 
   stage: interface
