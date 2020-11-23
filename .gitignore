@@ -15,4 +15,4 @@ lib/*
 pyvenv.cfg
 /prod_data
 /prod_models
-
+tests/candidate_models_performance.json
