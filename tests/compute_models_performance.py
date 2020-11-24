@@ -82,22 +82,7 @@ def compute_measures(predicted_values, truth_values):
     
     measures['general_metrics'] = {}
     measures['perclass_metrics'] = {}
-
     measures['general_metrics']['accuracy'] = float(accuracy)
-
-    # Confusion matrix for all categories
-    # Position 0,0 ---> TN
-    # Position 1,0 ---> FN
-    # Position 1,1 ---> TP
-    # Position 0,1 ---> FP
-    mcm = multilabel_confusion_matrix(truth_values, predicted_sentiment)
-    print("Multilabel confusion matrix: {}".format(mcm))
-    
-    
-
-    # Perclass accuracy of the model
-    cr = classification_report(truth_values, predicted_sentiment)
-    print(cr)
 
     # F1 Score
     f1 = f1_score(truth_values, predicted_sentiment, average = 'weighted')
@@ -120,7 +105,6 @@ def compute_measures(predicted_values, truth_values):
         label_lists[truth].append(prediction[truth])
 
     avg = {l: mean(v) for l, v in label_lists.items()}
-    
     avg = {Utils.tone_emotions[k]: float(v) for k,v in avg.items()}
     measures['perclass_metrics']['confidence'] = avg
 
@@ -135,7 +119,6 @@ def compute_measures(predicted_values, truth_values):
             label_lists[truth].append(0)
     
     avg = {l: mean(v) for l, v in label_lists.items()}
-    
     avg = {Utils.tone_emotions[k]: float(v) for k,v in avg.items()}
     measures['perclass_metrics']['accuracy'] = avg
 
