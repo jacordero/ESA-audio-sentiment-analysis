@@ -12,30 +12,6 @@ from sklearn.metrics import multilabel_confusion_matrix, accuracy_score, f1_scor
 from context import SequentialToneModelDataLoader, SiameseToneModelDataLoader, TextModelDataLoader, Utils
 
 
-def compute_text_model_performance(model_dir, model_name, model_type, test_data_dir):
-    """[summary]
-
-    Args:
-        model_dir ([type]): [description]
-        test_data_dir ([type]): [description]
-    """
-
-    print("compute_text_model_performance")    
-    # load model
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    print("Loading text model...")
-    model = load_text_model(model_dir, script_dir)
-
-    test_data_dir_path = os.path.normpath(os.path.join(script_dir, "../prod_data/test/test_encoded_sentences.npz"))
-    print(model.summary())
-    
-    predictions = predict_text_model(model, test_data_dir_path)
-    print(predictions)
-    # load data
-    print("Load: {}".format(test_data_dir))   
-    return None 
-
 
 def compute_measures(predicted_values, truth_values):
     """[summary]
@@ -78,7 +54,6 @@ def compute_measures(predicted_values, truth_values):
     
     # Total accuracy
     accuracy = accuracy_score(truth_values, predicted_sentiment, normalize=False)
-    print("Accuracy: {}".format(accuracy))
     
     measures['general_metrics'] = {}
     measures['perclass_metrics'] = {}
@@ -86,7 +61,6 @@ def compute_measures(predicted_values, truth_values):
 
     # F1 Score
     f1 = f1_score(truth_values, predicted_sentiment, average = 'weighted')
-    print("F1 Score: {}".format(f1))
     measures['general_metrics']['f1_score'] = float(f1)
 
     # Confidence
@@ -124,13 +98,6 @@ def compute_measures(predicted_values, truth_values):
 
     return measures
 
-
-def load_text_model(model_dir, script_dir):
-    full_path_to_dir = os.path.normpath(os.path.join(script_dir, "../prod_models/candidate", model_dir))
-    print("Full path to directory: {}".format(full_path_to_dir))
-    model = tf.keras.models.load_model(full_path_to_dir)
-    return model
-
 def load_tone_model(model_dir, model_name, script_dir):
     full_path_to_model =  os.path.normpath(os.path.join(script_dir, "../prod_models/candidate", model_dir, model_name))
     print("Full path to model: {}".format(full_path_to_model))
@@ -138,12 +105,9 @@ def load_tone_model(model_dir, model_name, script_dir):
     return model
 
 def predict_sequential_tone_model(model, mfcc_features):
-    print(mfcc_features.shape)
     return np.squeeze(model.predict(mfcc_features))
 
 def predict_siamese_tone_model(model, mfcc_features, lmfe_features):
-    print(mfcc_features.shape)
-    print(lmfe_features.shape)
     return np.squeeze(model.predict([mfcc_features, lmfe_features]))
 
 
@@ -174,8 +138,6 @@ def compute_tone_model_performance(model_dir, model_name, model_type, test_data_
     if "Sequential" in model_type:
         data_loader = SequentialToneModelDataLoader()
         mfcc_features, labels = data_loader.load_test_data(test_data_dir_path)
-        print(mfcc_features.shape)
-        print(labels.shape)
         start = time.time_ns()
         predictions = predict_sequential_tone_model(model, mfcc_features)
         end = time.time_ns()
@@ -192,9 +154,6 @@ def compute_tone_model_performance(model_dir, model_name, model_type, test_data_
 
     
     # load data
-    print("Printing predictions")
-    print(predictions)
-    print(labels)
     
     performance_metrics = compute_measures(predictions, labels)
     performance_metrics['model_name'] = model_name
@@ -213,7 +172,6 @@ def save_performance_results(performance_results):
     """    
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    print(script_dir)
     output_filename = os.path.join(script_dir, "candidate_models_performance.json")
     with open(output_filename, 'w') as output_file:
         json.dump(performance_results, output_file)    
@@ -228,8 +186,6 @@ def generate_performance_summary(prod_config_file):
 
     with open(prod_config_file) as input_file:
         prod_config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)
-
-    print(prod_config_parameters)
     
     models = prod_config_parameters['models']
     test_data_dir = prod_config_parameters['test_data_dir']
@@ -239,12 +195,6 @@ def generate_performance_summary(prod_config_file):
         if "tone_model" in key:
             print("Computing performance of tone model...")
             performance_results[key] = compute_tone_model_performance(models[key]['dir'], models[key]['file'], models[key]['type'], test_data_dir)
-            print("===============================================================")
-            print(performance_results[key])
-        elif "text_model" in key:
-            pass
-#            print("Computing performance of test model...")
-#            performance_results[key] = compute_text_model_performance(models[key]['dir'], models[key]['file'], models[key]['type'], test_data_dir)
         else:
             raise ValueError("Value in configuration file {} is not supported".format('type'))
 ###
