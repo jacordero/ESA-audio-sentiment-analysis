@@ -1,10 +1,11 @@
-model:
-  model_name: "seq_3conv_modules_be_nice"
-  type: "sequential"
-  n_mfcc: 50
+models:
+  tone_model:
+    model_name: "seq_3conv_modules_be_nice"
+    type: "sequential"
+    n_mfcc: 50
 
 test_data_dir: "../prod_data/test"
-prod_models_dir: "../prod_models/deployed"
+prod_models_dir: "../prod_models/candidate"
 
 #audio recording properties
 audio_channels: 1
