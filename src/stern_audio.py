@@ -103,7 +103,7 @@ class SternAudio:
 
 
 #def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
-def load_tone_model(prod_models_dir, tone_model_dir):
+def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
 	""" Supporting function that loads tone models 
 
 	Args:
@@ -114,9 +114,9 @@ def load_tone_model(prod_models_dir, tone_model_dir):
 	Returns:
 		A tone model
 	"""
-	script_dir = os.path.dirname(os.path.abspath(__file__))
+	root_path = Path(os.getcwd())
 	#tone_model_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir, tone_model_name))
-	tone_model_dir_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir))
+	tone_model_dir_path = os.path.normpath(os.path.join(root_path, prod_models_dir, tone_model_dir, tone_model_name))
 	print(tone_model_dir_path)
 	return tf.keras.models.load_model(tone_model_dir_path)
 
@@ -133,10 +133,10 @@ def create_tone_predictor(parameters):
 	Returns:
 		Tone predictor.
 	"""
-	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_name'])
-	if parameters['model_type'] == "sequential":
+	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
+	if parameters['model_type'] == "Sequential":
 		tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
-	elif parameters['model_type'] == "siamase":
+	elif parameters['model_type'] == "Siamese":
 		tone_predictor = SiameseToneSentimentPredictor(tone_model, parameters)
 	else:
 		raise ValueError("Invalid tone model type: {}".format(parameters['model_type']))
@@ -154,11 +154,11 @@ def parse_parameters(parameters):
 	"""	
 	predictor_parameters = {
 		'prod_models_dir': parameters['prod_models_dir'],
-		'model_name': parameters['models']['tone_model']['model_name'],
-		#'model_dir': parameters['models']['tone_model']['dir'],
-		'model_type': parameters['models']['tone_model']['type'],
+		'model_name': parameters['model']['file'],
+		'model_dir': parameters['model']['dir'],
+		'model_type': parameters['model']['type'],
 		'audio_frequency': parameters['audio_frequency'],
-		'n_mfcc': parameters['models']['tone_model']['n_mfcc']
+		'n_mfcc': parameters['model']['n_mfcc']
 	}
 
 	analyzer_parameters = {
@@ -187,8 +187,8 @@ if __name__ == "__main__":
 		print(usage)
 		exit(1)
 
-	script_dir = os.path.dirname(os.path.abspath(__file__))
-	with open(os.path.join(script_dir, configuration_file)) as input_file:
+	root_path = Path(os.getcwd())
+	with open(os.path.join(root_path, configuration_file)) as input_file:
 		config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)
 
 	parsed_parameters = parse_parameters(config_parameters)

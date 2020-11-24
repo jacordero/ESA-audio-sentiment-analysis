@@ -97,9 +97,10 @@ def retrain_sequential_model(parameters):
                         validation_data=(mfcc_val, labels_val))
 
     # save model
-    retrained_model_path = create_model_dir_path(
+    retrained_model_dir_path = create_model_dir_path(
         parameters['retrained_models_dir'], parameters['retrained_model_name'])
-    model.save(retrained_model_path)
+    save_model(model, retrained_model_dir_path)
+    #model.save(retrained_model_path)
 
     save_retraining_info(model_type, parameters, history)
 
