@@ -111,7 +111,7 @@ def compute_measures(predicted_values, truth_values):
     avg = sum / len(truth_values)
     measures['general_metrics']['confidence'] = float(avg)
 
-
+    # Per class confidence
     label_lists = {}
     for label in set(truth_values):
         label_lists[label] = []
@@ -122,21 +122,23 @@ def compute_measures(predicted_values, truth_values):
     avg = {l: mean(v) for l, v in label_lists.items()}
     
     avg = {Utils.tone_emotions[k]: float(v) for k,v in avg.items()}
-    print('++++++++++++++++++++++++++++++++++++++++++++++++++++==')
-    print(avg)
     measures['perclass_metrics']['confidence'] = avg
 
+    # Per class accuracy
+    for label in set(truth_values):
+        label_lists[label] = []
 
-    #
-    # Confidence 
-    #print(predicted_values)
-    #i = 0
-    #confidence = []
-    #for prediction in predicted_sentiment:
-    #    confidence.append(predicted_values[i][prediction])
-    #    i = i + 1
-    #
- 
+    for prediction, truth in zip(np.argmax(predicted_values, axis = 1), truth_values):
+        if (prediction == truth):
+            label_lists[truth].append(1)
+        else:
+            label_lists[truth].append(0)
+    
+    avg = {l: mean(v) for l, v in label_lists.items()}
+    
+    avg = {Utils.tone_emotions[k]: float(v) for k,v in avg.items()}
+    measures['perclass_metrics']['accuracy'] = avg
+
     return measures
 
 
