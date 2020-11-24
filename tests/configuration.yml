@@ -6,3 +6,4 @@ siamese_model:
   output_shape: "(None, 8)"
 target_metrics:
   accuracy: 0
+  per_class_accuracy: 0
