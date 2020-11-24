@@ -1,8 +1,6 @@
 """
 Copyright (C) Tu/e.
 
-@author Tuvi Purevsuren t.purevsuren@tue.nl
-
 ======================================================
 
 This is the util library.
@@ -31,8 +29,8 @@ from scipy.io import wavfile
 
 import math
 
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero", "Niels Rood", "Tuvi Purevsuren"
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl", "n.rood@tue.nl", "t.purevsuren@tue.nl"
+__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero", "Niels Rood"
+__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl", "n.rood@tue.nl"
 __copyright__ = "TU/e ST2019"
 
 
@@ -109,20 +107,17 @@ class Utils:
         """Write the data to logging file.
 
         Args:
-          data: list parameters for example [["13-11-20 09:53:12"], ["emotion"], ["emotion distribution"], ["text"]].
+          data: list parameters.
           logging_file_name: A name of logging file.
 
         """
-        folder_path = os.path.join(os.getcwd(), 'src/logs')
-        folder_name = os.path.join(
-            folder_path, logging_file_name + '_' + str(date.today()))
+        root_folder = os.path.dirname(os.path.normpath(os.getcwd()))
+        folder_name = os.path.join(root_folder, logging_file_name + '_' + str(date.today()))
+        
         # if directory does not exist , create
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
 
-        #print(data)
         log_input = {
             'time': datetime.now().strftime('%d-%m-%y %H:%M:%S'),
             'tone_emotion': data[0]
@@ -130,6 +125,7 @@ class Utils:
 
         log_file_name = os.path.join(
             folder_name, 'log_' + Utils.get_time() + '.json')
+            
         if os.path.exists(log_file_name):
             with open(log_file_name) as logging_file:
                 temp = json.load(logging_file)
