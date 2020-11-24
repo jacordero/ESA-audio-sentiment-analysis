@@ -4,3 +4,5 @@ sequential_model:
 siamese_model: 
   input_shape: "[(None, 13, 216, 1), (None, 26, 498, 1)]"
   output_shape: "(None, 8)"
+target_metrics:
+  accuracy: 0

@@ -67,7 +67,8 @@ Threshold_validation:
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "python tests/compute_models_performance.py"
-#    - "pytest tests/test_cases/Mercis_test_cases/ --disable-warnings"
+    - "pytest tests/test_cases/Threshold_test_cases/ --disable-warnings"
+
   tags:
     - audio
     
