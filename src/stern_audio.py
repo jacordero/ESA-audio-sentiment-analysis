@@ -102,7 +102,8 @@ class SternAudio:
 		print("\n** Demo finished! **")
 
 
-def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
+#def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
+def load_tone_model(prod_models_dir, tone_model_dir):
 	""" Supporting function that loads tone models 
 
 	Args:
@@ -114,8 +115,10 @@ def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
 		A tone model
 	"""
 	script_dir = os.path.dirname(os.path.abspath(__file__))
-	tone_model_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir, tone_model_name))
-	return keras.models.load_model(tone_model_path)
+	#tone_model_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir, tone_model_name))
+	tone_model_dir_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir))
+	print(tone_model_dir_path)
+	return tf.keras.models.load_model(tone_model_dir_path)
 
 def create_tone_predictor(parameters):
 	""" Factory function that creates a tone predictor.
@@ -130,7 +133,7 @@ def create_tone_predictor(parameters):
 	Returns:
 		Tone predictor.
 	"""
-	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
+	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_name'])
 	if parameters['model_type'] == "sequential":
 		tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
 	elif parameters['model_type'] == "siamase":
@@ -151,8 +154,8 @@ def parse_parameters(parameters):
 	"""	
 	predictor_parameters = {
 		'prod_models_dir': parameters['prod_models_dir'],
-		'model_name': parameters['models']['tone_model']['file'],
-		'model_dir': parameters['models']['tone_model']['dir'],
+		'model_name': parameters['models']['tone_model']['model_name'],
+		#'model_dir': parameters['models']['tone_model']['dir'],
 		'model_type': parameters['models']['tone_model']['type'],
 		'audio_frequency': parameters['audio_frequency'],
 		'n_mfcc': parameters['models']['tone_model']['n_mfcc']
@@ -176,9 +179,16 @@ def parse_parameters(parameters):
 	return (predictor_parameters, analyzer_parameters, stern_audio_parameters)
 
 if __name__ == "__main__":
+	usage = "\n\nError: Configuration file for stern_audio not found.\n\nUsage:\n> python src/stern_audio.py configuration_file.yml\n"
 
-	prod_config_file = "raspi_deployment_config.yml"
-	with open(prod_config_file) as input_file:
+	if len(sys.argv) > 1:
+		configuration_file = sys.argv[1]
+	else:
+		print(usage)
+		exit(1)
+
+	script_dir = os.path.dirname(os.path.abspath(__file__))
+	with open(os.path.join(script_dir, configuration_file)) as input_file:
 		config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)
 
 	parsed_parameters = parse_parameters(config_parameters)
