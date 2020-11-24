@@ -14,25 +14,18 @@ git clone https://ooti-projects.win.tue.nl/gitlab/st-c2019/esa/audio-sentiment-a
 * MacOS: https://dvc.org/doc/install/macos
 * Windows: https://dvc.org/doc/install/windows 
 
-3. Follow the instructions to install aws cli version 2.
-* Linux: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
-* MacOS: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-mac.html
-* Windows: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-windows.html
+3. We use a dedicated Raspberry Pi to store models and data. We connect to this Raspberry Pi using ssh commands. To enable this connection, request access to the VPN that manages the Raspberry Pis.
 
-4. Configure aws cli:
+4. Create and activate the virtual environment that will be used to executed cloned repository.
+
+5. Start the Raspberry Pi VPN and run the following command to download production data and models:
 ```
-> aws configure
-AWS Access Key ID [None]: AKIA55GEKVQR3FCPU7PV
-AWS Secret Access Key [None]: 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
-Default region name [None]: eu-central-1
-Default output format [None]: text
+> dvc pull
 ```
 
-5. Download production data and models:
-```
-dvc pull
-```
 ## Use cases
+
+**Note:** before performing the following use cases, always pull the latest version of the production models and datasets (```dvc pull```).
 
 ### Modify production data
 1. Add or remove audios from the ```prod_data``` directory.
@@ -60,4 +53,11 @@ dvc pull
 4. Go to the repository containing the source code.
 4. Pull changes from master ```git pull origin master```.
 5. Pull latest data and models using dvc ```dvc pull```.
-6. Run stern audio script ```python src/stern_audio.py```.
+6. Run stern audio script ```python src/stern_audio.py [configuration_filename]```.
+
+The ```configuration_filename``` variable should be one of the following names:
+* raspi_candidate_config.yml
+* raspi_deployment_config.yml
+These configuration files are available inside the src directory.
+
+**Note:** It is recommended to always use the raspi_candidate_config.yml file testing the code locally. The raspi_deployment_config.yml is used by the testing pipeline to automatically update the candidate models uploaded to production.
