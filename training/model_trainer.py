@@ -2,7 +2,7 @@ import os
 import yaml
 import time
 from sequential_model_generator import SequentialModelGeneratorFactory
-from Siamese_model_generator import SiameseModel
+from siamese_model_generator import SiameseModel
 from data_loader import SequentialToneModelDataLoader, SiameseToneModelDataLoader
 import keras
 import numpy as np
@@ -31,6 +31,27 @@ def save_training_info(model_type, parameters, training_history):
 
     history_file_path = os.path.join(trained_model_dir_path, "history.npy")
     np.save(history_file_path, training_history.history)
+
+def save_model(trained_model, trained_model_dir_path):
+    """[summary]
+
+    Args:
+        trained_model : model to be saved as .h5 format
+        trained_model_dir_path : directory where the trained model will be saved
+    """    
+    model_name = 'Emotion_Voice_Detection_Model.h5'
+    save_dir = os.path.join(trained_model_dir_path, 'saved_models')
+    # Save model and weights
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
+    model_path = os.path.join(save_dir, model_name)
+    trained_model.save(model_path)
+    print('Saved trained model at %s ' % model_path)
+
+    model_json = trained_model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+
 
 def train_sequential_model(parameters):
     # load data
@@ -72,8 +93,8 @@ def train_sequential_model(parameters):
                          validation_data=(mfcc_val, labels_val))
 
     # save model
-    trained_model_path = create_trained_model_path(parameters['trained_models_dir'], parameters['trained_model_name'])
-    model.save(trained_model_path)
+    trained_model_dir_path = create_trained_model_path(parameters['trained_models_dir'], parameters['trained_model_name'])
+    save_model(model, trained_model_dir_path)
 
     save_training_info(model_type, parameters, history)
 

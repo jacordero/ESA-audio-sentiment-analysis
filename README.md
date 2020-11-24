@@ -58,6 +58,7 @@ git clone https://ooti-projects.win.tue.nl/gitlab/st-c2019/esa/audio-sentiment-a
 The ```configuration_filename``` variable should be one of the following names:
 * raspi_candidate_config.yml
 * raspi_deployment_config.yml
+
 These configuration files are available inside the src directory.
 
 **Note:** It is recommended to always use the raspi_candidate_config.yml file testing the code locally. The raspi_deployment_config.yml is used by the testing pipeline to automatically update the candidate models uploaded to production.

@@ -1,5 +1,6 @@
 import os
 import yaml
+from pathlib import Path
 
 from sequential_model_generator import SequentialModelGeneratorFactory
 from data_loader import SequentialToneModelDataLoader
@@ -10,8 +11,8 @@ import tensorflow as tf
 
 def create_model_dir_path(models_dir, model_name):
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    tmp_model_dir_path = os.path.join(script_dir, models_dir, model_name)
+    root_path = Path(os.getcwd())
+    tmp_model_dir_path = os.path.join(root_path, models_dir, model_name)
     return os.path.normpath(tmp_model_dir_path)
 
 
@@ -33,23 +34,45 @@ def save_retraining_info(model_type, parameters, training_history):
     np.save(history_file_path, training_history.history)
 
 
-def load_model(models_dir, model_name):
+def save_model(trained_model, trained_model_dir_path):
+    """[summary]
 
-    model_dir_path = create_model_dir_path(models_dir, model_name)
-    print(model_dir_path)
-    model = tf.keras.models.load_model(model_dir_path)
+    Args:
+        trained_model : model to be saved as .h5 format
+        trained_model_dir_path : directory where the trained model will be saved
+    """
+    model_name = 'Emotion_Voice_Detection_Model.h5'
+    save_dir = os.path.join(trained_model_dir_path, 'saved_models')
+    # Save model and weights
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
+    model_path = os.path.join(save_dir, model_name)
+    trained_model.save(model_path)
+    print('Saved trained model at %s ' % model_path)
+
+    model_json = trained_model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+
+
+def load_model(models_dir, model_dir, model_name):
+
+    model_dir_path = create_model_dir_path(models_dir, model_dir)
+    model_file_path = os.path.join(model_dir_path, model_name)
+    print(model_file_path)
+    model = tf.keras.models.load_model(model_file_path)
     return model
 
 
 def retrain_sequential_model(parameters):
     # load data
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    root_path = Path(os.getcwd())
     train_data_dir_path = os.path.normpath(os.path.join(
-        script_dir, parameters["train_data_directory"]))
+        root_path, parameters["train_data_directory"]))
     val_data_dir_path = os.path.normpath(os.path.join(
-        script_dir, parameters["validation_data_directory"]))
+        root_path, parameters["validation_data_directory"]))
     test_data_dir_path = os.path.normpath(os.path.join(
-        script_dir, parameters["test_data_directory"]))
+        root_path, parameters["test_data_directory"]))
 
     data_loader = SequentialToneModelDataLoader()
     mfcc_train, labels_train = data_loader.load_train_data(
@@ -61,7 +84,7 @@ def retrain_sequential_model(parameters):
 
     # load model to retrain
     model = load_model(
-        parameters["pretrained_models_dir"], parameters["pretrained_model_name"])
+        parameters["pretrained_models_dir"], parameters["pretrained_model_name"], "saved_models/Emotion_Voice_Detection_Model.h5")
     print(model.summary())
 
     # compile model
