@@ -28,39 +28,55 @@ def load_configuration(filename):
     return config_parameters
 
 
-def test_model_interface():
+def test_model_input_interface():
     # load configuration file
     # Configuration.json will be provided
     # by the architect or TM with all the needed information
     conf_parameters = load_configuration("tests/configuration.yml")
     # load candidate configuration
     # This file contains all the information for the candidate model
-    candidate = load_configuration("raspi_candidate_config.yml")
+    candidate = load_configuration("src/raspi_candidate_config.yml")['model']
 
-    # load candidate model
-    models = candidate['models']
     # This may change since we don't have text model any more
     model = load_tone_model(
-        models['tone_model']['dir'],
-        models['tone_model']['file'],
-        models['tone_model']['type'])
+        candidate['dir'],
+        candidate['file'],
+        candidate['type'])
 
-    # get input and output shape of candidate model
+    # get input shape of candidate model
     input_shape = str(model.input_shape)
-    output_shape = str(model.output_shape)
 
-    # assert values from file with values from model
-    # Double assertion is a bad habbit to have on a test case
-    # However, here it is overkill to create a second test case
-    # for asserting just the output_shape
-    # I will discuss it with the architect and CM.
-    # But as for now it will stay as is.
-    if models['tone_model']['type'] == "Siamese":
+    # assert input shape of model with configuration input shape
+    if candidate['type'] == "Siamese":
         conf_input_shape = conf_parameters['siamese_model']['input_shape']
-        conf_output_shape = conf_parameters['siamese_model']['output_shape']
-    elif models['tone_model']['type'] == "Sequential":
+    elif candidate['type'] == "Sequential":
         conf_input_shape = conf_parameters['sequential_model']['input_shape']
-        conf_output_shape = conf_parameters['sequential_model']['output_shape']
 
     assert conf_input_shape == input_shape
+
+def test_model_output_interface():
+    # load configuration file
+    # Configuration.json will be provided
+    # by the architect or TM with all the needed information
+    conf_parameters = load_configuration("tests/configuration.yml")
+    # load candidate configuration
+    # This file contains all the information for the candidate model
+    candidate = load_configuration("src/raspi_candidate_config.yml")['model']
+    print(candidate)
+
+    # This may change since we don't have text model any more
+    model = load_tone_model(
+        candidate['dir'],
+        candidate['file'],
+        candidate['type'])
+
+    # get output shape of candidate model
+    output_shape = str(model.output_shape)
+
+    # assert output shape of model with configuration output shape
+    if candidate['type'] == "Siamese":
+        conf_output_shape = conf_parameters['siamese_model']['output_shape']
+    elif candidate['type'] == "Sequential":
+        conf_output_shape = conf_parameters['sequential_model']['output_shape']
+
     assert conf_output_shape == output_shape

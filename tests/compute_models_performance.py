@@ -153,8 +153,7 @@ def compute_tone_model_performance(model_dir, model_name, model_type, test_data_
 
 
     
-    # load data
-    
+    # load data   
     performance_metrics = compute_measures(predictions, labels)
     performance_metrics['model_name'] = model_name
     performance_metrics['model_type'] = model_type
@@ -187,21 +186,18 @@ def generate_performance_summary(prod_config_file):
     with open(prod_config_file) as input_file:
         prod_config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)
     
-    models = prod_config_parameters['models']
+    model = prod_config_parameters['model']
     test_data_dir = prod_config_parameters['test_data_dir']
     performance_results = {}
 
-    for key in models:
-        if "tone_model" in key:
-            print("Computing performance of tone model...")
-            performance_results[key] = compute_tone_model_performance(models[key]['dir'], models[key]['file'], models[key]['type'], test_data_dir)
-        else:
-            raise ValueError("Value in configuration file {} is not supported".format('type'))
-###
+
+    print("Computing performance of tone model...")
+    performance_results = compute_tone_model_performance(model['dir'], model['file'], model['type'], test_data_dir)
+
     save_performance_results(performance_results)
 
 
 if __name__ == "__main__":
     
-    prod_config_file = "raspi_candidate_config.yml"
+    prod_config_file = "src/raspi_candidate_config.yml"
     generate_performance_summary(prod_config_file)

@@ -68,8 +68,6 @@ Threshold_validation:
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "python tests/compute_models_performance.py"
 #    - "pytest tests/test_cases/Mercis_test_cases/ --disable-warnings"
-    - "rm -rf prod_data"
-    - "rm -rf prod_models"
   tags:
     - audio
     
