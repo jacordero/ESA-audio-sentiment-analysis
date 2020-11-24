@@ -1,5 +1,5 @@
 
-from keras.layers import Conv1D, Dense, Dropout, Activation, Flatten
+from keras.layers import Conv1D, Dense, Dropout, Activation, Flatten, MaxPooling1D
 from keras.layers.normalization import BatchNormalization
 from keras.models import Sequential
 
@@ -7,24 +7,26 @@ class SequentialThreeConvModulesGenerator():
 
     def generate_model(self, n_conv_filters, filters_shape, _input_shape):
         model = Sequential()
-        
         model.add(Conv1D(n_conv_filters[0], filters_shape[0], padding='same',
-                        input_shape=_input_shape))
+                         input_shape=_input_shape))
         model.add(BatchNormalization())
         model.add(Activation('relu'))
         model.add(Dropout(0.2))
+        model.add(MaxPooling1D(1))
 
         model.add(Conv1D(n_conv_filters[1], filters_shape[1], padding='same',
-                        input_shape=_input_shape))
+                         input_shape=_input_shape))
         model.add(BatchNormalization())
         model.add(Activation('relu'))
-        model.add(Dropout(0.2))
+        model.add(Dropout(0.3))
+        model.add(MaxPooling1D(4))
 
         model.add(Conv1D(n_conv_filters[2], filters_shape[2], padding='same',
-                        input_shape=_input_shape))
+                         input_shape=_input_shape))
         model.add(BatchNormalization())
         model.add(Activation('relu'))
         model.add(Dropout(0.2))
+        model.add(MaxPooling1D(2))
 
         model.add(Flatten())
         model.add(Dense(8))
@@ -32,6 +34,7 @@ class SequentialThreeConvModulesGenerator():
         model.add(Dense(8))
         model.add(Activation('softmax'))
         return model
+
   
 class SequentialTwoConvModulesGenerator():
 

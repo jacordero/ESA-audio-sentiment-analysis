@@ -1,16 +1,19 @@
 import os
 import yaml
-
+import time
 from sequential_model_generator import SequentialModelGeneratorFactory
-from data_loader import SequentialToneModelDataLoader
+from Siamese_model_generator import SiameseModel
+from data_loader import SequentialToneModelDataLoader, SiameseToneModelDataLoader
 import keras
 import numpy as np
+from pathlib import Path
+
 
 
 def create_trained_model_path(trained_models_dir, trained_model_name):
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    tmp_trained_model_dir_path = os.path.join(script_dir, trained_models_dir, trained_model_name)
+    root_path = Path(os.getcwd())
+    tmp_trained_model_dir_path = os.path.join(root_path, trained_models_dir, trained_model_name)
     return os.path.normpath(tmp_trained_model_dir_path)
 
 def save_training_info(model_type, parameters, training_history):
@@ -31,16 +34,20 @@ def save_training_info(model_type, parameters, training_history):
 
 def train_sequential_model(parameters):
     # load data
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir_path = os.path.normpath(os.path.join(script_dir, parameters["data_directory"]))
+    root_path = Path(os.getcwd())
+    feature_train_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_train_data_directory"]))
+
+    feature_validation_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_validation_data_directory"]))
+
+    feature_test_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_test_data_directory"]))
 
     data_loader = SequentialToneModelDataLoader()
     mfcc_train, labels_train = data_loader.load_train_data(
-        data_dir_path)
+        feature_train_data_directory)
     mfcc_val, labels_val = data_loader.load_validation_data(
-        data_dir_path)
+        feature_validation_data_directory)
     mfcc_test, labels_test = data_loader.load_test_data(
-        data_dir_path)
+        feature_test_data_directory)
 
     # create model
     #print(parameters["n_conv_filters"])
@@ -71,13 +78,59 @@ def train_sequential_model(parameters):
     save_training_info(model_type, parameters, history)
 
 def train_siamese_model(parameters):
-    pass
+    # load data
+    root_path = Path(os.getcwd())
+    feature_train_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_train_data_directory"]))
+    feature_test_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_test_data_directory"]))
+    feature_validation_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_validation_data_directory"]))
+
+    data_loader = SiameseToneModelDataLoader()
+    mfcc_train, lmfe_train, labels_train = data_loader.load_train_data(
+        feature_train_data_directory)
+    mfcc_val, lmfe_val, labels_val = data_loader.load_validation_data(
+        feature_validation_data_directory)
+    mfcc_test, lmfe_test, labels_test = data_loader.load_test_data(
+        feature_test_data_directory)
+
+    # create model
+    #print(parameters["n_conv_filters"])
+    #print(parameters["filters_shape"])
+    print("Shape: {}".format(mfcc_train.shape))
+    parameters["input_shape"] = [mfcc_train.shape[1], mfcc_train.shape[2]]
+
+    siamese_model = SiameseModel()
+    mfcc_input, mfcc_output = siamese_model.create_siamese_branch_architecture(mfcc_train.shape[1], mfcc_train.shape[2])
+    lmfe_input, lmfe_output = siamese_model.create_siamese_branch_architecture(lmfe_train.shape[1], lmfe_train.shape[2])
+    model = siamese_model.generate_model(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
+    print(model.summary())
+
+    # compile model
+    opt = keras.optimizers.Adam(learning_rate=parameters["adam_lr"])
+    model.compile(loss="sparse_categorical_crossentropy",
+                  optimizer=opt, metrics=["accuracy"])
+
+
+    # train model
+    start_time = time.time()
+
+    history = model.fit(x=[mfcc_train, lmfe_train], y=labels_train,
+     batch_size=parameters["batch_size"], 
+     epochs=parameters["epochs"],
+                         validation_data=([mfcc_val, lmfe_val], labels_val))
+    elapsed_time = time.time() - start_time
+    print("elapsed time for training phase: ", elapsed_time)
+
+    # save model
+    trained_model_path = create_trained_model_path(parameters['trained_models_dir'], parameters['trained_model_name'])
+    model.save(trained_model_path)
+
+    save_training_info(model_type, parameters, history)
 
 
 def train(model_type, parameters):
-    if model_type == "sequential":
+    if model_type == "Sequential":
         train_sequential_model(parameters)
-    elif model_type == "siamese":
+    elif model_type == "Siamese":
         train_siamese_model(parameters)
     else:
         raise ValueError("Invalid model type: {}".format(model_type))
@@ -85,8 +138,8 @@ def train(model_type, parameters):
 def load_training_parameters(training_parameters_filename):
     
     # load training parameters from yaml file
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(script_dir, training_parameters_filename)) as f:
+    root_path = Path(os.getcwd())
+    with open(os.path.join(root_path, "training", training_parameters_filename)) as f:
         training_parameters = yaml.load(f, Loader=yaml.FullLoader)
 
     # preprocess training parameters
