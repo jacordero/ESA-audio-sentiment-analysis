@@ -14,6 +14,7 @@ class AudioAnalyzer:
 		self.logging_directory = os.path.normpath(
 		    os.path.join(script_dir, parameters['logging_directory']))
 		self.__create_log_directory()
+		self.emotions=parameters['emotions']
 
 	def __create_log_directory(self):
 		"""Creates a logging directory if it does not exists yet.
@@ -47,9 +48,14 @@ class AudioAnalyzer:
 			List containing pairs of sentiments and their corresponding predictions.
 		"""		
 		tone_predictions = self.tone_predictor.predict(np.squeeze(audio))
-		tone_emotion_probabilities = [
-			(Utils.tone_emotions[i], tone_predictions[i]) for i in range(len(tone_predictions))]
-
+		print(tone_predictions)
+		tone_emotion_probabilities = []
+			# (self.emotions[0], tone_predictions[0]) for i in range(len(tone_predictions))]
+		i=0
+		for key in self.emotions:
+			tone_emotion_probabilities.append((self.emotions[key],tone_predictions[i]))
+			i=i+1
+		print(tone_emotion_probabilities)
 		self.emotion_logbook(tone_emotion_probabilities)
 		return tone_emotion_probabilities
 
