@@ -1,6 +1,7 @@
 import os
 import yaml
 import shutil
+from pathlib import Path
 
 def copy_model(origin_dir, destination_dir, model_dir):
 
@@ -23,7 +24,7 @@ if __name__ == "__main__":
             input_file, Loader=yaml.FullLoader)
 
 
-   	root_path = Path(os.getcwd())
+    root_path = Path(os.getcwd())
     model_dir = candidate_config_parameters['model']['dir'].split(
         '/')[0]
     prod_models_dir = prod_config_parameters['prod_models_dir']
