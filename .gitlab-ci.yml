@@ -83,7 +83,7 @@ Updating_deployed_model:
         - prod_data/test/
         - prod_models/candidate/
   script:
-    - "echo Executing smoke test on Raspberry Pi"
+    - "echo Executing smoke test on the Raspberry Pi"
     - "lsusb"
     - "arecord -l"
     - "source /home/pi/Documents/esa/venv/bin/activate"
