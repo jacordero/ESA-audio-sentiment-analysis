@@ -12,8 +12,8 @@ def copy_model(origin_dir, destination_dir, model_dir):
 
 if __name__ == "__main__":
 
-    prod_config_file = "raspi_deployment_config.yml"
-    candidate_config_file = "raspi_candidate_config.yml"
+    prod_config_file = "src/raspi_deployment_config.yml"
+    candidate_config_file = "src/raspi_candidate_config.yml"
 
     with open(prod_config_file) as input_file:
         prod_config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)
@@ -22,11 +22,12 @@ if __name__ == "__main__":
         candidate_config_parameters = yaml.load(
             input_file, Loader=yaml.FullLoader)
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    model_dir = candidate_config_parameters['models']['tone_model']['dir'].split(
+
+   	root_path = Path(os.getcwd())
+    model_dir = candidate_config_parameters['model']['dir'].split(
         '/')[0]
     prod_models_dir = prod_config_parameters['prod_models_dir']
-    prod_models_path = os.path.normpath(os.path.join(script_dir, prod_models_dir))
+    prod_models_path = os.path.normpath(os.path.join(root_path, prod_models_dir))
     candidate_models_dir = candidate_config_parameters['prod_models_dir']
     candidate_models_path = os.path.normpath(os.path.join(script_dir, candidate_models_dir))
 
