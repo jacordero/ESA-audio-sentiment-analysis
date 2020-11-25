@@ -34,43 +34,43 @@ Fetch_data_and_models:
   tags:
     - audio
 
-Data_validation:
-  stage: data
-  script:
-    - "echo Testing data schema and values"
-  tags:
-    - audio
+# Data_validation:
+#   stage: data
+#   script:
+#     - "echo Testing data schema and values"
+#   tags:
+#     - audio
     
-Interface_validation: 
-  stage: interface
-  cache:
-    key: default
-    paths:
-        - prod_data/test/
-        - prod_models/candidate/
-  script:
-    - "echo Testing DNNs interface specification"
-    - "source /home/pi/Documents/esa/venv/bin/activate"
-    - "pytest tests/test_cases/Model_test_cases/ --disable-warnings"
-  tags:
-    - audio
+# Interface_validation: 
+#   stage: interface
+#   cache:
+#     key: default
+#     paths:
+#         - prod_data/test/
+#         - prod_models/candidate/
+#   script:
+#     - "echo Testing DNNs interface specification"
+#     - "source /home/pi/Documents/esa/venv/bin/activate"
+#     - "pytest tests/test_cases/Model_test_cases/ --disable-warnings"
+#   tags:
+#     - audio
 
 
-Threshold_validation: 
-  stage: threholds
-  cache:
-    key: default
-    paths:
-        - prod_data/test/
-        - prod_models/candidate/
-  script: 
-    - "echo Testing DNN metrics against threshold values"
-    - "source /home/pi/Documents/esa/venv/bin/activate"
-    - "python tests/compute_models_performance.py"
-    - "pytest tests/test_cases/Threshold_test_cases/ --disable-warnings"
+# Threshold_validation: 
+#   stage: threholds
+#   cache:
+#     key: default
+#     paths:
+#         - prod_data/test/
+#         - prod_models/candidate/
+#   script: 
+#     - "echo Testing DNN metrics against threshold values"
+#     - "source /home/pi/Documents/esa/venv/bin/activate"
+#     - "python tests/compute_models_performance.py"
+#     - "pytest tests/test_cases/Threshold_test_cases/ --disable-warnings"
 
-  tags:
-    - audio
+#   tags:
+#     - audio
     
 # Copy accepted model from candidate to deployment push to dvc and git
 # Update configuration values
@@ -83,6 +83,7 @@ Updating_deployed_model:
         - prod_data/test/
         - prod_models/candidate/
   script:
+    - "echo Executing smoke test on Raspberry Pi"
     - "source /home/pi/Documents/esa/venv/bin/activate"
 #   - "python tests/update_configuration_file.py"
 #   - "python tests/copy_to_deployment.py"
