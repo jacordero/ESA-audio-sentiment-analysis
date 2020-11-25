@@ -43,7 +43,7 @@ def convert_saved_models(parameters):
 
     save_model(converter, parameters)
     
-def convert_keras_model(parameters):
+def convert_keras_models(parameters):
     """Convert keras model (.h5) into a TensorFlow Lite model.
 
     Args:
@@ -65,6 +65,11 @@ def save_model(converter, parameters):
         parameters: A dictionary of parameters.
 
     """
+    converter.post_training_quantize = True
+    # DEFAULT -  to improve size and latency based on the information provided.
+    #         - does the same thing as OPTIMIZE_FOR_SIZE and OPTIMIZE_FOR_LATENCY.
+    converter.optimizations = [tf.lite.Optimize.DEFAULT]
+
     tflite_model = converter.convert()
 
     # save the lite model TODO: DISCUSS FOLDER FOR TENSORFLOW LITE - currently lite model is saved in models/lite
@@ -103,10 +108,10 @@ if __name__ == "__main__":
         parameters = {
             # resource related parameters
             'model_name': 'deployed/tone_cnn_8_emotions_v0_1/saved_models/Emotion_Voice_Detection_Model.h5', 
-            'lite_model_name': 'tone_cnn_8_emotions',
+            'lite_model_name': 'tone_cnn_5_emotions',
             'version': sys.argv[1]
         }
-        convert_keras_model(parameters)
+        convert_keras_models(parameters)
     
 
     
