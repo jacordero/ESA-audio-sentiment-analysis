@@ -12,6 +12,16 @@ audio_channels: 1
 audio_frequency: 44100
 audio_length: 5 # length of audio in seconds
 
+
+#list of emotions being used in the prediction
+#These codes should comply with the feature extraction part in training code
+emotions:
+  0: "neutral"
+  1: "happy"
+  2: "sad"
+  3: "angry"
+  4: "fearful"
+
 # interaction properties
 iterations: 2 # for an infinite number of iterations, use -1
 after_audio_analysis_pause: 1 # length of pause in seconds

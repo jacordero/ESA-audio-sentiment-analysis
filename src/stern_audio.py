@@ -103,23 +103,6 @@ class SternAudio:
 
 
 #def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
-# TODO
-# def load_tone_model(prod_models_dir, tone_model_dir):
-# 	""" Supporting function that loads tone models
-#
-# 	Args:
-# 		prod_models_dir : relative path of the production models directory
-# 		tone_model_dir : name of the directory containing the tone model to be loaded
-# 		tone_model_name : name of the tone model
-#
-# 	Returns:
-# 		A tone model
-# 	"""
-# 	script_dir = os.path.dirname(os.path.abspath(__file__))
-# 	#tone_model_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir, tone_model_name))
-# 	tone_model_dir_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir))
-# 	return tf.keras.models.load_model(tone_model_dir_path)
-
 def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
 	""" Supporting function that loads tone models
 
@@ -151,15 +134,7 @@ def create_tone_predictor(parameters):
 	Returns:
 		Tone predictor.
 	"""
-	# TODO
-	# tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
-	# if parameters['model_type'] == "sequential":
-	# 	tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
-	# elif parameters['model_type'] == "siamase":
-	# 	tone_predictor = SiameseToneSentimentPredictor(tone_model, parameters)
-	# else:
-	# 	raise ValueError("Invalid tone model type: {}".format(parameters['model_type']))
-
+	# tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_name'])
 	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
 	if parameters['model_type'] == "Sequential":
 		tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
@@ -184,17 +159,6 @@ def parse_parameters(parameters):
 	tone_emotions = {}
 	for key, value in parameters['emotions'].items():
 		tone_emotions[key] = value
-
-	#TODO
-	# predictor_parameters = {
-	# 	'prod_models_dir': parameters['prod_models_dir'],
-	# 	'model_name': parameters['models']['tone_model']['model_name'],
-	# 	#'model_dir': parameters['models']['tone_model']['dir'],
-	# 	'model_type': parameters['models']['tone_model']['type'],
-	# 	'audio_frequency': parameters['audio_frequency'],
-	# 	'n_mfcc': parameters['models']['tone_model']['n_mfcc']
-	#
-	# }
 
 	predictor_parameters = {
 		'prod_models_dir': parameters['prod_models_dir'],

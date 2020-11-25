@@ -22,6 +22,7 @@ emotions:
   3: "angry"
   4: "fearful"
 
+
 # interaction properties
 iterations: 2 # for an infinite number of iterations, use -1
 after_audio_analysis_pause: 1 # length of pause in seconds
