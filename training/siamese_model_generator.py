@@ -4,7 +4,6 @@ from keras.layers import Conv2D, MaxPooling2D, Flatten, Dropout
 import keras
 
 
-
 __authors__ = "Raha Sadeghi, Parima Mirshafiei",
 __email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl;"
 __copyright__ = "TU/e ST2019"
@@ -13,6 +12,7 @@ __copyright__ = "TU/e ST2019"
 class SiameseModel():
     """
     create a Siamese model which is a kind of parallel model, with two inputs: "mfcc" and "lmfe"
+    This model is based on this paper [https://link.springer.com/chapter/10.1007%2F978-3-030-51999-5_18]
     """
     def create_siamese_branch_architecture(self, n_conv_filters, filters_shape,  input_shape_x, input_shape_y):
         """
@@ -107,15 +107,3 @@ class TwoLayerSiameseModel():
         model = keras.Model(inputs=[input1, input2], outputs=[output])
         return model
  
-'''
-class SiameModelGeneratorFactory():
-
-    def __init__(self):
-        self.generators = {
-            'siamese_three_conv_modules_generator': SiameseModel,
-            'siamese_two_conv_modules_generator': TwoLayerSiameseModel,
-        }
-    
-    def get_model_generator(self, model_name):
-        return self.generators[model_name]()
-'''

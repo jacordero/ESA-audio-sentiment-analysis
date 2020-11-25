@@ -1,7 +1,7 @@
 import os
 import yaml
 import time
-from model_generator import ModelGeneratorFactory
+from model_generator_factory import ModelGeneratorFactory
 from data_loader import SequentialToneModelDataLoader, SiameseToneModelDataLoader
 import keras
 import numpy as np
@@ -135,7 +135,7 @@ def train_siamese_model(parameters):
     parameters["input_shape"] = [mfcc_train.shape[1], mfcc_train.shape[2]]
 
     siamese_factory = ModelGeneratorFactory()
-    siamese_model = siamese_factory.get_model_generator('siamese_three_conv_modules_generator')
+    siamese_model = siamese_factory.get_model_generator(parameters["model_generator"])
     mfcc_input, mfcc_output = siamese_model.create_siamese_branch_architecture(parameters["n_conv_filters"], parameters["filters_shape"], mfcc_train.shape[1], mfcc_train.shape[2]  )
     lmfe_input, lmfe_output = siamese_model.create_siamese_branch_architecture(parameters["n_conv_filters"], parameters["filters_shape"], lmfe_train.shape[1], lmfe_train.shape[2] )
     model = siamese_model.generate_model(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
