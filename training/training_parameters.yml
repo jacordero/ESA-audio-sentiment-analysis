@@ -1,8 +1,8 @@
-model_type: "Siamese"
+model_type:  "Siamese" #"Sequential"
 parameters: 
   model_generator: "sequential_three_conv_modules_generator"
-  n_conv_filters: [32, 128, 256]
-  filters_shape: [5, 5, 5]
+  n_conv_filters: [128, 256, 521] #[32, 128, 256]
+  filters_shape: [3, 3,3] #[5, 5, 5]
   input_shape: [50, 1]
   n_mfcc: 50
   n_lmfe: 26
@@ -10,7 +10,7 @@ parameters:
   batch_size: 8
   epochs: 1
   trained_models_dir: "./prod_models/candidate"
-  trained_model_name: "seq_3conv_modules_2layer"
+  trained_model_name: "seq_3conv_modules_2layer_Raha_Siamese"
   feature_train_data_directory: "./data/features/Siamese/train"
   feature_test_data_directory: "./data/features/Siamese/test"
   feature_validation_data_directory: "./data/features/Siamese/validation"

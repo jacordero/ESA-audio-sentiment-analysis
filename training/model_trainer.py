@@ -1,17 +1,21 @@
 import os
 import yaml
 import time
-from sequential_model_generator import SequentialModelGeneratorFactory
-from siamese_model_generator import SiameseModel
+from model_generator import ModelGeneratorFactory
 from data_loader import SequentialToneModelDataLoader, SiameseToneModelDataLoader
 import keras
 import numpy as np
 from pathlib import Path
 
 
+__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero ",
+__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl;j.a.cordero.cruz@tue.nl;"
+__copyright__ = "TU/e ST2019"
 
 def create_trained_model_path(trained_models_dir, trained_model_name):
-
+    """
+    The 
+    """
     root_path = Path(os.getcwd())
     tmp_trained_model_dir_path = os.path.join(root_path, trained_models_dir, trained_model_name)
     return os.path.normpath(tmp_trained_model_dir_path)
@@ -33,9 +37,9 @@ def save_training_info(model_type, parameters, training_history):
     np.save(history_file_path, training_history.history)
 
 def save_model(trained_model, trained_model_dir_path):
-    """[summary]
-
-    Args:
+    """
+    This function saves the model as .h5 format in the saved_models directory
+    params:
         trained_model : model to be saved as .h5 format
         trained_model_dir_path : directory where the trained model will be saved
     """    
@@ -54,6 +58,12 @@ def save_model(trained_model, trained_model_dir_path):
 
 
 def train_sequential_model(parameters):
+    """
+    This function loads the joblib (features) for training the sequential model, and based on the parameters specified in the config file
+    trains the model and finally saves the model.
+    Params:
+        parameters: a list of required parameters read from the training_parameters.yml file
+    """
     # load data
     root_path = Path(os.getcwd())
     feature_train_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_train_data_directory"]))
@@ -71,12 +81,10 @@ def train_sequential_model(parameters):
         feature_test_data_directory)
 
     # create model
-    #print(parameters["n_conv_filters"])
-    #print(parameters["filters_shape"])
     print("Shape: {}".format(mfcc_train.shape))
     parameters["input_shape"] = [mfcc_train.shape[1], mfcc_train.shape[2]]
 
-    model_generator_factory = SequentialModelGeneratorFactory()
+    model_generator_factory = ModelGeneratorFactory()
     model_generator = model_generator_factory.get_model_generator(
         parameters["model_generator"])
     model = model_generator.generate_model(
@@ -89,8 +97,11 @@ def train_sequential_model(parameters):
                   optimizer=opt, metrics=["accuracy"])
 
     # train model
+    start_time = time.time()
     history = model.fit(x=[mfcc_train], y=labels_train, batch_size=parameters["batch_size"], epochs=parameters["epochs"],
                          validation_data=(mfcc_val, labels_val))
+    elapsed_time = time.time() - start_time
+    print("elapsed time for training phase: ", elapsed_time)
 
     # save model
     trained_model_dir_path = create_trained_model_path(parameters['trained_models_dir'], parameters['trained_model_name'])
@@ -99,6 +110,12 @@ def train_sequential_model(parameters):
     save_training_info(model_type, parameters, history)
 
 def train_siamese_model(parameters):
+    """
+    This function loads the joblib (features) for training the siamese model, and based on the parameters specified in the config file
+    trains the model and finally saves the model.
+    Params:
+        parameters: a list of required parameters read from the training_parameters.yml file
+    """
     # load data
     root_path = Path(os.getcwd())
     feature_train_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_train_data_directory"]))
@@ -114,14 +131,13 @@ def train_siamese_model(parameters):
         feature_test_data_directory)
 
     # create model
-    #print(parameters["n_conv_filters"])
-    #print(parameters["filters_shape"])
     print("Shape: {}".format(mfcc_train.shape))
     parameters["input_shape"] = [mfcc_train.shape[1], mfcc_train.shape[2]]
 
-    siamese_model = SiameseModel()
-    mfcc_input, mfcc_output = siamese_model.create_siamese_branch_architecture(mfcc_train.shape[1], mfcc_train.shape[2])
-    lmfe_input, lmfe_output = siamese_model.create_siamese_branch_architecture(lmfe_train.shape[1], lmfe_train.shape[2])
+    siamese_factory = ModelGeneratorFactory()
+    siamese_model = siamese_factory.get_model_generator('siamese_three_conv_modules_generator')
+    mfcc_input, mfcc_output = siamese_model.create_siamese_branch_architecture(parameters["n_conv_filters"], parameters["filters_shape"], mfcc_train.shape[1], mfcc_train.shape[2]  )
+    lmfe_input, lmfe_output = siamese_model.create_siamese_branch_architecture(parameters["n_conv_filters"], parameters["filters_shape"], lmfe_train.shape[1], lmfe_train.shape[2] )
     model = siamese_model.generate_model(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
     print(model.summary())
 
@@ -135,20 +151,25 @@ def train_siamese_model(parameters):
     start_time = time.time()
 
     history = model.fit(x=[mfcc_train, lmfe_train], y=labels_train,
-     batch_size=parameters["batch_size"], 
-     epochs=parameters["epochs"],
+                         batch_size=parameters["batch_size"], 
+                         epochs=parameters["epochs"],
                          validation_data=([mfcc_val, lmfe_val], labels_val))
     elapsed_time = time.time() - start_time
     print("elapsed time for training phase: ", elapsed_time)
 
     # save model
-    trained_model_path = create_trained_model_path(parameters['trained_models_dir'], parameters['trained_model_name'])
-    model.save(trained_model_path)
-
+    trained_model_dir_path = create_trained_model_path(parameters['trained_models_dir'], parameters['trained_model_name'])
+    save_model(model, trained_model_dir_path)
     save_training_info(model_type, parameters, history)
 
 
+
 def train(model_type, parameters):
+    """
+    This function call the required training function based on the model_type specified in the training_parameters.yml file
+    Params:
+        model_type: the type of the model to be trained: either "Sequential" or "Siamese"
+    """
     if model_type == "Sequential":
         train_sequential_model(parameters)
     elif model_type == "Siamese":
@@ -157,7 +178,11 @@ def train(model_type, parameters):
         raise ValueError("Invalid model type: {}".format(model_type))
 
 def load_training_parameters(training_parameters_filename):
-    
+    """
+    This function read the training_parameters.yml file to train the model based on the specified configuration parameters.
+    Param: 
+        training_parameters_filename: the path/filename of the configuration file
+    """
     # load training parameters from yaml file
     root_path = Path(os.getcwd())
     with open(os.path.join(root_path, "training", training_parameters_filename)) as f:
@@ -172,7 +197,9 @@ def load_training_parameters(training_parameters_filename):
     return model_type, parameters
 
 if __name__ == "__main__":
-
+    """
+    main function to define the configuration file and train the model
+    """
     training_parameters_filename = "training_parameters.yml"
     model_type, parameters = load_training_parameters(training_parameters_filename)
     train(model_type, parameters)
