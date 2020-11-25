@@ -10,8 +10,8 @@ def update_configuration(old_configuration, new_configuration):
 
 if __name__ == "__main__":
 
-  prod_config_file = "raspi_deployment_config.yml"
-  candidate_config_file = "raspi_candidate_config.yml"
+  prod_config_file = "src/raspi_deployment_config.yml"
+  candidate_config_file = "src/raspi_candidate_config.yml"
   
   with open(prod_config_file) as input_file:
     prod_config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)

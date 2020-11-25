@@ -88,8 +88,9 @@ Updating_deployed_model:
     - "python tests/update_configuration_file.py"
     - "python tests/copy_to_deployment.py"
     - "python src/stern_audio.py src/raspi_deployment_config.yml"
-
-#   - "rm -v from candidate folder"
+    - "rm -r prod_models/candidate/!(empty.txt)"
+#   - "rm -r prod_models/candidate/*"
+#   - "touch prod_models/candidate/empty.txt"
 #   - "dvc add prod_models"
 #   - "dvc commit"
 #   - "dvc push"
