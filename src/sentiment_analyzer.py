@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from pathlib import Path
 from stern_utils import Utils
 
 class AudioAnalyzer:
@@ -10,9 +11,9 @@ class AudioAnalyzer:
 		self.tone_predictor = tone_predictor
 		# Logging functionality
 		self.logging_file_prefix = parameters['logging_file_prefix']
-		script_dir = os.path.dirname(os.path.abspath(__file__))
+		root_path = root_path = Path(os.getcwd())
 		self.logging_directory = os.path.normpath(
-		    os.path.join(script_dir, parameters['logging_directory']))
+		    os.path.join(root_path, parameters['logging_directory']))
 		self.__create_log_directory()
 
 	def __create_log_directory(self):

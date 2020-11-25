@@ -1,11 +1,11 @@
-models:
-  tone_model:
-    model_name: "seq_3conv_modules_be_nice"
-    type: "sequential"
-    n_mfcc: 50
+model:
+  dir: "seq_3conv_modules_vh5_retv2/saved_models"
+  file: "Emotion_Voice_Detection_Model.h5"
+  type: "Sequential"
+  n_mfcc: 50
 
-test_data_dir: "../prod_data/test"
-prod_models_dir: "../prod_models/candidate"
+test_data_dir: "./prod_data/test"
+prod_models_dir: "./prod_models/candidate"
 
 #audio recording properties
 audio_channels: 1
@@ -18,5 +18,5 @@ after_audio_analysis_pause: 1 # length of pause in seconds
 before_recording_pause: 1
 
 # logging
-logging_directory: '../logs'
+logging_directory: './logs'
 logging_file_prefix: 'test_logging_file'
