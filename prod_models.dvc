@@ -1,3 +1,5 @@
 outs:
-- md5: 6c7320cf9f94d393cb9b1df910553b74.dir
+- md5: d2a14937866d695f40681a06fa5008dc.dir
+  size: 91438327
+  nfiles: 26
   path: prod_models
