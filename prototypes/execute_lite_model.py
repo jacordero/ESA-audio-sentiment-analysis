@@ -4,8 +4,7 @@ Copyright (C) Tu/e.
 @author Tuvi Purevsuren t.purevsuren@tue.nl
 
 ======================================================
-This converter takes a TensorFlow trained model and generates a TensorFlow Lite model.
-The TensorFlow Lite model has (.ftlite) file extension (Flatbuffer format),
+To execute the TFlite model in Raspberry Pi.
 
 """
 import os
