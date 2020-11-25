@@ -30,7 +30,7 @@ def get_path(dir_name):
 
 
 def convert_saved_models(parameters):
-    """Convert tensorflow model into a TensorFlow Lite model.
+    """Convert tensorflow model (.pb) into a TensorFlow Lite model.
 
     Args:
         parameters: A dictionary of parameters.
@@ -44,7 +44,7 @@ def convert_saved_models(parameters):
     save_model(converter, parameters)
     
 def convert_keras_model(parameters):
-    """Convert tensorflow model into a TensorFlow Lite model.
+    """Convert keras model (.h5) into a TensorFlow Lite model.
 
     Args:
         parameters: A dictionary of parameters.
