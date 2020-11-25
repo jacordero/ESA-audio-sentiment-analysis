@@ -96,3 +96,5 @@ Updating_deployed_model:
 #   - "git add ."
 #   - "git commit -m "${userstory}"
 #   - "git push"
+  tags:
+    - audio
