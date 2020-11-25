@@ -1,17 +1,21 @@
-model_type: "sequential"
+model_type: "Siamese"
 parameters: 
   model_generator: "sequential_three_conv_modules_generator"
   n_conv_filters: [32, 128, 256]
   filters_shape: [5, 5, 5]
-  input_shape: [13, 216]
-  adam_lr: 0.001
-  batch_size: 32
+  input_shape: [50, 1]
+  n_mfcc: 50
+  n_lmfe: 26
+  adam_lr: 0.005
+  batch_size: 8
   epochs: 1
-  trained_models_dir: "../prod_models/candidate" # directory where the trained model should be stored after training
-  trained_model_name: "seq_3conv_modules_be_nice"
-  data_directory: "../data/features/sequential" # directory where the training, validation, and testing data
-  train_data_directory: "../data/features/sequential"
-  validation_data_directory: "../data/features/sequential"
-  test_data_directory: "../data/features/sequential"
-  
-  
+  trained_models_dir: "./prod_models/candidate"
+  trained_model_name: "seq_3conv_modules_2layer"
+  feature_train_data_directory: "./data/features/Siamese/train"
+  feature_test_data_directory: "./data/features/Siamese/test"
+  feature_validation_data_directory: "./data/features/Siamese/validation"
+  raw_train_data_directory: "./data/tone_5_emotions_dataset_v1/train"
+  raw_test_data_directory: "./data/tone_5_emotions_dataset_v1/test"
+  raw_validation_data_directory: "./data/tone_5_emotions_dataset_v1/validation"
+  chunk_length_in_milli_sec: 7000
+

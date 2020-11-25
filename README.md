@@ -53,7 +53,7 @@ git clone https://ooti-projects.win.tue.nl/gitlab/st-c2019/esa/audio-sentiment-a
 4. Go to the repository containing the source code.
 4. Pull changes from master ```git pull origin master```.
 5. Pull latest data and models using dvc ```dvc pull```.
-6. Run stern audio script ```python src/stern_audio.py [configuration_filename]```.
+6. Run stern audio script ```python src/stern_audio.py src/[configuration_filename]```.
 
 The ```configuration_filename``` variable should be one of the following names:
 * raspi_candidate_config.yml

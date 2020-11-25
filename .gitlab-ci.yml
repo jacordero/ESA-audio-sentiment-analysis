@@ -86,7 +86,9 @@ Threshold_validation:
 #   - "source /home/pi/Documents/esa/venv/bin/activate"
 #   - "python tests/update_configuration_file.py"
 #   - "python tests/copy_to_deployment.py"
-#   - "remove from candidate folder"
+#   - "python src/stern_audio.py src/raspi_deployment_config.yml"
+#   - "rm -v from candidate folder"
+#   - "dvc add prod_models"
 #   - "dvc commit"
 #   - "dvc push"
 # We need to find out how gitlab runner pushes to gitlab
