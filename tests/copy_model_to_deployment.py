@@ -30,7 +30,7 @@ if __name__ == "__main__":
     prod_models_dir = prod_config_parameters['prod_models_dir']
     prod_models_path = os.path.normpath(os.path.join(root_path, prod_models_dir))
     candidate_models_dir = candidate_config_parameters['prod_models_dir']
-    candidate_models_path = os.path.normpath(os.path.join(script_dir, candidate_models_dir))
+    candidate_models_path = os.path.normpath(os.path.join(root_path, candidate_models_dir))
 
     copy_model(candidate_models_path, prod_models_path, model_dir)
 
