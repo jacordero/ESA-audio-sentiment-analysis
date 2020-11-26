@@ -1,9 +1,9 @@
 sequential_model: 
   input_shape: "(None, 50, 1)"
-  output_shape: "(None, 8)"
+  output_shape: "(None, 5)"
 siamese_model: 
   input_shape: "[(None, 13, 216, 1), (None, 26, 498, 1)]"
-  output_shape: "(None, 8)"
+  output_shape: "(None, 5)"
 target_metrics:
   accuracy: 0
   performance: 1.0
