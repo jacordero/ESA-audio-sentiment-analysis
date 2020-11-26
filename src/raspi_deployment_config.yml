@@ -9,7 +9,7 @@ prod_models_dir: "../prod_models/deployed"
 
 #audio recording properties
 audio_channels: 1
-audio_frequency: 44100
+audio_frequency: 22050
 audio_length: 5 # length of audio in seconds
 
 
