@@ -25,7 +25,7 @@ class SequentialToneModelDataLoader():
         features_path = os.path.join(data_directory, "mfcc_train.joblib")
         labels_path = os.path.join(data_directory, "labels_train.joblib")
         if os.path.exists(features_path):
-            features_path = os.path.join(data_directory, "lmfe_train.joblib")
+            features_path = os.path.join(data_directory, "mfcc_train.joblib")
             features = joblib.load(features_path)
             features = np.expand_dims(features, axis=2)
             print(features.shape)
@@ -56,7 +56,7 @@ class SequentialToneModelDataLoader():
         features_path = os.path.join(data_directory, "mfcc_validation.joblib")
         labels_path = os.path.join(data_directory, "labels_validation.joblib")
         if os.path.exists(features_path):
-            features_path = os.path.join(data_directory, "lmfe_validation.joblib")
+            features_path = os.path.join(data_directory, "mfcc_validation.joblib")
             features = joblib.load(features_path)
             features = np.expand_dims(features, axis=2)
             print(features.shape)
@@ -86,7 +86,7 @@ class SequentialToneModelDataLoader():
         features_path = os.path.join(data_directory, "mfcc_test.joblib")
         labels_path = os.path.join(data_directory, "labels_test.joblib")
         if os.path.exists(features_path):
-            features_path = os.path.join(data_directory, "lmfe_test.joblib")
+            features_path = os.path.join(data_directory, "mfcc_test.joblib")
             features = joblib.load(features_path)
             features = np.expand_dims(features, axis=2)
             print(features.shape)

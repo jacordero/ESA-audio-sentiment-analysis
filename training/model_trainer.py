@@ -136,9 +136,8 @@ def train_siamese_model(parameters):
 
     siamese_factory = ModelGeneratorFactory()
     siamese_model = siamese_factory.get_model_generator(parameters["model_generator"])
-    mfcc_input, mfcc_output = siamese_model.create_siamese_branch_architecture(parameters["n_conv_filters"], parameters["filters_shape"], mfcc_train.shape[1], mfcc_train.shape[2]  )
-    lmfe_input, lmfe_output = siamese_model.create_siamese_branch_architecture(parameters["n_conv_filters"], parameters["filters_shape"], lmfe_train.shape[1], lmfe_train.shape[2] )
-    model = siamese_model.generate_model(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
+    inputes_shape = [mfcc_train.shape[1], mfcc_train.shape[2],lmfe_train.shape[1], lmfe_train.shape[2] ]
+    model = siamese_model.generate_model(parameters["n_conv_filters"], parameters["filters_shape"], inputes_shape)
     print(model.summary())
 
     # compile model
