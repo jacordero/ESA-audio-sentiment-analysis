@@ -103,8 +103,8 @@ class SternAudio:
 
 
 #def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
-def load_tone_model(prod_models_dir, tone_model_dir):
-	""" Supporting function that loads tone models 
+def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
+	""" Supporting function that loads tone models
 
 	Args:
 		prod_models_dir : relative path of the production models directory
@@ -114,11 +114,12 @@ def load_tone_model(prod_models_dir, tone_model_dir):
 	Returns:
 		A tone model
 	"""
-	script_dir = os.path.dirname(os.path.abspath(__file__))
+	root_path = Path(os.getcwd())
 	#tone_model_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir, tone_model_name))
-	tone_model_dir_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir))
+	tone_model_dir_path = os.path.normpath(os.path.join(root_path, prod_models_dir, tone_model_dir, tone_model_name))
 	print(tone_model_dir_path)
 	return tf.keras.models.load_model(tone_model_dir_path)
+
 
 def create_tone_predictor(parameters):
 	""" Factory function that creates a tone predictor.
@@ -133,13 +134,15 @@ def create_tone_predictor(parameters):
 	Returns:
 		Tone predictor.
 	"""
-	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_name'])
-	if parameters['model_type'] == "sequential":
+	# tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_name'])
+	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
+	if parameters['model_type'] == "Sequential":
 		tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
-	elif parameters['model_type'] == "siamase":
+	elif parameters['model_type'] == "Siamese":
 		tone_predictor = SiameseToneSentimentPredictor(tone_model, parameters)
 	else:
 		raise ValueError("Invalid tone model type: {}".format(parameters['model_type']))
+
 
 	return tone_predictor
 
@@ -150,21 +153,27 @@ def parse_parameters(parameters):
 		parameters : Dictionary containing the parameters of the configuration file
 
 	Returns:
-		Three dictionaries containing parameters to initialize model predictors, the audio analyzer class, and the stern audio class.
-	"""	
+		Four dictionaries containing parameters to initialize model predictors, the audio analyzer class, the stern audio class, and tone emotion mapping.
+	"""
+
+	tone_emotions = {}
+	for key, value in parameters['emotions'].items():
+		tone_emotions[key] = value
+
 	predictor_parameters = {
 		'prod_models_dir': parameters['prod_models_dir'],
-		'model_name': parameters['models']['tone_model']['model_name'],
-		#'model_dir': parameters['models']['tone_model']['dir'],
-		'model_type': parameters['models']['tone_model']['type'],
+		'model_name': parameters['model']['file'],
+		'model_dir': parameters['model']['dir'],
+		'model_type': parameters['model']['type'],
 		'audio_frequency': parameters['audio_frequency'],
-		'n_mfcc': parameters['models']['tone_model']['n_mfcc']
+		'n_mfcc': parameters['model']['n_mfcc']
 	}
 
 	analyzer_parameters = {
 		'logging_file_prefix': parameters['logging_file_prefix'],
 		'logging_directory': parameters['logging_directory'],
 		'audio_frequency': parameters['audio_frequency'],
+		'emotions': tone_emotions
 	}
 
 	stern_audio_parameters = {
@@ -175,6 +184,8 @@ def parse_parameters(parameters):
 		'after_audio_analysis_pause': int(parameters['after_audio_analysis_pause']),
 		'iterations': int(parameters['iterations'])
 	}
+
+
 
 	return (predictor_parameters, analyzer_parameters, stern_audio_parameters)
 
