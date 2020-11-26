@@ -27,6 +27,7 @@ Fetch_data_and_models:
     paths:
         - prod_data/test/
         - prod_models/candidate/
+        - prod_models/deployed/
   script:
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "dvc remote modify --local nielspi password projectesa"
@@ -48,6 +49,7 @@ Fetch_data_and_models:
 #     paths:
 #         - prod_data/test/
 #         - prod_models/candidate/
+#         - prod_models/deployed/
 #   script:
 #     - "echo Testing DNNs interface specification"
 #     - "source /home/pi/Documents/esa/venv/bin/activate"
@@ -63,6 +65,7 @@ Fetch_data_and_models:
 #     paths:
 #         - prod_data/test/
 #         - prod_models/candidate/
+#         - prod_models/deployed/
 #   script: 
 #     - "echo Testing DNN metrics against threshold values"
 #     - "source /home/pi/Documents/esa/venv/bin/activate"
@@ -82,6 +85,7 @@ Updating_deployed_model:
     paths:
         - prod_data/test/
         - prod_models/candidate/
+        - prod_models/deployed/
   script:
     - "echo Executing smoke test on the Raspberry Pi"
     - "source /home/pi/Documents/esa/venv/bin/activate"
