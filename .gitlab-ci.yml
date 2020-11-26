@@ -95,12 +95,11 @@ Updating_deployed_model:
 #    - "rm -rf prod_models/candidate/!(empty.txt)"
     - "rm -r prod_models/candidate/*"
     - "touch prod_models/candidate/empty.txt"
-#   - "dvc add prod_models"
-#   - "dvc commit"
-#   - "dvc push"
-# We need to find out how gitlab runner pushes to gitlab
-#   - "git add ."
-#   - "git commit -m "${userstory}"
-#   - "git push"
+    - "dvc add prod_models"
+    - "dvc commit"
+    - "dvc push"
+    - "git add prod_models.dvc"
+    - "git commit -m "[ci skip] ${userstory}"
+    - "git push"
   tags:
     - audio
