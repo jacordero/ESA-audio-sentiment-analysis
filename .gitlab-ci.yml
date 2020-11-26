@@ -33,10 +33,6 @@ Fetch_data_and_models:
     - "dvc pull -f"
   tags:
     - audio
-  only:
-    changes:
-      - prod_data.dvc
-      - prod_models.dvc
 
 Data_validation:
   stage: data
@@ -44,8 +40,6 @@ Data_validation:
     - "echo Testing data schema and values"
   tags:
     - audio
-  rules:
-    - when: always
     
 Interface_validation: 
   stage: interface
