@@ -1,7 +1,6 @@
 model:
-  dir: "siamese_tone_8_emotions/saved_models"
-  file: "Emotion_Voice_Detection_Model.h5"
-  type: "Siamese"
+  model_name: "seq_3conv_modules_be_nice"
+  type: "sequential"
   n_mfcc: 50
 
 test_data_dir: "./prod_data/test"
@@ -11,6 +10,26 @@ prod_models_dir: "./prod_models/deployed"
 audio_channels: 1
 audio_frequency: 44100
 audio_length: 5 # length of audio in seconds
+
+
+#list of emotions being used in the prediction
+#These codes should comply with the feature extraction part in training code
+#emotions:
+#  0: "neutral"
+#  1: "happy"
+#  2: "sad"
+#  3: "angry"
+#  4: "fearful"
+
+emotions:
+  0: "neutral"
+  1: "calm"
+  2: "happy"
+  3: "sad"
+  4: "angry"
+  5: "fearful"
+  6: "disgust"
+  7: "surprised"
 
 # interaction properties
 iterations: 2 # for an infinite number of iterations, use -1

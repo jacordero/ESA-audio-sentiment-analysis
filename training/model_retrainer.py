@@ -68,18 +68,19 @@ def retrain_sequential_model(parameters):
     # load data
     root_path = Path(os.getcwd())
     train_data_dir_path = os.path.normpath(os.path.join(
-        root_path, parameters["train_data_directory"]))
+        root_path, parameters["feature_train_data_directory"]))
     val_data_dir_path = os.path.normpath(os.path.join(
-        root_path, parameters["validation_data_directory"]))
+        root_path, parameters["feature_validation_data_directory"]))
     test_data_dir_path = os.path.normpath(os.path.join(
-        root_path, parameters["test_data_directory"]))
+        root_path, parameters["feature_test_data_directory"]))
+    print(val_data_dir_path)
 
     data_loader = SequentialToneModelDataLoader()
     mfcc_train, labels_train = data_loader.load_train_data(
         train_data_dir_path)
     mfcc_val, labels_val = data_loader.load_validation_data(
         val_data_dir_path)
-    mfcc_test, labels_test = data_loader.load_validation_data(
+    mfcc_test, labels_test = data_loader.load_test_data(
         test_data_dir_path)
 
     # load model to retrain
@@ -110,9 +111,9 @@ def retrain_siamese_model(parameters):
 
 
 def retrain(model_type, parameters):
-    if model_type == "sequential":
+    if model_type == "Sequential":
         retrain_sequential_model(parameters)
-    elif model_type == "siamese":
+    elif model_type == "Siamese":
         retrain_siamese_model(parameters)
     else:
         raise ValueError("Invalid model type: {}".format(model_type))
