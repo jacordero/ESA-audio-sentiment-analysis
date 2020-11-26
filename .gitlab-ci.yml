@@ -33,6 +33,10 @@ Fetch_data_and_models:
     - "dvc pull -f"
   tags:
     - audio
+  rules:
+    - changes:
+        - prod_data.dvc
+        - prod_models.dvc
 
 Data_validation:
   stage: data
