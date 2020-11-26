@@ -49,7 +49,7 @@ class SiameseModel():
 
         return input_, bn
 
-    def concatinate_models(self, branch1, branch2, input1, input2):
+    def concatenate_models(self, branch1, branch2, input1, input2):
         """
         creating the final model by concatinating two branches (mfcc and lmfe)
         :param branch1: the model created based on mfcc feature
@@ -65,14 +65,14 @@ class SiameseModel():
     def generate_model(self, n_conv_filters, filters_shape, _input_shape):
         """
         create a Siamese model 
-        :param: n_conv_filter:  nuerons should we used in each layer of branches
+        :param: n_conv_filter:  neurons should we used in each layer of branches
         :param: filters_shape:  filter shapes of the first layer
         :param: _input_shape: the input shape is an array with the first two paramters define the mfcc shape (X, y) 
         and the last two parameters define the lmfe shape (X, y)
         """
         mfcc_input, mfcc_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[0], _input_shape[1])
         lmfe_input, lmfe_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[2], _input_shape[3])
-        model = self.concatinate_models(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
+        model = self.concatenate_models(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
         return model
 
 
@@ -107,7 +107,7 @@ class TwoLayerSiameseModel():
 
         return input_, bn
 
-    def concatinate_models(self, branch1, branch2, input1, input2):
+    def concatenate_models(self, branch1, branch2, input1, input2):
         """
         creating the final model by concatinating two branches (mfcc and lmfe)
         :param branch1: the first branch in Siamese model
@@ -119,17 +119,17 @@ class TwoLayerSiameseModel():
         output = Dense(8, activation='softmax')(concat_)
         model = keras.Model(inputs=[input1, input2], outputs=[output])
         return model
-        
+
     def generate_model(self, n_conv_filters, filters_shape, _input_shape):
         """
         create a Siamese model 
-        :param: n_conv_filter:  nuerons should we used in each layer of branches
+        :param: n_conv_filter:  neurons should we used in each layer of branches
         :param: filters_shape:  filter shapes of the first layer
         :param: _input_shape: the input shape is an array with the first two paramters define the mfcc shape (X, y) 
         and the last two parameters define the lmfe shape (X, y)
         """
         mfcc_input, mfcc_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[0], _input_shape[1])
         lmfe_input, lmfe_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[2], _input_shape[3])
-        model = self.concatinate_models(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
+        model = self.concatenate_models(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
         return model
  
