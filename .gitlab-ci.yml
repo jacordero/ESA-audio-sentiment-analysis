@@ -37,6 +37,9 @@ Fetch_data_and_models:
     - changes:
         - prod_data.dvc
         - prod_models.dvc
+      when: always
+    - when: never
+      allow_failure: true
 
 Data_validation:
   stage: data
