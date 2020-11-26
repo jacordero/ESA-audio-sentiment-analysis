@@ -39,24 +39,6 @@ class Utils:
     this class provides some functions that could be used for preprocessing, saving or sketching the model result
     """
 
-    tone_emotions = {0: 'neutral',
-                     1: 'calm',
-                     2: 'happy',
-                     3: 'sad',
-                     4: 'angry',
-                     5: 'fearful',
-                     6: 'disgust',
-                     7: 'surprised'}
-
-    text_emotions = {0: 'neutral',
-                     7: 'calm',
-                     1: 'happy',
-                     2: 'sad',
-                     3: 'angry',
-                     4: 'fearful',
-                     5: 'disgust',
-                     6: 'surprised'}
-
     @staticmethod
     def save_wav_pcm(audio_array, output_audio_filename, audio_frequency):
         """Stores an audio signal as a pcm wav file
@@ -96,7 +78,6 @@ class Utils:
 
         Returns:
           The current local time.
-
         """
         tz_nl = pytz.timezone('Europe/Amsterdam')
         time_nl = datetime.now(tz_nl)
