@@ -62,8 +62,8 @@ class SequentialToneModelDataLoader():
         Returns:
             Xmfcc features and their corresponding labels.
         """
-        mfcc_path = os.path.join(data_directory, "sequential", "X.joblib")
-        labels_path = os.path.join(data_directory, "sequential", "y.joblib")
+        mfcc_path = os.path.join(data_directory, "sequential", "mfcc_seq.joblib")
+        labels_path = os.path.join(data_directory, "sequential", "mfcc_seq_labels.joblib")
 
         mfcc = joblib.load(mfcc_path)
         labels = joblib.load(labels_path)

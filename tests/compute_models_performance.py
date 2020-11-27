@@ -9,11 +9,11 @@ import tensorflow as tf
 
 import numpy as np
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score, f1_score, classification_report
-from context import SequentialToneModelDataLoader, SiameseToneModelDataLoader, TextModelDataLoader, Utils
+from context import SequentialToneModelDataLoader, SiameseToneModelDataLoader, TextModelDataLoader
 
 
 
-def compute_measures(predicted_values, truth_values):
+def compute_measures(predicted_values, truth_values, emotions):
     """[summary]
 
     Args:
@@ -53,7 +53,7 @@ def compute_measures(predicted_values, truth_values):
     truth_values = truth_values.astype(int)
     
     # Total accuracy
-    accuracy = accuracy_score(truth_values, predicted_sentiment, normalize=False)
+    accuracy = accuracy_score(truth_values, predicted_sentiment, normalize=True)
     
     measures['general_metrics'] = {}
     measures['perclass_metrics'] = {}
@@ -79,7 +79,7 @@ def compute_measures(predicted_values, truth_values):
         label_lists[truth].append(prediction[truth])
 
     avg = {l: mean(v) for l, v in label_lists.items()}
-    avg = {Utils.tone_emotions[k]: float(v) for k,v in avg.items()}
+    avg = {emotions[k]: float(v) for k,v in avg.items()}
     measures['perclass_metrics']['confidence'] = avg
 
     # Per class accuracy
@@ -93,7 +93,7 @@ def compute_measures(predicted_values, truth_values):
             label_lists[truth].append(0)
     
     avg = {l: mean(v) for l, v in label_lists.items()}
-    avg = {Utils.tone_emotions[k]: float(v) for k,v in avg.items()}
+    avg = {emotions[k]: float(v) for k,v in avg.items()}
     measures['perclass_metrics']['accuracy'] = avg
 
     return measures
@@ -117,7 +117,7 @@ def predict_text_model(model, test_data_dir_path):
     return model.predict(np.squeeze(sentences))
 
 
-def compute_tone_model_performance(model_dir, model_name, model_type, test_data_dir):
+def compute_tone_model_performance(model_dir, model_name, model_type, test_data_dir, emotions):
     """[summary]
 
     Args:
@@ -154,7 +154,7 @@ def compute_tone_model_performance(model_dir, model_name, model_type, test_data_
 
     
     # load data   
-    performance_metrics = compute_measures(predictions, labels)
+    performance_metrics = compute_measures(predictions, labels, emotions)
     performance_metrics['model_name'] = model_name
     performance_metrics['model_type'] = model_type
     time_in_s_per_input = (end - start) / ((10 ** 9)*(labels.shape[0]))
@@ -188,11 +188,12 @@ def generate_performance_summary(prod_config_file):
     
     model = prod_config_parameters['model']
     test_data_dir = prod_config_parameters['test_data_dir']
+    emotions = prod_config_parameters['emotions']
     performance_results = {}
 
 
     print("Computing performance of tone model...")
-    performance_results = compute_tone_model_performance(model['dir'], model['file'], model['type'], test_data_dir)
+    performance_results = compute_tone_model_performance(model['dir'], model['file'], model['type'], test_data_dir, emotions)
 
     save_performance_results(performance_results)
 
