@@ -9,7 +9,7 @@ import tensorflow as tf
 
 import numpy as np
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score, f1_score, classification_report
-from context import SequentialToneModelDataLoader, SiameseToneModelDataLoader, TextModelDataLoader
+from context import SequentialDataLoader, SiameseDataLoader, TextModelDataLoader
 
 
 
@@ -136,14 +136,14 @@ def compute_tone_model_performance(model_dir, model_name, model_type, test_data_
     print(model.summary())
 
     if "Sequential" in model_type:
-        data_loader = SequentialToneModelDataLoader()
+        data_loader = SequentialDataLoader()
         mfcc_features, labels = data_loader.load_test_data(test_data_dir_path)
         start = time.time_ns()
         predictions = predict_sequential_tone_model(model, mfcc_features)
         end = time.time_ns()
     elif "Siamese" in model_type:
-        data_loader = SiameseToneModelDataLoader()
-        mfcc_features, lmfe_features, labels, labels_lmfe = data_loader.load_test_data(test_data_dir_path)
+        data_loader = SiameseDataLoader()
+        mfcc_features, lmfe_features, labels = data_loader.load_test_data(test_data_dir_path)
         start = time.time_ns()
         predictions = predict_siamese_tone_model(model, mfcc_features, lmfe_features)
         end = time.time_ns()

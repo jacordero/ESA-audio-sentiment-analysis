@@ -37,7 +37,7 @@ git clone https://ooti-projects.win.tue.nl/gitlab/st-c2019/esa/audio-sentiment-a
 7. Push changes to GitLab: ```git push origin [branch-name]```.
 
 ### Add new production model
-1. Add new model in the ```prod_models``` directory.
+1. Add new model in the ```prod_models/candidate``` directory.
 2. Execute ```dvc status``` to see that the contents of ```prod_models``` were modified.
 3. Execute ```dvc add prod_models``` to update the contents of ```prod_models.dvc```.
 4. Track changes with git: ```git add prod_models.dvc```.

@@ -49,7 +49,7 @@ class TextModelDataLoader():
         return sentences
 
 
-class SequentialToneModelDataLoader():
+class SequentialDataLoader():
     """ Data loader for sequential-based CNN tone models that perform sentiment analysis.
     """
 
@@ -62,8 +62,8 @@ class SequentialToneModelDataLoader():
         Returns:
             Xmfcc features and their corresponding labels.
         """
-        mfcc_path = os.path.join(data_directory, "sequential", "mfcc_seq.joblib")
-        labels_path = os.path.join(data_directory, "sequential", "mfcc_seq_labels.joblib")
+        mfcc_path = os.path.join(data_directory, "sequential", "mfcc_test.joblib")
+        labels_path = os.path.join(data_directory, "sequential", "labels_test.joblib")
 
         mfcc = joblib.load(mfcc_path)
         labels = joblib.load(labels_path)
@@ -75,7 +75,7 @@ class SequentialToneModelDataLoader():
         return x, labels
 
 
-class SiameseToneModelDataLoader():
+class SiameseDataLoader():
     """ Data loader for siamese-based CNN tone models that perform sentiment analysis.
     """
 
@@ -88,16 +88,13 @@ class SiameseToneModelDataLoader():
         Returns:
             Xmfcc features, xlmfe features, and their corresponding labels.
         """
-        mfcc_path = os.path.join(data_directory, "siamese", "mfcc_siam.joblib")
-        lmfe_path = os.path.join(data_directory, "siamese", "lmfe_siam.joblib")
-        mfcc_labels_path = os.path.join(
-            data_directory, "siamese", "mfcc_siam_labels.joblib")
-        lmfe_labels_path = os.path.join(
-            data_directory, "siamese", "lmfe_siam_labels.joblib")
+        mfcc_path = os.path.join(data_directory, "siamese", "mfcc_test.joblib")
+        lmfe_path = os.path.join(data_directory, "siamese", "lmfe_test.joblib")
+        labels_path = os.path.join(
+            data_directory, "siamese", "labels_test.joblib")
 
         mfcc = joblib.load(mfcc_path)
         lmfe = joblib.load(lmfe_path)
-        mfcc_labels = joblib.load(mfcc_labels_path)
-        lmfe_labels = joblib.load(lmfe_labels_path)
+        labels = joblib.load(labels_path)
 
-        return mfcc, lmfe, mfcc_labels, lmfe_labels
+        return mfcc, lmfe, labels
