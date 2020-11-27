@@ -16,8 +16,8 @@ PEP8_Conformity:
  allow_failure: true
  script:
    - "echo Running PEP8 Conformity checks to src folder"
-   - "cd src"
-   - "pytest --pep8 --disable-warnings"
+   - "ls -la"
+   - "pytest --pep8 --disable-warnings src"
  tags:
    - jarvis
 
