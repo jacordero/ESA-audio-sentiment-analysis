@@ -2,6 +2,9 @@ import os
 import numpy as np
 from pathlib import Path
 from stern_utils import Utils
+from pydub import AudioSegment
+from scipy.io.wavfile import write
+
 
 
 class AudioAnalyzer:
@@ -50,6 +53,7 @@ class AudioAnalyzer:
 		Returns:
 			List containing pairs of sentiments and their corresponding predictions.
 		"""
+
         tone_predictions = self.tone_predictor.predict(np.squeeze(audio))
         tone_emotion_probabilities = []
         i = 0
