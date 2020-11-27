@@ -7,7 +7,7 @@ stages:
   - data
   - interface
   - threholds
-  - updating
+  - integration
   
 #Conformity Checks
 PEP8_Conformity:
