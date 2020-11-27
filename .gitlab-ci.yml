@@ -76,11 +76,8 @@ Threshold_validation:
   tags:
     - audio
     
-Copy accepted model from candidate to deployment push to dvc and git
-Update configuration values
-
-Updating_deployed_model:
-  stage: updating
+Integration_test:
+  stage: integration
   cache:
     key: default
     paths:
