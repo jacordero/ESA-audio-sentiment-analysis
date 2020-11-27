@@ -5,7 +5,7 @@ from keras.models import Sequential
 
 class SequentialThreeConvModulesGenerator():
 
-    def generate_model(self, n_conv_filters, filters_shape, _input_shape):
+    def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
         model = Sequential()
         model.add(Conv1D(n_conv_filters[0], filters_shape[0], padding='same',
                          input_shape=_input_shape))
@@ -29,16 +29,16 @@ class SequentialThreeConvModulesGenerator():
         model.add(MaxPooling1D(2))
 
         model.add(Flatten())
-        model.add(Dense(8))
-        model.add(Dense(8))
-        model.add(Dense(8))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
         model.add(Activation('softmax'))
         return model
 
   
 class SequentialTwoConvModulesGenerator():
 
-    def generate_model(self, n_conv_filters, filters_shape, _input_shape):
+    def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
         model = Sequential()
      
         model.add(Conv1D(n_conv_filters[0], filters_shape[0], padding='same',
@@ -54,15 +54,15 @@ class SequentialTwoConvModulesGenerator():
         model.add(Dropout(0.2))
 
         model.add(Flatten())
-        model.add(Dense(8))
-        model.add(Dense(8))
-        model.add(Dense(8))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
         model.add(Activation('softmax'))
         return model
 
 class SequentialOneConvModuleGenerator():
 
-    def generate_model(self, n_conv_filters, filters_shape, _input_shape):
+    def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
         model = Sequential()
 
         model.add(Conv1D(n_conv_filters[0], filters_shape[0], padding='same',
@@ -72,9 +72,9 @@ class SequentialOneConvModuleGenerator():
         model.add(Dropout(0.2))
 
         model.add(Flatten())
-        model.add(Dense(8))
-        model.add(Dense(8))
-        model.add(Dense(8))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
         model.add(Activation('softmax'))
         return model
 

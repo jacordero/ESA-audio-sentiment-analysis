@@ -9,16 +9,17 @@ stages:
   - threholds
   - updating
   
-# Conformity Checks
-#PEP8_Conformity:
-#  stage: PEP8
-#  image: geoazis/sentimentanalysis
-#  script:
-#    - "echo Running PEP8 Conformity checks to src folder"
-#    - "cd src"
-#    - "pytest --pep8 --disable-warnings"
-#  tags:
-#    - jarvis
+#Conformity Checks
+PEP8_Conformity:
+ stage: PEP8
+ image: geoazis/sentimentanalysis
+ allow_failure: true
+ script:
+   - "echo Running PEP8 Conformity checks to src folder"
+   - "cd src"
+   - "pytest --pep8 --disable-warnings"
+ tags:
+   - jarvis
 
 Fetch_data_and_models:
   stage: fetch
@@ -58,25 +59,25 @@ Interface_validation:
     - audio
 
 
-# Threshold_validation: 
-#   stage: threholds
-#   cache:
-#     key: default
-#     paths:
-#         - prod_data/test/
-#         - prod_models/candidate/
-#         - prod_models/deployed/
-#   script: 
-#     - "echo Testing DNN metrics against threshold values"
-#     - "source /home/pi/Documents/esa/venv/bin/activate"
-#     - "python tests/compute_models_performance.py"
-#     - "pytest tests/test_cases/Threshold_test_cases/ --disable-warnings"
+Threshold_validation: 
+  stage: threholds
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
+        - prod_models/deployed/
+  script: 
+    - "echo Testing DNN metrics against threshold values"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "python tests/compute_models_performance.py"
+    - "pytest tests/test_cases/Threshold_test_cases/ --disable-warnings"
 
-#   tags:
-#     - audio
+  tags:
+    - audio
     
-# Copy accepted model from candidate to deployment push to dvc and git
-# Update configuration values
+Copy accepted model from candidate to deployment push to dvc and git
+Update configuration values
 
 Updating_deployed_model:
   stage: updating
@@ -92,14 +93,5 @@ Updating_deployed_model:
     - "python tests/update_configuration_file.py"
     - "python tests/copy_model_to_deployment.py"
     - "python src/stern_audio.py src/raspi_deployment_config.yml"
-#    - "rm -rf prod_models/candidate/!(empty.txt)"
-    - "rm -r prod_models/candidate/*"
-    - "touch prod_models/candidate/empty.txt"
-#    - "dvc add prod_models"
-#    - "dvc commit"
-#    - "dvc push"
-#    - "git add prod_models.dvc"
-#    - "git commit -m \"[ci skip] ${userstory}\""
-#    - "git push"
   tags:
     - audio
