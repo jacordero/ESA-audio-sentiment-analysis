@@ -1,6 +1,7 @@
 model:
-  model_name: "seq_3conv_modules_be_nice"
-  type: "sequential"
+  dir: "seq_3conv_modules_5emotions_ret/saved_models"
+  file: "Emotion_Voice_Detection_Model.h5"
+  type: "Siamese"
   n_mfcc: 50
 
 test_data_dir: "./prod_data/test"

@@ -25,25 +25,25 @@ git clone https://ooti-projects.win.tue.nl/gitlab/st-c2019/esa/audio-sentiment-a
 
 ## Use cases
 
-**Note:** before performing the following use cases, always pull the latest version of the production models and datasets (```dvc pull```).
-
 ### Modify production data
-1. Add or remove audios from the ```prod_data``` directory.
-2. Execute ```dvc status``` to see that the contents of ```prod_data``` were modified.
-3. Execute ```dvc add prod_data``` to update the contents of ```prod_data.dvc```.
-4. Track changes with git: ```git add prod_data.dvc```.
-5. Git commit: ```git commit -m "commit message" ```.
-6. Update production: ```dvc push```.
-7. Push changes to GitLab: ```git push origin [branch-name]```.
+1. Execute ```dvc pull```.
+2. Add or remove audios from the ```prod_data``` directory.
+3. Execute ```dvc status``` to see that the contents of ```prod_data``` were modified.
+4. Execute ```dvc add prod_data``` to update the contents of ```prod_data.dvc```.
+5. Track changes with git: ```git add prod_data.dvc```.
+6. Git commit: ```git commit -m "commit message" ```.
+7. Update production: ```dvc push```.
+8. Push changes to GitLab: ```git push origin [branch-name]```.
 
 ### Add new production model
-1. Add new model in the ```prod_models``` directory.
-2. Execute ```dvc status``` to see that the contents of ```prod_models``` were modified.
-3. Execute ```dvc add prod_models``` to update the contents of ```prod_models.dvc```.
-4. Track changes with git: ```git add prod_models.dvc```.
-5. Git commit: ```git commit -m "commit message" ```.
-6. Update production: ```dvc push```.
-7. Push changes to GitLab: ```git push origin [branch-name]```.
+1. Execute ```dvc pull```.
+2. Add new model in the ```prod_models/candidate``` directory.
+3. Execute ```dvc status``` to see that the contents of ```prod_models``` were modified.
+4. Execute ```dvc add prod_models``` to update the contents of ```prod_models.dvc```.
+5. Track changes with git: ```git add prod_models.dvc```.
+6. Git commit: ```git commit -m "commit message" ```.
+7. Update production: ```dvc push```.
+8. Push changes to GitLab: ```git push origin [branch-name]```.
 
 
 ### Deploy new model in the raspberry pi

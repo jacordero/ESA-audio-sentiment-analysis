@@ -57,6 +57,7 @@ Interface_validation:
     - "pytest tests/test_cases/Model_test_cases/ --disable-warnings"
   tags:
     - audio
+  allow_failure: true
 
 
 Threshold_validation: 
