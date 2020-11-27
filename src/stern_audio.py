@@ -88,7 +88,12 @@ class SternAudio:
 									samplerate=self.audio_frequency, channels=self.audio_channels)
 			sd.wait()
 
-			predicted_emotion_probs = audio_analyzer.analyze(recorded_audio)
+			#downsampled_recorded_audio = np.squeeze()
+			print("Recorded audio shape: {}".format(recorded_audio.shape))
+			print("Downsampled audio shape: {}".format((recorded_audio[::2]).shape))
+			#print(recorded_audio)
+			downsampled_audio = recorded_audio[::2]
+			predicted_emotion_probs = audio_analyzer.analyze(downsampled_audio)
 			print("\n2) Predictions")
 			self.print_emotions("Audio prediction", predicted_emotion_probs)
 
@@ -177,7 +182,7 @@ def parse_parameters(parameters):
 
 	stern_audio_parameters = {
 		'audio_length': int(parameters['audio_length']),
-		'audio_frequency': int(parameters['audio_frequency']),
+		'audio_frequency': 44100,#int(parameters['audio_frequency']),
 		'audio_channels': int(parameters['audio_channels']),
 		'before_recording_pause': int(parameters['before_recording_pause']),
 		'after_audio_analysis_pause': int(parameters['after_audio_analysis_pause']),
