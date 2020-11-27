@@ -23,6 +23,7 @@ PEP8_Conformity:
 
 Fetch_data_and_models:
   stage: fetch
+  image: geoazis/sentimentanalysis:latest
   cache:
     key: default
     paths:
@@ -33,17 +34,19 @@ Fetch_data_and_models:
     - "dvc remote modify --local nielspi password projectesa"
     - "dvc pull -f"
   tags:
-    - audio
+    - jarvis
 
 Data_validation:
   stage: data
+  image: geoazis/sentimentanalysis:latest
   script:
     - "echo Testing data schema and values"
   tags:
-    - audio
+    - jarvis
     
 Interface_validation: 
   stage: interface
+  image: geoazis/sentimentanalysis:latest
   cache:
     key: default
     paths:
@@ -54,12 +57,13 @@ Interface_validation:
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "pytest tests/test_cases/Model_test_cases/ --disable-warnings"
   tags:
-    - audio
+    - jarvis
   allow_failure: true
 
 
 Threshold_validation: 
   stage: threholds
+  image: geoazis/sentimentanalysis:latest
   cache:
     key: default
     paths:
@@ -72,7 +76,7 @@ Threshold_validation:
     - "pytest tests/test_cases/Threshold_test_cases/ --disable-warnings"
 
   tags:
-    - audio
+    - jarvis
     
 # Copy accepted model from candidate to deployment push to dvc and git
 # Update configuration values
