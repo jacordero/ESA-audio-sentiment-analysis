@@ -9,16 +9,17 @@ stages:
   - threholds
   - updating
   
-# Conformity Checks
-#PEP8_Conformity:
-#  stage: PEP8
-#  image: geoazis/sentimentanalysis
-#  script:
-#    - "echo Running PEP8 Conformity checks to src folder"
-#    - "cd src"
-#    - "pytest --pep8 --disable-warnings"
-#  tags:
-#    - jarvis
+#Conformity Checks
+PEP8_Conformity:
+ stage: PEP8
+ image: geoazis/sentimentanalysis:latest
+ allow_failure: true
+ script:
+   - "echo Running PEP8 Conformity checks to src folder"
+   - "cd src"
+   - "pytest --pep8 --disable-warnings"
+ tags:
+   - jarvis
 
 Fetch_data_and_models:
   stage: fetch
