@@ -7,7 +7,7 @@ __email__ = "r.sadeghi@tue.nl; j.a.cordero.cruz@tue.nl; p.mirshafiei@tue.nl;"
 __copyright__ = "TU/e ST2019"
 
 
-class SequentialToneModelDataLoader():
+class SequentialDataLoader():
     """ 
     Data loader for sequential-based CNN tone models that perform sentiment analysis.
     """
@@ -105,7 +105,7 @@ class SequentialToneModelDataLoader():
         return features, labels
 
 
-class SiameseToneModelDataLoader():
+class SiameseDataLoader():
     """ 
     Data loader for Siamese-based CNN tone models that perform sentiment analysis.
     """

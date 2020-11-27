@@ -60,7 +60,7 @@ class FeatureExtractor:
     
     def audio_padding(self, audio_file_path):
         """
-        this function add silence to audio tracks with length less than chunk_length_in_milli_sec.
+        This function add silence to audio tracks with length less than chunk_length_in_milli_sec.
         the new files will be saved with the same name in the same path.
         :param audio_file_path: full path to the file (audio track)
         """
@@ -82,7 +82,7 @@ class FeatureExtractor:
 
     def __lmfe_feature_extractor(self, sig, sample_rate):
         """
-        This function calculates log filter bank and transpose it
+        This function calculates log filter bank and transposes it.
         :param sig: audio time series
         :param sample_rate: sampling rate of sig
         """
@@ -93,7 +93,7 @@ class FeatureExtractor:
 
     def __sequential_lmfe_feature_extractor(self, sig, sample_rate):
         """
-        This function calculates log filter bank and transpose it
+        This function calculates log filter bank and transpose it.
         :param sig: audio time series
         :param sample_rate: sampling rate of sig
         """
@@ -103,7 +103,7 @@ class FeatureExtractor:
     
     def __mfcc_feature_extractor(self, sig, sample_rate):
         """
-        This function calculates mel frequency cepstral coefficient feature _ mfcc .
+        This function calculates mel frequency cepstral coefficient feature _ mfcc.
         :param sig: audio time series
         :param sample_rate: sampling rate of sig
         """
@@ -111,7 +111,7 @@ class FeatureExtractor:
 
     def __sequential_mfcc_extractor(self, sig, sample_rate):
         """
-        This function calculates the mean of transpose of mel frequency cepstral coefficient 
+        This function calculates the mean of transpose of mel frequency cepstral coefficient.
         :param sig: audio time series
         :param sample_rate: sampling rate of sig
         """
@@ -120,9 +120,9 @@ class FeatureExtractor:
 
     def tone_features_creator(self, goal="train", feature_type= "mfcc_sequential"):
         """
-        capturing mfcc feature.
+        Capturing mfcc feature.
         :param goal: "train", "validation" or "test". using this paramter, one can define features of 
-        which dataset should be extracted
+        which dataset should be extracted.
         :param feature_type: "mfcc_sequential", "lmfe_sequential",  "mfcc", or "lmfe". User can pass one of these three
         options to define which feature should be extracted. notice that mfcc_sequential is the mfcc 
         feature that should be extracted in the sequential model.
@@ -199,7 +199,7 @@ class FeatureExtractor:
     
     def __saving_features(self, lst_x, lst_y, type_, goal):
         """
-        saving features for later use. in case we want to retrain our model by only changing
+        Saving features for later use. in case we want to retrain our model by only changing
         the hyper parameters, there is no need to extract features again.
         :param save_dir: the directory to save the features
         :param lst_y: the lables
@@ -230,7 +230,10 @@ class FeatureExtractor:
         return X, y
 
     def load_training_parameters(self, training_parameters_filename):
-        
+        """
+        This function load training parameters from yaml file.
+        :param training_parameters_filename the filename/file path to the training file 
+        """
         # load training parameters from yaml file
         root_path = Path(os.getcwd())
         with open(os.path.join(root_path, "training", training_parameters_filename)) as f:
@@ -261,7 +264,7 @@ if __name__ == '__main__':
     In order to extract features, once you need to run this script.
     for running the sequential model, you need either mfcc_sequential or lmfe_sequential.
     for running the siamese model, you need to extract both mfcc and lmfe feature. 
-    Therefore, please run this script twice, once with an argument mfcc, another time with lmfe argument
+    Therefore, please run this script twice, once with an argument mfcc, another time with lmfe argument.
     """
     if len(sys.argv) < 2:
         raise Exception("Please specify the feature to be extracted (mfcc, lmfe, mfcc_sequentiol, or lmfe_sequential) ")

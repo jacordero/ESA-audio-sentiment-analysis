@@ -3,7 +3,7 @@ import yaml
 from pathlib import Path
 
 from sequential_model_generator import SequentialModelGeneratorFactory
-from data_loader import SequentialToneModelDataLoader
+from data_loader import SequentialDataLoader
 import keras
 import numpy as np
 import tensorflow as tf
@@ -74,7 +74,7 @@ def retrain_sequential_model(parameters):
     test_data_dir_path = os.path.normpath(os.path.join(
         root_path, parameters["test_data_directory"]))
 
-    data_loader = SequentialToneModelDataLoader()
+    data_loader = SequentialDataLoader()
     mfcc_train, labels_train = data_loader.load_train_data(
         train_data_dir_path)
     mfcc_val, labels_val = data_loader.load_validation_data(

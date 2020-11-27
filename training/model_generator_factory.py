@@ -1,4 +1,4 @@
-from siamese_model_generator import SiameseModel, TwoLayerSiameseModel
+from siamese_model_generator import SiameseModelGenerator, TwoLayerSiameseModelGenerator
 from sequential_model_generator import SequentialThreeConvModulesGenerator
 from sequential_model_generator import SequentialTwoConvModulesGenerator, SequentialOneConvModuleGenerator
 
@@ -15,8 +15,8 @@ class ModelGeneratorFactory():
             'sequential_three_conv_modules_generator': SequentialThreeConvModulesGenerator,
             'sequential_two_conv_modules_generator': SequentialTwoConvModulesGenerator,
             'sequential_one_conv_module_generator': SequentialOneConvModuleGenerator,
-            'siamese_three_conv_modules_generator': SiameseModel,
-            'siamese_two_conv_modules_generator': TwoLayerSiameseModel,
+            'siamese_three_conv_modules_generator': SiameseModelGenerator,
+            'siamese_two_conv_modules_generator': TwoLayerSiameseModelGenerator,
         }
 
     def get_model_generator(self, model_name):

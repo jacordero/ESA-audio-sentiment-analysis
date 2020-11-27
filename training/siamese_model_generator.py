@@ -9,9 +9,9 @@ __email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl;"
 __copyright__ = "TU/e ST2019"
 
 
-class SiameseModel():
+class SiameseModelGenerator():
     """
-    create a Siamese model which is a kind of parallel model, with two inputs: "mfcc" and "lmfe"
+    Create a Siamese model which is a kind of parallel model, with two inputs: "mfcc" and "lmfe"
     This model is based on this paper [https://link.springer.com/chapter/10.1007%2F978-3-030-51999-5_18]
     """
     def create_siamese_branch_architecture(self, n_conv_filters, filters_shape,  input_shape_x, input_shape_y):
@@ -51,7 +51,7 @@ class SiameseModel():
 
     def concatenate_models(self, branch1, branch2, input1, input2):
         """
-        creating the final model by concatinating two branches (mfcc and lmfe)
+        Creating the final model by concatinating two branches (mfcc and lmfe)
         :param branch1: the model created based on mfcc feature
         :param branch2: the model created based on lmfe feature
         :param input1: the first input for Siamese model
@@ -64,7 +64,7 @@ class SiameseModel():
 
     def generate_model(self, n_conv_filters, filters_shape, _input_shape):
         """
-        create a Siamese model 
+        create a Siamese model.
         :param: n_conv_filter:  neurons should we used in each layer of branches
         :param: filters_shape:  filter shapes of the first layer
         :param: _input_shape: the input shape is an array with the first two paramters define the mfcc shape (X, y) 
@@ -76,11 +76,11 @@ class SiameseModel():
         return model
 
 
-class TwoLayerSiameseModel():
+class TwoLayerSiameseModelGenerator():
 
     def create_siamese_branch_architecture(self, n_conv_filters, filters_shape,  input_shape_x, input_shape_y):
         """
-        creating a general model to be used for both mffc and lmfe
+        Creating a general model to be used for both mffc and lmfe.
         :param n_conv_filters: default values based on the paper are 128, 256, 512
         :param filters_shape: default values based on the paper are [3,3,3]
         :param input_shape_x: the input shape of features
@@ -109,7 +109,7 @@ class TwoLayerSiameseModel():
 
     def concatenate_models(self, branch1, branch2, input1, input2):
         """
-        creating the final model by concatinating two branches (mfcc and lmfe)
+        Creating the final model by concatinating two branches (mfcc and lmfe).
         :param branch1: the first branch in Siamese model
         :param branch2: the second branch in Siamese model
         :param input1: the first input for Siamese model
@@ -122,7 +122,7 @@ class TwoLayerSiameseModel():
 
     def generate_model(self, n_conv_filters, filters_shape, _input_shape):
         """
-        create a Siamese model 
+        Create a Siamese model.
         :param: n_conv_filter:  neurons should we used in each layer of branches
         :param: filters_shape:  filter shapes of the first layer
         :param: _input_shape: the input shape is an array with the first two paramters define the mfcc shape (X, y) 

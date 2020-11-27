@@ -11,7 +11,7 @@ __copyright__ = "TU/e ST2019"
 
 class SequentialThreeConvModulesGenerator():
     """
-    This class creates SeqentialModel architecture with three convolutional layers.
+    This class creates sequential architecture with three convolutional layers.
     """
     def generate_model(self, n_conv_filters, filters_shape, _input_shape):
         """
@@ -52,7 +52,7 @@ class SequentialThreeConvModulesGenerator():
   
 class SequentialTwoConvModulesGenerator():
     """
-    This class creates SeqentialModel architecture with two convolutional layers .
+    This class creates SeqentialModel architecture with two convolutional layers.
     """
     def generate_model(self, n_conv_filters, filters_shape, _input_shape):
         """
@@ -84,7 +84,7 @@ class SequentialTwoConvModulesGenerator():
 
 class SequentialOneConvModuleGenerator():
     """
-    This class creates SeqentialModel architecture with three convolutional layers.
+    This class creates sequential architecture with three convolutional layers.
     """
 
     def generate_model(self, n_conv_filters, filters_shape, _input_shape):

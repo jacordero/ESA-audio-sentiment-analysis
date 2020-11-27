@@ -2,7 +2,7 @@ import os
 import yaml
 import time
 from model_generator_factory import ModelGeneratorFactory
-from data_loader import SequentialToneModelDataLoader, SiameseToneModelDataLoader
+from data_loader import SequentialDataLoader, SiameseDataLoader
 import keras
 import numpy as np
 from pathlib import Path
@@ -14,14 +14,22 @@ __copyright__ = "TU/e ST2019"
 
 def create_trained_model_path(trained_models_dir, trained_model_name):
     """
-    The 
+    This function creates the path to the model based on the training parameters yaml file.
+    :param trained_models_dir: the directory contatining the model
+    :param trained_model_name: the model name (.h5)
+    :Return the model path
     """
     root_path = Path(os.getcwd())
     tmp_trained_model_dir_path = os.path.join(root_path, trained_models_dir, trained_model_name)
     return os.path.normpath(tmp_trained_model_dir_path)
 
 def save_training_info(model_type, parameters, training_history):
-
+    """
+    This function saves the training information.
+    :param  model_type: the type of the model, either sequential or siamese
+    :param  parameters: a dictionary of parameters defined in the training parameters yaml file
+    :param  training_history:    the hisory of the training as numpy array
+    """
     trained_model_dir_path = create_trained_model_path(parameters['trained_models_dir'], parameters['trained_model_name'])
 
     yaml_file_path = os.path.join(trained_model_dir_path, "training_parameters.yml")
@@ -72,7 +80,7 @@ def train_sequential_model(parameters):
 
     feature_test_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_test_data_directory"]))
 
-    data_loader = SequentialToneModelDataLoader()
+    data_loader = SequentialDataLoader()
     mfcc_train, labels_train = data_loader.load_train_data(
         feature_train_data_directory)
     mfcc_val, labels_val = data_loader.load_validation_data(
@@ -122,7 +130,7 @@ def train_siamese_model(parameters):
     feature_test_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_test_data_directory"]))
     feature_validation_data_directory = os.path.normpath(os.path.join(root_path, parameters["feature_validation_data_directory"]))
 
-    data_loader = SiameseToneModelDataLoader()
+    data_loader = SiameseDataLoader()
     mfcc_train, lmfe_train, labels_train = data_loader.load_train_data(
         feature_train_data_directory)
     mfcc_val, lmfe_val, labels_val = data_loader.load_validation_data(
