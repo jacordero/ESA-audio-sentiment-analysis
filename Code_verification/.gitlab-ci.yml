@@ -1,0 +1,23 @@
+variables:
+  GIT_DEPTH: 10
+
+stages:
+  - PEP8
+  - fetch
+  - data
+  - interface
+  - threholds
+  - integration
+  
+#Conformity Checks
+PEP8_Conformity:
+ stage: PEP8
+ image: geoazis/sentimentanalysis
+ allow_failure: true
+ script:
+   - "echo Running PEP8 Conformity checks to src folder"
+   - "cd src"
+   - "pytest --pep8 --disable-warnings"
+ tags:
+   - jarvis
+

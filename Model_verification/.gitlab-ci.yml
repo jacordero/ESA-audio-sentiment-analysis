@@ -1,0 +1,95 @@
+variables:
+  GIT_DEPTH: 10
+
+stages:
+  - PEP8
+  - fetch
+  - data
+  - interface
+  - threholds
+  - integration
+  
+#Conformity Checks
+#PEP8_Conformity:
+# stage: PEP8
+# image: geoazis/sentimentanalysis
+# allow_failure: true
+# script:
+#   - "echo Running PEP8 Conformity checks to src folder"
+#   - "cd src"
+#   - "pytest --pep8 --disable-warnings"
+# tags:
+#   - jarvis
+
+Fetch_data_and_models:
+  stage: fetch
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
+        - prod_models/deployed/
+  script:
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "dvc remote modify --local nielspi password projectesa"
+    - "dvc pull -f"
+  tags:
+    - audio
+
+Data_validation:
+  stage: data
+  script:
+    - "echo Testing data schema and values"
+  tags:
+    - audio
+    
+Interface_validation: 
+  stage: interface
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
+        - prod_models/deployed/
+  script:
+    - "echo Testing DNNs interface specification"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "pytest tests/test_cases/Model_test_cases/ --disable-warnings"
+  tags:
+    - audio
+  allow_failure: true
+
+
+Threshold_validation: 
+  stage: threholds
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
+        - prod_models/deployed/
+  script: 
+    - "echo Testing DNN metrics against threshold values"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "python tests/compute_models_performance.py"
+    - "pytest tests/test_cases/Threshold_test_cases/ --disable-warnings"
+
+  tags:
+    - audio
+    
+Integration_test:
+  stage: integration
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
+        - prod_models/deployed/
+  script:
+    - "echo Executing smoke test on the Raspberry Pi"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+#    - "python tests/update_configuration_file.py"
+#    - "python tests/copy_model_to_deployment.py"
+    - "python src/stern_audio.py src/raspi_candidate_config.yml"
+  tags:
+    - audio
