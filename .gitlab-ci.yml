@@ -1,12 +1,12 @@
 stages:
   - triggers
 
-trigger_a:
+Candidate_model_assessment:
   stage: triggers
   trigger:
     include: Model_verification/.gitlab-ci.yml
 
-trigger_b:
+Code_verification:
   stage: triggers
   trigger:
     include: Code_verification/.gitlab-ci.yml
