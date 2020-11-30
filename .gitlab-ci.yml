@@ -34,7 +34,7 @@ Fetch_data_and_models:
     - "dvc remote modify --local nielspi password projectesa"
     - "dvc pull -f"
   tags:
-    - jarvis
+    - audio
 
 Data_validation:
   stage: data
@@ -42,7 +42,7 @@ Data_validation:
   script:
     - "echo Testing data schema and values"
   tags:
-    - jarvis
+    - audio
     
 Interface_validation: 
   stage: interface
@@ -57,7 +57,7 @@ Interface_validation:
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "pytest tests/test_cases/Model_test_cases/ --disable-warnings"
   tags:
-    - jarvis
+    - audio
   allow_failure: true
 
 
@@ -76,7 +76,7 @@ Threshold_validation:
     - "pytest tests/test_cases/Threshold_test_cases/ --disable-warnings"
 
   tags:
-    - jarvis
+    - audio
     
 # Copy accepted model from candidate to deployment push to dvc and git
 # Update configuration values
