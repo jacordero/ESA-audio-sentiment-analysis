@@ -23,7 +23,6 @@ PEP8_Conformity:
 
 Fetch_data_and_models:
   stage: fetch
-  image: geoazis/sentimentanalysis:latest
   cache:
     key: default
     paths:
@@ -38,7 +37,6 @@ Fetch_data_and_models:
 
 Data_validation:
   stage: data
-  image: geoazis/sentimentanalysis:latest
   script:
     - "echo Testing data schema and values"
   tags:
@@ -46,7 +44,6 @@ Data_validation:
     
 Interface_validation: 
   stage: interface
-  image: geoazis/sentimentanalysis:latest
   cache:
     key: default
     paths:

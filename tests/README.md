@@ -19,8 +19,12 @@ In this stage, we are assessing the quality of data against certain assumptions 
 # Model Architecture Verification
 In this stage, we are assessing the interface of the candidate model. The model shall always conform to the specifed architecture (input shate and output shape).
 
+The test cases that run in this stage are assessing the architecture of the candidate model.
+
 # Threshold Verification
 In this stage, we are assessing the performance of the candidate model. We created a generic script that gets as an input a candidate model. The directory, filename, and type of the candidate model are specified in a configuration file. Then, the generic script computes a set of performance metrics and writes them into a json file. Finally, the candidate's performance is assessed against the deployed models performance and general "goals" that the architect introduced on each of the performance metrics.
+
+The generic script is located in src folder and it's called compoute_performance.py. In order to manually run this script you first need to specify the correct candidate model in the configuration.yml, which can be located in the same folder. Furthermore, the candidate model and the test data must also be tracked by the dvc.
 
 # Smoke Test
 In this stage, we are running the complete system for two iterations, such that we are positive about the most important functions of the system.
