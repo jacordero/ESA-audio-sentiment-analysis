@@ -14,3 +14,4 @@ trigger_b:
     changes:
       - prod_models.dvc
       - prod_data.dvc
+      - tests/*
