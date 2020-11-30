@@ -60,7 +60,6 @@ Interface_validation:
 
 Threshold_validation: 
   stage: threholds
-  image: geoazis/sentimentanalysis:latest
   cache:
     key: default
     paths:
