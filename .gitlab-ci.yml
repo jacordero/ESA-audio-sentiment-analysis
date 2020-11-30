@@ -10,8 +10,7 @@ trigger_b:
   stage: triggers
   trigger:
     include: Code_verification/.gitlab-ci.yml
-  only:
-    changes:
-      - prod_models.dvc
-      - prod_data.dvc
-      - tests/*
+#  only:
+#    changes:
+#      - prod_models.dvc
+#      - prod_data.dvc
