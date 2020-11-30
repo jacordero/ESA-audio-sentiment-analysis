@@ -88,8 +88,8 @@ Integration_test:
   script:
     - "echo Executing smoke test on the Raspberry Pi"
     - "source /home/pi/Documents/esa/venv/bin/activate"
-    - "python tests/update_configuration_file.py"
-    - "python tests/copy_model_to_deployment.py"
-    - "python src/stern_audio.py src/raspi_deployment_config.yml"
+#    - "python tests/update_configuration_file.py"
+#    - "python tests/copy_model_to_deployment.py"
+    - "python src/stern_audio.py src/raspi_candidate_config.yml"
   tags:
     - audio
