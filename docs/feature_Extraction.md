@@ -6,8 +6,7 @@
 
   
 
-This file contains instructions for extracting features from datasets. Feature_extraction.py can be used for extracting Mel-frequency cepstral coefficients (MFCC) or Log Mel Filterbank Energy (LMFE).
-
+This file contains instructions for extracting features from datasets. The extracted features will be saved as .joblib format. The feature_extraction.py script can be used for extracting Mel-frequency cepstral coefficients (MFCC) or Log Mel Filterbank Energy (LMFE).
   
 
 Sequential model needs only either [MFCC](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum#:~:text=In%20sound%20processing,%20the%20mel,collectively%20make%20up%20an%20MFC.) or LMFE for emotion detection, while both MFCC and LMFE are required for the siamese model. However, sequential model expects the mean of the MFCC/LMFE. It's notable that MFCC seems to reveal more information than MFCC. Therefore, it's highly recommended to use MFCC for training the sequential model.
@@ -46,17 +45,17 @@ the training_parameters.yml file constains multiple parameters. However, the bel
 
   
 
-- [ ] **n_mfcc**: The number of coefficients required for extracting MFCC feature.
+-  **n_mfcc**: The number of coefficients required for extracting MFCC feature.
 
-- [ ] **n_lmfe**: The number of filterbanks to be used in LMFE extraction.
+-  **n_lmfe**: The number of filterbanks to be used in LMFE extraction.
 
-- [ ] **raw_train_data_directory**: The path to the directory containing dataset (audio tracks in the form of **.wav**) required for training purpose
+-  **raw_train_data_directory**: The path to the directory containing dataset (audio tracks in the form of **.wav**) required for training purpose
 
-- [ ] ***raw_test_data_directory:*** The path to the directory containing dataset (audio tracks in the form of **.wav**) required for testing purpose
+- ***raw_test_data_directory:*** The path to the directory containing dataset (audio tracks in the form of **.wav**) required for testing purpose
 
-- [ ] ***raw_validation_data_directory:*** The path to the directory containing dataset (audio tracks in the form of **.wav**) required for validation purpose
+- ***raw_validation_data_directory:*** The path to the directory containing dataset (audio tracks in the form of **.wav**) required for validation purpose
 
-- [ ] ***chunk_length_in_milli_sec:*** As a preprocessing step, we assumed that all audio tracks should be in the same length. Using this feature, you can configure the desired length in milliseconds.
+-  ***chunk_length_in_milli_sec:*** As a preprocessing step, we assumed that all audio tracks should be in the same length. Using this feature, you can configure the desired length in milliseconds.
 
 -  ***Note***: This length should be at least the same size as the longest audio file in your dataset.
 
