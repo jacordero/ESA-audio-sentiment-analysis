@@ -1,4 +1,4 @@
-﻿# Model Training
+# Model Training
 
 This file contains instructions for training the models. One can create either a sequential or non-sequential (simese) model quite dynamically with setting parameters in the *training_parameters.yml* file and executing model_trainer.py script.
 extracting features from datasets. 
@@ -7,7 +7,7 @@ For more information on how to extract features, please read [here](/docs/featur
 
 ## Configuration File
 
-In the training directory you can find a Yaml file, called ***training_parameters.yml*** . It contains all the parameters required for creating the model, extracting features, training the model, and saving the model. Below you can learn about each of these paramaters in detail.
+In the training directory you can find a Yaml file, called _training_parameters.yml_. It contains all the parameters required for creating the model, extracting features, training the model, and saving the model. Below you can learn about each of these paramaters in detail.
 
  -  ***model_type***: It can be either "Sequential" or "Siamese". It specifies the type of the model to be created.
  -  ***model_generator***: Each model can be created with different convolutional layers/internal structure. Using this parameter, you could more precisely define your desired model.
