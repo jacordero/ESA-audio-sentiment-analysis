@@ -5,8 +5,8 @@ import yamale
 
 
 def test_config_file_against_schema():
-    '''The purpose of the test case is to verify that
-    the configuration file adheres to the correct schema.'''
+    """The purpose of the test case is to verify that
+    the configuration file adheres to the correct schema."""
     # Get schema
     schema = yamale.make_schema('tests/test_cases/Preprocessing/configuration_schema.yml')
 
@@ -23,8 +23,8 @@ def test_config_file_against_schema():
 
 
 def test_raspi_candidate_against_schema():
-    '''The purpose of the test case is to verify that
-    the rapsi_candidate_config file adheres to the correct schema.'''
+    """The purpose of the test case is to verify that
+    the rapsi_candidate_config file adheres to the correct schema."""
     # Get schema
     schema = yamale.make_schema('tests/test_cases/Preprocessing/raspi_candidate_config_schema.yml')
 
@@ -41,8 +41,8 @@ def test_raspi_candidate_against_schema():
 
 
 def test_raspi_deployment_against_schema():
-    '''The purpose of the test case is to verify that
-    the rapsi_deployment_config file adheres to the correct schema.'''
+    """The purpose of the test case is to verify that
+    the rapsi_deployment_config file adheres to the correct schema."""
     # Get schema
     schema = yamale.make_schema('tests/test_cases/Preprocessing/raspi_deployment_config_schema.yml')
 
