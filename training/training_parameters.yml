@@ -1,7 +1,7 @@
-model_type: "Sequential"
+model_type:  "Siamese" #"Sequential"
 parameters: 
-  model_generator: "sequential_three_conv_modules_generator"
-  n_conv_filters: [32, 128, 256]
+  model_generator:  "siamese_three_conv_modules_generator" 
+  n_conv_filters: [32, 128, 256] 
   filters_shape: [5, 5, 5]
   input_shape: [50, 1]
   n_emotions: 5
@@ -11,10 +11,10 @@ parameters:
   batch_size: 8
   epochs: 1
   trained_models_dir: "./prod_models/candidate"
-  trained_model_name: "seq_3conv_modules_5emotions"
-  feature_train_data_directory: "./data/features/Sequential_5emotions/train"
-  feature_test_data_directory: "./data/features/Sequential_5emotions/test"
-  feature_validation_data_directory: "./data/features/Sequential_5emotions/validation"
+  trained_model_name: "seq_3conv_modules_2layer_Raha_Siamese"
+  feature_train_data_directory: "./data/features/Siamese/train"
+  feature_test_data_directory: "./data/features/Siamese/test"
+  feature_validation_data_directory: "./data/features/Siamese/validation"
   raw_train_data_directory: "./data/tone_5_emotions_dataset_v1/train"
   raw_test_data_directory: "./data/tone_5_emotions_dataset_v1/test"
   raw_validation_data_directory: "./data/tone_5_emotions_dataset_v1/validation"
