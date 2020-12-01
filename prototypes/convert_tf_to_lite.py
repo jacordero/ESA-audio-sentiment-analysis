@@ -100,8 +100,8 @@ def representative_data_gen():
        (The dataset does not need to be unique compared to the training or evaluation dataset.)
 
     """
-    data_path = os.path.join(os.path.abspath('prod_data'), 'sequential_model/test')
-
+    data_path = os.path.join(os.path.abspath('prod_data'), 'test/sequential')
+  
     mfcc = joblib.load(os.path.join(data_path, 'mfcc_test.joblib'))
     mfcc = np.expand_dims(mfcc, axis =2)
 
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         print("MODEL: A - SQUENTIAL")
         print("MODEL: B - SIAMESE")
         print("OPTION:  1 - FLOAT32")
-        print("OPTION:  2 - INT16")
+        print("OPTION:  2 - INT8")
         print(" To run the converter script... PLEASE PROVIDE VERSION ")
         print(" python convert_ft_to_lite.py [MODEL] [OPTION] [version to save lite model - example: 0_1]")
         exit(0)
@@ -154,13 +154,13 @@ if __name__ == "__main__":
     if model == 'A':
         parameters = {
             # resource related parameters
-            'model_name': 'final_models/squential/Emotion_Voice_Detection_Model.h5', 
+            'model_name': 'candidate/sequential/saved_models/Emotion_Voice_Detection_Model.h5', 
             'tflite_model_name': 'squential'
         }
     else:
         parameters = {
             # resource related parameters
-            'model_name': 'final_models/siamese/Emotion_Voice_Detection_Model.h5',
+            'model_name': 'candidate/siamese/saved_models/Emotion_Voice_Detection_Model.h5',
             'tflite_model_name': 'siamese'
         }
     parameters['version'] = version
