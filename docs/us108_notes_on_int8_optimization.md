@@ -16,7 +16,7 @@ parameters = {
 
 **2.** The script complies with the absolute path. Thus, it can be execute from root folder by the following command:
 
-` python prototype/convert_tf_to_lite.py [model type] [tflite type] [version] `
+` python prototypes/convert_tf_to_lite.py [model type] [tflite type] [version] `
 
 Where, [model type] indicates the A: sequential and B: siamese model and [tflite type] indicates the 1: float32 and 2: int8. 
 
