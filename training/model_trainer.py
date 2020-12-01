@@ -88,15 +88,19 @@ def train_sequential_model(parameters):
     mfcc_test, labels_test = data_loader.load_test_data(
         feature_test_data_directory)
 
+    if parameters["n_emotions"] != len(np.unique(labels_train)):
+        message = "The value n_emotions and the number of labels in the training dataset are different.\n"
+        message += "n_emotions: {}, number of labels: {}".format(parameters["n_emotions"], len(np.unique(labels_train)))
+        raise ValueError(message)
+
     # create model
-    print("Shape: {}".format(mfcc_train.shape))
     parameters["input_shape"] = [mfcc_train.shape[1], mfcc_train.shape[2]]
 
     model_generator_factory = ModelGeneratorFactory()
     model_generator = model_generator_factory.get_model_generator(
         parameters["model_generator"])
     model = model_generator.generate_model(
-        parameters["n_conv_filters"], parameters["filters_shape"], parameters["input_shape"])
+        parameters["n_conv_filters"], parameters["filters_shape"], parameters["input_shape"], parameters["n_emotions"])
     print(model.summary())
 
     # compile model

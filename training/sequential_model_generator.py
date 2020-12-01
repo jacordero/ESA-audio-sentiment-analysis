@@ -13,7 +13,7 @@ class SequentialThreeConvModulesGenerator():
     """
     This class creates sequential architecture with three convolutional layers.
     """
-    def generate_model(self, n_conv_filters, filters_shape, _input_shape):
+    def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
         """
         create a sequential model with three layers
         :param: n_conv_filter: an array indicating number of neurons of each layer respectively
@@ -43,9 +43,9 @@ class SequentialThreeConvModulesGenerator():
         model.add(MaxPooling1D(2))
 
         model.add(Flatten())
-        model.add(Dense(5))
-        model.add(Dense(5))
-        model.add(Dense(5))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
         model.add(Activation('softmax'))
         return model
 
@@ -54,7 +54,7 @@ class SequentialTwoConvModulesGenerator():
     """
     This class creates SeqentialModel architecture with two convolutional layers.
     """
-    def generate_model(self, n_conv_filters, filters_shape, _input_shape):
+    def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
         """
         create a sequential model with three layers
         :param: n_conv_filter: an array indicating number of neurons of each layer respectively
@@ -76,9 +76,9 @@ class SequentialTwoConvModulesGenerator():
         model.add(Dropout(0.2))
 
         model.add(Flatten())
-        model.add(Dense(5))
-        model.add(Dense(5))
-        model.add(Dense(5))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
         model.add(Activation('softmax'))
         return model
 
@@ -87,7 +87,7 @@ class SequentialOneConvModuleGenerator():
     This class creates sequential architecture with three convolutional layers.
     """
 
-    def generate_model(self, n_conv_filters, filters_shape, _input_shape):
+    def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
         """
         create a sequential model with one layer
         :param: n_conv_filter:  number of neurons of the first layer
@@ -103,8 +103,8 @@ class SequentialOneConvModuleGenerator():
         model.add(Dropout(0.2))
 
         model.add(Flatten())
-        model.add(Dense(5))
-        model.add(Dense(5))
-        model.add(Dense(5))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
+        model.add(Dense(n_emotions))
         model.add(Activation('softmax'))
         return model

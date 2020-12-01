@@ -95,7 +95,10 @@ class SiameseToneSentimentPredictor:
             probabilities of the emotions that can be predicted by a siamese tone model
         """
         mfcc_features, lmfe_features = self.__compute_features(audio_array)
-        return np.squezee(self.model.predict(mfcc_features, lmfe_features))
+        new_mfcc=np.expand_dims(mfcc_features,axis=0)
+        new_lmfe=np.expand_dims(lmfe_features,axis=0)
+
+        return np.squeeze(self.model.predict([new_mfcc, new_lmfe]))
 
 
 class SequentialToneSentimentPredictor:

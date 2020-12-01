@@ -88,7 +88,12 @@ class SternAudio:
 									samplerate=self.audio_frequency, channels=self.audio_channels)
 			sd.wait()
 
-			predicted_emotion_probs = audio_analyzer.analyze(recorded_audio)
+			#downsampled_recorded_audio = np.squeeze()
+			print("Recorded audio shape: {}".format(recorded_audio.shape))
+			print("Downsampled audio shape: {}".format((recorded_audio[::2]).shape))
+			#print(recorded_audio)
+			downsampled_audio = recorded_audio[::2]
+			predicted_emotion_probs = audio_analyzer.analyze(downsampled_audio)
 			print("\n2) Predictions")
 			self.print_emotions("Audio prediction", predicted_emotion_probs)
 
@@ -104,7 +109,7 @@ class SternAudio:
 
 #def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
 def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
-	""" Supporting function that loads tone models 
+	""" Supporting function that loads tone models
 
 	Args:
 		prod_models_dir : relative path of the production models directory
@@ -119,6 +124,7 @@ def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
 	tone_model_dir_path = os.path.normpath(os.path.join(root_path, prod_models_dir, tone_model_dir, tone_model_name))
 	print(tone_model_dir_path)
 	return tf.keras.models.load_model(tone_model_dir_path)
+
 
 def create_tone_predictor(parameters):
 	""" Factory function that creates a tone predictor.
@@ -141,6 +147,7 @@ def create_tone_predictor(parameters):
 	else:
 		raise ValueError("Invalid tone model type: {}".format(parameters['model_type']))
 
+
 	return tone_predictor
 
 def parse_parameters(parameters):
@@ -150,8 +157,13 @@ def parse_parameters(parameters):
 		parameters : Dictionary containing the parameters of the configuration file
 
 	Returns:
-		Three dictionaries containing parameters to initialize model predictors, the audio analyzer class, and the stern audio class.
-	"""	
+		Four dictionaries containing parameters to initialize model predictors, the audio analyzer class, the stern audio class, and tone emotion mapping.
+	"""
+
+	tone_emotions = {}
+	for key, value in parameters['emotions'].items():
+		tone_emotions[key] = value
+
 	predictor_parameters = {
 		'prod_models_dir': parameters['prod_models_dir'],
 		'model_name': parameters['model']['file'],
@@ -165,16 +177,19 @@ def parse_parameters(parameters):
 		'logging_file_prefix': parameters['logging_file_prefix'],
 		'logging_directory': parameters['logging_directory'],
 		'audio_frequency': parameters['audio_frequency'],
+		'emotions': tone_emotions
 	}
 
 	stern_audio_parameters = {
 		'audio_length': int(parameters['audio_length']),
-		'audio_frequency': int(parameters['audio_frequency']),
+		'audio_frequency': 44100,#int(parameters['audio_frequency']),
 		'audio_channels': int(parameters['audio_channels']),
 		'before_recording_pause': int(parameters['before_recording_pause']),
 		'after_audio_analysis_pause': int(parameters['after_audio_analysis_pause']),
 		'iterations': int(parameters['iterations'])
 	}
+
+
 
 	return (predictor_parameters, analyzer_parameters, stern_audio_parameters)
 

@@ -1,9 +1,10 @@
 model_type:  "Siamese" #"Sequential"
 parameters: 
-  model_generator:  "siamese_three_conv_modules_generator" #"sequential_three_conv_modules_generator"
-  n_conv_filters: [32, 128, 256] #[128, 256, 521]
-  filters_shape: [5, 5, 5] #[3, 3,3]
+  model_generator:  "siamese_three_conv_modules_generator" 
+  n_conv_filters: [32, 128, 256] 
+  filters_shape: [5, 5, 5]
   input_shape: [50, 1]
+  n_emotions: 5
   n_mfcc: 50
   n_lmfe: 26
   adam_lr: 0.005
