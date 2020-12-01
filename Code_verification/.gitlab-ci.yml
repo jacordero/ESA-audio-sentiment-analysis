@@ -3,16 +3,13 @@ variables:
 
 stages:
   - PEP8
-  - fetch
-  - data
-  - interface
-  - threholds
-  - integration
+  - unit tests
+  - smoke tests
   
 #Conformity Checks
 PEP8_Conformity:
  stage: PEP8
- image: geoazis/sentimentanalysis
+ image: geoazis/sentimentanalysis:latest
  allow_failure: true
  script:
    - "echo Running PEP8 Conformity checks to src folder"
@@ -21,3 +18,23 @@ PEP8_Conformity:
  tags:
    - jarvis
 
+
+# Unit tests
+Unit_Tests:
+ stage: unit tests
+ image: geoazis/sentimentanalysis:latest
+ allow_failure: true
+ script:
+   - "echo Running Unit Tests"
+ tags:
+   - jarvis 
+   
+# Smoke tests
+Smoke_Tests:
+ stage: smoke tests
+ image: geoazis/sentimentanalysis:latest
+ allow_failure: true
+ script:
+   - "echo Running smoke Tests"
+ tags:
+   - jarvis 
