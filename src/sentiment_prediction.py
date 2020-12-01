@@ -1,3 +1,11 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei P.mirshafiei@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
+@ Contributors: Niels Rood n.rood@tue.nl; 
+Description: Module that contains several tone sentiment analyzers.
+Last modified: 01-12-2020
+"""
+
 import os
 import librosa
 import numpy as np
@@ -7,13 +15,6 @@ from python_speech_features import delta
 from python_speech_features import logfbank
 from librosa.feature import mfcc as lb_mfcc
 
-"""
-Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
-@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei P.mirshafiei@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
-@ Contributors: Niels Rood n.rood@tue.nl; 
-Description: Module that contains several tone sentiment analyzers.
-Last modified: 01-12-2020
-"""
 
 class SiameseToneSentimentPredictor:
     """Feature extractor that computes audio features required for emotion detection using siamese tone models based on the architecture described in [ref].

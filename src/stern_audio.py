@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
 @ Authors: Jorge Cordero j.a.cordero.cruz@tue.nl;
@@ -84,9 +83,9 @@ class SternAudio:
 			sd.wait()
 
 			# audio is downsampled from 44.1KHz to 22.05 KHz to match the training frequency of the siamese models
-			downsampled_audio = recorded_audio[::2]
-			predicted_emotion_probs = audio_analyzer.analyze(downsampled_audio)
-			#predicted_emotion_probs = audio_analyzer.analyze(recorded_audio) #raspberry supports 44.1KHz for recording
+			#downsampled_audio = recorded_audio[::2]
+			#predicted_emotion_probs = audio_analyzer.analyze(downsampled_audio)
+			predicted_emotion_probs = audio_analyzer.analyze(recorded_audio) #raspberry supports 44.1KHz for recording
 			print("\n2) Predictions")
 			self.print_emotions("Audio prediction", predicted_emotion_probs)
 
@@ -173,8 +172,8 @@ def parse_parameters(parameters):
 
 	stern_audio_parameters = {
 		'audio_length': int(parameters['audio_length']),
-		#'audio_frequency': int(parameters['audio_frequency']), 
-		'audio_frequency': 44100,
+		'audio_frequency': int(parameters['audio_frequency']), 
+		#'audio_frequency': 44100,
 		'audio_channels': int(parameters['audio_channels']),
 		'before_recording_pause': int(parameters['before_recording_pause']),
 		'after_audio_analysis_pause': int(parameters['after_audio_analysis_pause']),

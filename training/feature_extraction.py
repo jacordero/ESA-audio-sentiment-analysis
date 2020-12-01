@@ -1,3 +1,9 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei p.mirshafiei@tue.nl;
+Last modified: 01-12-2020
+"""
+
 import os
 import time
 import joblib
@@ -10,11 +16,6 @@ from pathlib import Path
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 
-
-__authors__ = "Raha Sadeghi, Parima Mirshafiei",
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl;"
-__copyright__ = "TU/e ST2019"
-
 class FeatureExtractor:
     """
     This class contains all the required functions for extracting the most important features of audio files.
@@ -24,16 +25,20 @@ class FeatureExtractor:
        pass
 
     def __calculate_nfft(self, samplerate, winlen):
-        """
-        Calculates the FFT size as a power of two greater than or equal to
+        """Calculates the FFT size as a power of two greater than or equal to
         the number of samples in a single window length.
 
         Having an FFT less than the window length loses precision by dropping
         many of the samples; a longer FFT than the window allows zero-padding
         of the FFT buffer which is neutral in terms of frequency domain conversion.
-        :param samplerate: The sample rate of the signal we are working with, in Hz.
-        :param winlen: The length of the analysis window in seconds.
-        """
+
+        Args:
+            samplerate: The sample rate of the signal we are working with, in Hz.
+            winlen: The length of the analysis window in seconds.
+
+        Returns:
+            the computed FFT size
+        """        
         window_length_samples = winlen * samplerate
         n_fft = 1
         while n_fft < window_length_samples:
@@ -59,11 +64,12 @@ class FeatureExtractor:
 
     
     def audio_padding(self, audio_file_path):
-        """
-        This function add silence to audio tracks with length less than chunk_length_in_milli_sec.
+        """This function add silence to audio tracks with length less than chunk_length_in_milli_sec.
         the new files will be saved with the same name in the same path.
-        :param audio_file_path: full path to the file (audio track)
-        """
+
+        Args:
+            audio_file_path: full path to the file (audio track)
+        """        
 
         audio_file = AudioSegment.from_file(audio_file_path, "wav")
         duration_in_sec = len(audio_file)  # Length of audio in milli-seconds
@@ -81,10 +87,14 @@ class FeatureExtractor:
         padded.export(audio_file_path, format='wav')
 
     def __lmfe_feature_extractor(self, sig, sample_rate):
-        """
-        This function calculates log filter bank and transposes it.
-        :param sig: audio time series
-        :param sample_rate: sampling rate of sig
+        """This function calculates log filter bank and transposes it.
+
+        Args:
+            sig: audio time series
+            sample_rate: sampling rate of sig
+
+        Returns:
+            lmfe features
         """
         nfft = self.__calculate_nfft(sample_rate, winlen=0.025)
         fbank_feat = logfbank(sig, sample_rate, nfft=nfft)
@@ -92,41 +102,58 @@ class FeatureExtractor:
         return transposed_fbank_feat
 
     def __sequential_lmfe_feature_extractor(self, sig, sample_rate):
-        """
-        This function calculates log filter bank and transpose it.
-        :param sig: audio time series
-        :param sample_rate: sampling rate of sig
+        """This function calculates log filter bank and transpose it.
+
+        Args:
+            sig: audio time series
+            sample_rate: sampling rate of sig
+
+        Returns:
+            lmfe features
         """
         nfft = self.__calculate_nfft(sample_rate, winlen=0.025)
         fbank_feat = np.mean(logfbank(sig, sample_rate, nfft=nfft).T, axis=0)
         return fbank_feat
     
     def __mfcc_feature_extractor(self, sig, sample_rate):
-        """
-        This function calculates mel frequency cepstral coefficient feature _ mfcc.
-        :param sig: audio time series
-        :param sample_rate: sampling rate of sig
+        """This function calculates mel frequency cepstral coefficient feature _ mfcc.
+
+        Args:
+            sig: audio time series
+            sample_rate: sampling rate of sig
+
+        Returns:
+            mfcc features
         """
         return librosa.feature.mfcc(y=sig, sr=sample_rate, n_mfcc=self.n_mfcc)
 
     def __sequential_mfcc_extractor(self, sig, sample_rate):
-        """
-        This function calculates the mean of transpose of mel frequency cepstral coefficient.
-        :param sig: audio time series
-        :param sample_rate: sampling rate of sig
+        """This function calculates the mean of transpose of mel frequency cepstral coefficient.
+
+        Args:
+            sig: audio time series
+            sample_rate: sampling rate of sig
+
+        Returns:
+            mfcc features
         """
         mfccs = np.mean(librosa.feature.mfcc(y=sig, sr=sample_rate, n_mfcc=self.n_mfcc).T, axis=0)
         return mfccs
 
     def tone_features_creator(self, goal="train", feature_type= "mfcc_sequential"):
-        """
-        Capturing mfcc feature.
-        :param goal: "train", "validation" or "test". using this paramter, one can define features of 
-        which dataset should be extracted.
-        :param feature_type: "mfcc_sequential", "lmfe_sequential",  "mfcc", or "lmfe". User can pass one of these three
-        options to define which feature should be extracted. notice that mfcc_sequential is the mfcc 
-        feature that should be extracted in the sequential model.
-        """
+        """Capturing mfcc feature.
+
+        Args:
+            goal (str, optional): "train", "validation" or "test". using this paramter, one can define features of 
+            which dataset should be extracted. Defaults to "train".
+            feature_type (str, optional): "mfcc_sequential", "lmfe_sequential",  "mfcc", or "lmfe". User can pass one of these three
+            options to define which feature should be extracted. notice that mfcc_sequential is the mfcc 
+            feature that should be extracted in the sequential model. Defaults to "mfcc_sequential".
+
+        Raises:
+            Exception: Unsupported feature
+            Exception: Unsupported emotion
+        """        
         lst_X = []
         lst_y = []
         start_time = time.time()
@@ -198,15 +225,18 @@ class FeatureExtractor:
 
     
     def __saving_features(self, lst_x, lst_y, type_, goal):
-        """
-        Saving features for later use. in case we want to retrain our model by only changing
-        the hyper parameters, there is no need to extract features again.
-        :param save_dir: the directory to save the features
-        :param lst_y: the lables
-        :param lst_x: the feature (mfcc or lmfe)
-        :param type_ either: "mfcc" or "lmfe"
-        :param goal: "train", "validation", or "test" to show whether we want to
-        validate with the current dataset or a new dataset, which is located in other location
+        """Saving features for later use. in case we want to retrain our model by only changing
+            the hyper parameters, there is no need to extract features again.
+
+        Args:
+            lst_x: the feature (mfcc or lmfe)
+            lst_y: the labels
+            type_: either "mfcc" or "lmfe"
+            goal: "train", "validation", or "test" to show whether we want to
+            validate with the current dataset or a new dataset, which is located in other location
+
+        Returns:
+            features and labels as numpy arrays
         """
 
         # Array conversion
@@ -230,9 +260,13 @@ class FeatureExtractor:
         return X, y
 
     def load_training_parameters(self, training_parameters_filename):
-        """
-        This function load training parameters from yaml file.
-        :param training_parameters_filename the filename/file path to the training file 
+        """This function load training parameters from yaml file.
+
+        Args:
+            training_parameters_filename: the filename/file path to the training file
+
+        Returns:
+            training parameters
         """
         # load training parameters from yaml file
         root_path = Path(os.getcwd())
