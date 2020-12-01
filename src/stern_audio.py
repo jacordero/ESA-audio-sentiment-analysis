@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-
 """
 Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
 @ Authors: Jorge Cordero j.a.cordero.cruz@tue.nl;
-@ Contributors: Parima Mirshafiei P.mirshafiei@tue.nl, Tuvi Purevsuren t.purevsuren@tue.nl; Niels Rood n.rood@tue.nl; 
+@ Contributors: Parima Mirshafiei P.mirshafiei@tue.nl; Tuvi Purevsuren t.purevsuren@tue.nl; Niels Rood n.rood@tue.nl; 
 Description: Module that performs sentiment analysis using tone models previously trained with the scripts available 
              in the training module
 Last modified: 01-12-2020
