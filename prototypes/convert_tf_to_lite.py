@@ -86,6 +86,8 @@ def get_output_folder_path(parameters):
 
     """
     tflite_dir = os.path.join(os.path.abspath('prod_models'), parameters['output_folder'])
+    tflite_dir = os.path.join(tflite_dir, parameters['tflite_model_name'])
+
     # if output_folder_name directory not exists, create it.
     if not os.path.exists(tflite_dir): 
         os.makedirs(tflite_dir)
@@ -94,7 +96,28 @@ def get_output_folder_path(parameters):
                                                                             type=parameters['optimization_type'],
                                                                             version=parameters['version']))
 
-def representative_data_gen():
+def siamese_representative_data_gen():
+    """Provide the generator to represent typical large enough input values and
+       allow the converter to estimate a dynamic range for all the variable data. 
+       (The dataset does not need to be unique compared to the training or evaluation dataset.)
+
+    """
+    data_path = os.path.join(os.path.abspath('prod_data'), 'test/siamese')
+  
+    mfcc = joblib.load(os.path.join(data_path, 'mfcc_test.joblib'))
+    mfcc = np.expand_dims(mfcc, axis = 3)
+
+    lmfe = joblib.load(os.path.join(data_path, 'lmfe_test.joblib'))
+    lmfe = np.expand_dims(lmfe, axis = 3)
+    lmfe = lmfe.astype('float32')
+
+    # for input_value in tf.data.Dataset.from_tensor_slices([mfcc, lmfe]).batch(1).take(100):
+        # Model has only one input so each data point has one element.
+        # yield [input_value]
+    for input_index in range(0,100):
+        yield [mfcc[input_index:input_index+1,:,:,:], lmfe[input_index:input_index+1,:,:,:]]
+
+def sequential_representative_data_gen():
     """Provide the generator to represent typical large enough input values and
        allow the converter to estimate a dynamic range for all the variable data. 
        (The dataset does not need to be unique compared to the training or evaluation dataset.)
@@ -103,7 +126,7 @@ def representative_data_gen():
     data_path = os.path.join(os.path.abspath('prod_data'), 'test/sequential')
   
     mfcc = joblib.load(os.path.join(data_path, 'mfcc_test.joblib'))
-    mfcc = np.expand_dims(mfcc, axis =2)
+    mfcc = np.expand_dims(mfcc, axis = 2)
 
     for input_value in tf.data.Dataset.from_tensor_slices(mfcc).batch(1).take(100):
         # Model has only one input so each data point has one element.
@@ -124,7 +147,10 @@ def quantization_int8(parameters):
     converter.post_training_quantize = True
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
     # representative_data_gen : provides a set of input data that's large enough to represent typical values
-    converter.representative_dataset = representative_data_gen
+    if parameters['tflite_model_name'] == 'sequential':
+        converter.representative_dataset = sequential_representative_data_gen
+    else:
+        converter.representative_dataset = siamese_representative_data_gen
     # ensure that if any ops can't be quantized, the converter throws an error
     converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
     # Set the input and output tensors to uint8 (APIs added in r2.3)
@@ -137,7 +163,7 @@ def quantization_int8(parameters):
     
 if __name__ == "__main__":
     if len(sys.argv) == 1: 
-        print("MODEL: A - SQUENTIAL")
+        print("MODEL: A - SEQUENTIAL")
         print("MODEL: B - SIAMESE")
         print("OPTION:  1 - FLOAT32")
         print("OPTION:  2 - INT8")
@@ -155,7 +181,7 @@ if __name__ == "__main__":
         parameters = {
             # resource related parameters
             'model_name': 'candidate/sequential/saved_models/Emotion_Voice_Detection_Model.h5', 
-            'tflite_model_name': 'squential'
+            'tflite_model_name': 'sequential'
         }
     else:
         parameters = {
