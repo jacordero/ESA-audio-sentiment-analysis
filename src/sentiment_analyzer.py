@@ -1,12 +1,16 @@
 import os
 import numpy as np
+from pathlib import Path
 from stern_utils import Utils
+from pydub import AudioSegment
+from scipy.io.wavfile import write
+
 
 
 class AudioAnalyzer:
     """ This class is used to analyze audio recordings using tone model predictors.
 	"""
-
+    
     def __init__(self, tone_predictor, parameters):
         self.frame_rate = parameters['audio_frequency']
         self.tone_predictor = tone_predictor
@@ -49,6 +53,7 @@ class AudioAnalyzer:
 		Returns:
 			List containing pairs of sentiments and their corresponding predictions.
 		"""
+
         tone_predictions = self.tone_predictor.predict(np.squeeze(audio))
         tone_emotion_probabilities = []
         i = 0

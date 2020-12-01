@@ -1,17 +1,22 @@
 model:
-  dir: "seq_3conv_modules_vh5_retv2/saved_models"
+  dir: "siamese/saved_models"
   file: "Emotion_Voice_Detection_Model.h5"
-  type: "Sequential"
+  type: "Siamese"
   n_mfcc: 50
+
+#model:
+#  dir: "seq_3conv_modules_5emotions_ret/saved_models"
+#  file: "Emotion_Voice_Detection_Model.h5"
+#  type: "Sequential"
+#  n_mfcc: 50
 
 test_data_dir: "./prod_data/test"
 prod_models_dir: "./prod_models/candidate"
 
-
 #audio recording properties
 audio_channels: 1
-audio_frequency: 44100
-audio_length: 5 # length of audio in seconds
+audio_frequency: 22050 #it should be similar to the frequency of the dataset that the model was trained based on.
+audio_length: 7 # length of audio in seconds, these number should be similar to "chunk_length_in_milli_sec" in training yml
 
 #list of emotions being used in the prediction
 #These codes should comply with the feature extraction part in training code
@@ -22,12 +27,11 @@ emotions:
   3: "angry"
   4: "fearful"
 
-
 # interaction properties
 iterations: 2 # for an infinite number of iterations, use -1
 after_audio_analysis_pause: 1 # length of pause in seconds
 before_recording_pause: 1
 
 # logging
-logging_directory: '../logs'
+logging_directory: './logs'
 logging_file_prefix: 'test_logging_file'
