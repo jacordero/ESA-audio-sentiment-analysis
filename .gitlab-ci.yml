@@ -6,14 +6,17 @@ Candidate_model_assessment:
   trigger:
     include: Model_verification/.gitlab-ci.yml
     strategy: depend
-  only:
-    changes:
-      - prod_models.dvc
-      - prod_data.dvc
+#  only:
+#    changes:
+#      - prod_models.dvc
+#      - prod_data.dvc
 
 Code_verification:
   stage: triggers
   trigger:
     include: Code_verification/.gitlab-ci.yml
     strategy: depend
-
+  only:
+    changes:
+      - prod_models.dvc
+      - prod_data.dvc
