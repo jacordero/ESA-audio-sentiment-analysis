@@ -49,7 +49,7 @@ class SiameseModelGenerator():
 
         return input_, bn
 
-    def concatenate_models(self, branch1, branch2, input1, input2):
+    def concatenate_models(self, branch1, branch2, input1, input2, n_emotions):
         """
         Creating the final model by concatinating two branches (mfcc and lmfe)
         :param branch1: the model created based on mfcc feature
@@ -58,11 +58,11 @@ class SiameseModelGenerator():
         :param input2: the second input for Siamese model
         """
         concat_ = Concatenate()([branch1, branch2])
-        output = Dense(5, activation='softmax')(concat_)
+        output = Dense(n_emotions, activation='softmax')(concat_)
         model = keras.Model(inputs=[input1, input2], outputs=[output])
         return model
 
-    def generate_model(self, n_conv_filters, filters_shape, _input_shape):
+    def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
         """
         create a Siamese model.
         :param: n_conv_filter:  neurons should we used in each layer of branches
@@ -72,7 +72,7 @@ class SiameseModelGenerator():
         """
         mfcc_input, mfcc_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[0], _input_shape[1])
         lmfe_input, lmfe_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[2], _input_shape[3])
-        model = self.concatenate_models(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
+        model = self.concatenate_models(mfcc_output, lmfe_output, mfcc_input, lmfe_input, n_emotions)
         return model
 
 
@@ -107,7 +107,7 @@ class TwoLayerSiameseModelGenerator():
 
         return input_, bn
 
-    def concatenate_models(self, branch1, branch2, input1, input2):
+    def concatenate_models(self, branch1, branch2, input1, input2, n_emotions):
         """
         Creating the final model by concatinating two branches (mfcc and lmfe).
         :param branch1: the first branch in Siamese model
@@ -116,11 +116,11 @@ class TwoLayerSiameseModelGenerator():
         :param input2: the second input for Siamese model
         """
         concat_ = Concatenate()([branch1, branch2])
-        output = Dense(8, activation='softmax')(concat_)
+        output = Dense(n_emotions, activation='softmax')(concat_)
         model = keras.Model(inputs=[input1, input2], outputs=[output])
         return model
 
-    def generate_model(self, n_conv_filters, filters_shape, _input_shape):
+    def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
         """
         Create a Siamese model.
         :param: n_conv_filter:  neurons should we used in each layer of branches
@@ -130,6 +130,6 @@ class TwoLayerSiameseModelGenerator():
         """
         mfcc_input, mfcc_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[0], _input_shape[1])
         lmfe_input, lmfe_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[2], _input_shape[3])
-        model = self.concatenate_models(mfcc_output, lmfe_output, mfcc_input, lmfe_input)
+        model = self.concatenate_models(mfcc_output, lmfe_output, mfcc_input, lmfe_input, n_emotions)
         return model
  
