@@ -1,10 +1,8 @@
 """
-Copyright (C) Tu/e.
-
-======================================================
-
-This is the util library.
-
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei P.mirshafiei@tue.nl, Tuvi Purevsuren t.purevsuren@tue.nl
+@ Contributors:  Jorge Cordero j.a.cordero.cruz@tue.nl; Niels Rood n.rood@tue.nl
+Last modified: 01-12-2020
 """
 
 import os
@@ -28,11 +26,6 @@ from pydub.utils import make_chunks
 from scipy.io import wavfile
 
 import math
-
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero", "Niels Rood"
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl", "n.rood@tue.nl"
-__copyright__ = "TU/e ST2019"
-
 
 class Utils:
     """

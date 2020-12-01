@@ -7,13 +7,13 @@ from python_speech_features import delta
 from python_speech_features import logfbank
 from librosa.feature import mfcc as lb_mfcc
 
-# Package metadata
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero"
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl"
-__copyright__ = "TU/e ST2019"
-__version__ = "1.0"
-__status__ = "Prototype"
-
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei P.mirshafiei@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
+@ Contributors: Niels Rood n.rood@tue.nl; 
+Description: Module that contains several tone sentiment analyzers.
+Last modified: 01-12-2020
+"""
 
 class SiameseToneSentimentPredictor:
     """Feature extractor that computes audio features required for emotion detection using siamese tone models based on the architecture described in [ref].
@@ -97,7 +97,8 @@ class SiameseToneSentimentPredictor:
         mfcc_features, lmfe_features = self.__compute_features(audio_array)
         new_mfcc=np.expand_dims(mfcc_features,axis=0)
         new_lmfe=np.expand_dims(lmfe_features,axis=0)
-
+        print("mfcc shape: {}".format(new_mfcc.shape))
+        print("lmfe shape: {}".format(new_lmfe.shape))
         return np.squeeze(self.model.predict([new_mfcc, new_lmfe]))
 
 

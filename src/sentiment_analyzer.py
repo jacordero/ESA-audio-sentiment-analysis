@@ -5,7 +5,13 @@ from stern_utils import Utils
 from pydub import AudioSegment
 from scipy.io.wavfile import write
 
-
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Niels Rood n.rood@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
+@ Contributors: Jobaer Khan j.i.khan@tue.nl; 
+Description: Class that performs audio analysis using different sentiment analyzers.
+Last modified: 01-12-2020
+"""
 
 class AudioAnalyzer:
     """ This class is used to analyze audio recordings using tone model predictors.

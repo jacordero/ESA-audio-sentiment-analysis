@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 
 """
-Copyright (C) Tu/e.
-
-@author  Jorge Cordero Cruzue  j.a.cordero.cruz@tue.nl
-
-@maintainers: Engineers
-
-======================================================
-
-This is the STERN-AUDIO.
-
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Jorge Cordero j.a.cordero.cruz@tue.nl;
+@ Contributors: Parima Mirshafiei P.mirshafiei@tue.nl, Tuvi Purevsuren t.purevsuren@tue.nl; Niels Rood n.rood@tue.nl; 
+Description: Module that performs sentiment analysis using tone models previously trained with the scripts available 
+             in the training module
+Last modified: 01-12-2020
 """
 
 import time
@@ -45,7 +41,7 @@ class SternAudio:
 		self.audio_frequency = parameters['audio_frequency']
 		self.before_recording_pause = parameters['before_recording_pause']
 		self.after_audio_analysis_pause = parameters['after_audio_analysis_pause']
-		self.iterations = parameters['iterations'] ## -1 indicates an infinite number of iterations
+		self.iterations = parameters['iterations'] 
 
 	def print_emotions(self, title, emotion_probabilities):
 		""" Prints a formatted message showing the top 3 emotions detected in an audio frame.
@@ -81,19 +77,17 @@ class SternAudio:
 		while keep_running:
 
 			print("\n\n==================================================================\n")
-			print("1) Recording. Speak for the next five seconds")
+			print("1) Recording. Speak for the next {} seconds".format(self.audio_length))
 			time.sleep(self.before_recording_pause)
 
 			recorded_audio = sd.rec(int(self.audio_length * self.audio_frequency),
 									samplerate=self.audio_frequency, channels=self.audio_channels)
 			sd.wait()
 
-			#downsampled_recorded_audio = np.squeeze()
-			print("Recorded audio shape: {}".format(recorded_audio.shape))
-			print("Downsampled audio shape: {}".format((recorded_audio[::2]).shape))
-			#print(recorded_audio)
+			# audio is downsampled from 44.1KHz to 22.05 KHz to match the training frequency of the siamese models
 			downsampled_audio = recorded_audio[::2]
 			predicted_emotion_probs = audio_analyzer.analyze(downsampled_audio)
+			#predicted_emotion_probs = audio_analyzer.analyze(recorded_audio) #raspberry supports 44.1KHz for recording
 			print("\n2) Predictions")
 			self.print_emotions("Audio prediction", predicted_emotion_probs)
 
@@ -107,7 +101,6 @@ class SternAudio:
 		print("\n** Demo finished! **")
 
 
-#def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
 def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
 	""" Supporting function that loads tone models
 
@@ -120,9 +113,7 @@ def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
 		A tone model
 	"""
 	root_path = Path(os.getcwd())
-	#tone_model_path = os.path.normpath(os.path.join(script_dir, prod_models_dir, tone_model_dir, tone_model_name))
 	tone_model_dir_path = os.path.normpath(os.path.join(root_path, prod_models_dir, tone_model_dir, tone_model_name))
-	print(tone_model_dir_path)
 	return tf.keras.models.load_model(tone_model_dir_path)
 
 
@@ -140,6 +131,7 @@ def create_tone_predictor(parameters):
 		Tone predictor.
 	"""
 	tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
+	print(tone_model.summary())
 	if parameters['model_type'] == "Sequential":
 		tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
 	elif parameters['model_type'] == "Siamese":
@@ -182,14 +174,13 @@ def parse_parameters(parameters):
 
 	stern_audio_parameters = {
 		'audio_length': int(parameters['audio_length']),
-		'audio_frequency': 44100,#int(parameters['audio_frequency']),
+		#'audio_frequency': int(parameters['audio_frequency']), 
+		'audio_frequency': 44100,
 		'audio_channels': int(parameters['audio_channels']),
 		'before_recording_pause': int(parameters['before_recording_pause']),
 		'after_audio_analysis_pause': int(parameters['after_audio_analysis_pause']),
 		'iterations': int(parameters['iterations'])
 	}
-
-
 
 	return (predictor_parameters, analyzer_parameters, stern_audio_parameters)
 

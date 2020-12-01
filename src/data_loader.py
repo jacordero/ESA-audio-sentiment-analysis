@@ -2,6 +2,13 @@ import os
 import joblib
 import numpy as np
 
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: George Azis gazis@tue.nl; Niels Rood n.rood@tue.nl;
+@ Contributors: Jorge Cordero j.a.cordero.cruz@tue.nl
+Last modified: 01-12-2020
+"""
+
 
 
 class TextModelDataLoader():
