@@ -23,9 +23,10 @@ PEP8_Conformity:
 Unit_Tests:
  stage: unit tests
  image: geoazis/sentimentanalysis:latest
- allow_failure: true
+# allow_failure: true
  script:
    - "echo Running Unit Tests"
+   - "That is not a valid commad"
  tags:
    - jarvis 
    
