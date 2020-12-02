@@ -92,6 +92,9 @@ class Utils:
           logging_file_name: A name of logging file.
 
         """
+        if data is None or len(data) == 0 :
+            return
+
         root_folder = os.path.dirname(os.path.normpath(os.getcwd()))
         folder_name = os.path.join(root_folder, logging_file_name + '_' + str(date.today()))
         
@@ -106,7 +109,6 @@ class Utils:
 
         log_file_name = os.path.join(
             folder_name, 'log_' + Utils.get_time() + '.json')
-            
         if os.path.exists(log_file_name):
             with open(log_file_name) as logging_file:
                 temp = json.load(logging_file)
