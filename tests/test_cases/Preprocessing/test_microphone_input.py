@@ -12,12 +12,7 @@ def load_both_configurations():
     deployed = load_configuration("src/raspi_deployment_config.yml")
     return candidate, deployed
 
-def test_1a_channels():
+def test_microphone_input_2():
     candidate, deployed = load_both_configurations()
-    assert candidate["audio_channels"] > 0
-    assert deployed["audio_channels"] > 0
-
-def test_1b_frequency():
-    candidate, deployed = load_both_configurations()
-    assert candidate["audio_frequency"] > 0
-    assert deployed["audio_frequency"] > 0
+    assert candidate["audio_length"] > 0
+    assert deployed["audio_length"] > 0
