@@ -1,0 +1,12 @@
+sequential_model: 
+  input_shape: str()
+  output_shape: str()
+siamese_model: 
+  input_shape: str()
+  output_shape: str()
+target_metrics:
+  accuracy: num(max=1.0, min=0.0)
+  performance: num(max=2.0)
+  f1_score: num(max=1.0, min=0.0)
+  confidence: num(max=1.0, min=0.0)
+  per_class_accuracy: num(max=1.0, min=0.0)
