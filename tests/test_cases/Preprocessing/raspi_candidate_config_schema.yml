@@ -1,0 +1,31 @@
+model:
+  dir: str()
+  file: str()
+  type: str()
+  n_mfcc: int(min=0)
+
+test_data_dir: str()
+prod_models_dir: str()
+
+#audio recording properties
+audio_channels: int(min=1)
+audio_frequency: int(min=0) #it should be similar to the frequency of the dataset that the model was trained based on.
+audio_length: int(min=1) # length of audio in seconds, these number should be similar to "chunk_length_in_milli_sec" in training yml
+
+#list of emotions being used in the prediction
+#These codes should comply with the feature extraction part in training code
+emotions:
+  0: str()
+  1: str()
+  2: str()
+  3: str()
+  4: str()
+
+# interaction properties
+iterations: int(min=1) # for an infinite number of iterations, use -1
+after_audio_analysis_pause: int(min=0) # length of pause in seconds
+before_recording_pause: int(min=0)
+
+# logging
+logging_directory: str()
+logging_file_prefix: str()
