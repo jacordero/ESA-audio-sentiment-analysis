@@ -13,7 +13,7 @@ The post-training **FLOAT32** and **INT8** quantization applied on the Sequentia
 
 | Model Name | Siamese | Sequential |
 | ------ | ------ | ------ |
-| Original | 89 - 90 % | 59 %  |
+| Original | 68 % | 59 %  |
 | FLOAT32 |  59.8756 %| 58.6314 % |
 | INT8    |  18.9736 %|  48.056 %|
 
