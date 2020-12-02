@@ -26,6 +26,7 @@ Unit_Tests:
  allow_failure: true
  script:
    - "echo Running Unit Tests"
+   - "ppytest tests/test_cases/Preprocessing/"
  tags:
    - jarvis 
    
