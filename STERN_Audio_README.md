@@ -1,6 +1,6 @@
 # STERN Audio module
 
-STERN Audio module repository contains the software and, testing pipeline, and libraries such as traing and retraining the models. 
+STERN Audio module repository contains the software, testing pipeline,and libraries such as traing and retraining the models. 
 
 - A preprocessing that extract [feautures](./docs/FeatureExtraction.md) from audial input data. 
 - A [training](./docs/Training.md) library provides the API to train the models on the extract features. 
@@ -25,11 +25,13 @@ STERN Audio module repository contains the software and, testing pipeline, and l
 
 The software requires ` Python3.7+` and `TensorFlow2.2.0`. 
 
-All the dependencies needed to run the software are listed in [requirements.txt](requirements.txt). The command will install the packages according to the requirements file. 
+All the dependencies needed to run the software are listed in [requirements.txt](requirements.txt). 
+
+The following command installs the packages according to the requirements file. 
 
 ` pip install -r requirements.txt `
 
-In order to install [TensorFlow](https://qengineering.eu/install-tensorflow-2.2.0-on-raspberry-pi-4.html) on the Raspberry Pi, the following commands can be used:
+The following command installs [TensorFlow](https://qengineering.eu/install-tensorflow-2.2.0-on-raspberry-pi-4.html) on the Raspberry Pi:
 
 ```
 sudo apt-get install gfortran libhdf5-dev libc-ares-dev libeigen3-dev libatlas-base-dev libopenblas-dev libblas-dev liblapack-dev cython
@@ -39,7 +41,7 @@ pip3 install tensorflow-2.2.0-cp37-cp37m-linux_armv7l.whl
 
 ```
 
-In order to install all dependencies on the Raspberry Pi, the following command can be used:
+The following command installs all dependencies on the Raspberry Pi:
 
 ```
 # (https://stackoverflow.com/a/48244595)
@@ -48,7 +50,7 @@ LLVM_CONFIG=/usr/bin/llvm-config-9 pip3 install -r requirements.txt
 ```
 **NOTE:** On the Raspberry Pi, ` python2` and ` python3` both are installed. 
 
-In order to prevent cluttering the Raspberry Pi's system libraries, a `Python Virtual Environment` is recommended. The following command can be used to setup the environment. 
+In order to prevent cluttering the Raspberry Pi's system libraries, a `Python Virtual Environment` is recommended. The following command is used to setup the environment. 
 
 ```
 pip install virtualenv
