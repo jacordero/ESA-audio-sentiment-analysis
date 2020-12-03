@@ -98,8 +98,6 @@ class SiameseToneSentimentPredictor:
         mfcc_features, lmfe_features = self.__compute_features(audio_array)
         new_mfcc=np.expand_dims(mfcc_features,axis=0)
         new_lmfe=np.expand_dims(lmfe_features,axis=0)
-        print("mfcc shape: {}".format(new_mfcc.shape))
-        print("lmfe shape: {}".format(new_lmfe.shape))
         return np.squeeze(self.model.predict([new_mfcc, new_lmfe]))
 
 
