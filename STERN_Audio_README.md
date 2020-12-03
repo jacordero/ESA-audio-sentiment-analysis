@@ -1,8 +1,68 @@
 # STERN Audio module
 
+STERN Audio module repository contains the software and, testing pipeline, and libraries such as traing and retraining the models. 
+
+- A preprocessing that extract [feautures](./docs/FeatureExtraction.md) from audial input data. 
+- A [training](./docs/Training.md) library provides the API to train the models on the extract features. 
+- A [retraining](./docs/Retraining.md) library provides the API to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
+- A [sentiment analysis](./docs/SentimentAnalysis.md) software that analyses the sentiment of the audial input. 
+- A [test](./Testing.md) pipeline that assess the models. 
+
 ## Repository structure
 
+- .dvc
+- docs
+- src
+- test
+- training
+- prod_data.dvc
+- prod_models.dvc
+- requirements.txt
+
 ## Requirements
+
+` pip ` is already installed with `Python` downloaded from [python.org](https://www.python.org/). 
+
+The software requires ` Python3.7+` and `TensorFlow2.2.0`. 
+
+All the dependencies needed to run the software are listed in [requirements.txt](requirements.txt). The command will install the packages according to the requirements file. 
+
+` pip install -r requirements.txt `
+
+In order to install [TensorFlow](https://qengineering.eu/install-tensorflow-2.2.0-on-raspberry-pi-4.html) on the Raspberry Pi, the following commands can be used:
+
+```
+sudo apt-get install gfortran libhdf5-dev libc-ares-dev libeigen3-dev libatlas-base-dev libopenblas-dev libblas-dev liblapack-dev cython
+pip3 install gdown
+gdown https://drive.google.com/uc?id=11mujzVaFqa7R1_lB7q0kVPW22Ol51MPg
+pip3 install tensorflow-2.2.0-cp37-cp37m-linux_armv7l.whl
+
+```
+
+In order to install all dependencies on the Raspberry Pi, the following command can be used:
+
+```
+# (https://stackoverflow.com/a/48244595)
+sudo apt-get install llvm-9
+LLVM_CONFIG=/usr/bin/llvm-config-9 pip3 install -r requirements.txt
+```
+**NOTE:** On the Raspberry Pi, ` python2` and ` python3` both are installed. 
+
+In order to prevent cluttering the Raspberry Pi's system libraries, a `Python Virtual Environment` is recommended. The following command can be used to setup the environment. 
+
+```
+pip install virtualenv
+
+virtualenv [name]
+
+```
+To activate the python virtual environment by running the following command:
+
+`source [name]/bin/activate`
+
+To deactivate the python virtual environment by running the following command:
+
+`deactivate`
 
 ## Tutorials (Use cases)
 
@@ -72,4 +132,4 @@ The image below shows an output of the sentiment analysis script.
 
 
 ### Test
-[Test](./docs/Test.md)
+[Testing pipeline](./docs/Test.md)
