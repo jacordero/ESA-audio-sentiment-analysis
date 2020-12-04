@@ -4,7 +4,7 @@ stages:
 Candidate_model_assessment:
   stage: triggers
   trigger:
-    include: Model_verification/.gitlab-ci.yml
+    include: model_verification/.gitlab-ci.yml
     strategy: depend
   only:
     changes:
@@ -14,5 +14,5 @@ Candidate_model_assessment:
 Code_verification:
   stage: triggers
   trigger:
-    include: Code_verification/.gitlab-ci.yml
+    include: code_verification/.gitlab-ci.yml
     strategy: depend
