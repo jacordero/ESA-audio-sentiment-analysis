@@ -40,6 +40,8 @@ Data_validation:
   stage: data
   script:
     - "echo Testing data schema and values"
+    - "pytest tests/test_cases/Data/"
+
   tags:
     - audio
     

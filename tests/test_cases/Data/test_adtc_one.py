@@ -7,10 +7,8 @@ import pytest
 import os
 from pathlib import Path
 
-
-
 def test_sequential_data_existence():
-    data_directory="prod_data/sequential/test"
+    data_directory="prod_data/test/sequential"
     test_mfcc_data = os.path.join(data_directory, "mfcc_test.joblib")
     test_labels_data = os.path.join(data_directory, "labels_test.joblib")
     data_exist = True
@@ -19,10 +17,8 @@ def test_sequential_data_existence():
     assert data_exist
 
 
-
-
 def test_siamese_data_existence():
-    data_directory="prod_data/siamese/test"
+    data_directory="prod_data/test/siamese"
     test_mfcc_data = os.path.join(data_directory, "mfcc_test.joblib")
     test_labels_data = os.path.join(data_directory, "labels_test.joblib")
     test_lmfe_data = os.path.join(data_directory, "lmfe_test.joblib")
@@ -34,7 +30,7 @@ def test_siamese_data_existence():
 
 def test_sequential_file_size():
     file_size_threshold = 2000 #2K
-    data_directory="prod_data/sequential/test"
+    data_directory="prod_data/test/sequential"
     test_mfcc_data = os.path.join(data_directory, "mfcc_test.joblib")
     test_labels_data = os.path.join(data_directory, "labels_test.joblib")
     mfcc_size = os.path.getsize(test_mfcc_data)
@@ -44,7 +40,7 @@ def test_sequential_file_size():
 
 def test_siamese_file_size():
     file_size_threshold = 2000 #2K
-    data_directory="prod_data/siamese/test"
+    data_directory="prod_data/test/siamese"
     test_mfcc_data = os.path.join(data_directory, "mfcc_test.joblib")
     test_labels_data = os.path.join(data_directory, "labels_test.joblib")
     test_lmfe_data = os.path.join(data_directory, "lmfe_test.joblib")
