@@ -1,24 +1,28 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei p.mirshafiei@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
+Last modified: 01-12-2020
+"""
 
 from keras.layers import Conv1D, Dense, Dropout, Activation, Flatten, MaxPooling1D
 from keras.layers.normalization import BatchNormalization
 from keras.models import Sequential
 
-
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero",
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl;"
-__copyright__ = "TU/e ST2019"
-
-
 class SequentialThreeConvModulesGenerator():
     """
-    This class creates sequential architecture with three convolutional layers.
+    This class creates sequential architecture with three convolutional modules.
     """
     def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
-        """
-        create a sequential model with three layers
-        :param: n_conv_filter: an array indicating number of neurons of each layer respectively
-        :param: filters_shape: an array indicating filter shapes of each layer respectively
-        :param: _input_shape: the input shape of the convolution layers
+        """creates a sequential model with three modules
+
+        Args:
+            n_conv_filters: an array indicating number of neurons of each layer respectively
+            filters_shape: an array indicating filter shapes of each layer respectively
+            _input_shape: the input shape of the convolution layers
+            n_emotions: number of emotions to predict
+
+        Returns:
+            sequential model with three convolutional modules
         """
         model = Sequential()
         model.add(Conv1D(n_conv_filters[0], filters_shape[0], padding='same',
@@ -52,14 +56,19 @@ class SequentialThreeConvModulesGenerator():
   
 class SequentialTwoConvModulesGenerator():
     """
-    This class creates SeqentialModel architecture with two convolutional layers.
+    This class creates SeqentialModel architecture with two convolutional modules.
     """
     def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
-        """
-        create a sequential model with three layers
-        :param: n_conv_filter: an array indicating number of neurons of each layer respectively
-        :param: filters_shape: an array indicating filter shapes of each layer respectively
-        :param: _input_shape: the input shape of the convolution layers
+        """creates a sequential model with two layers
+
+        Args:
+            n_conv_filters: an array indicating number of neurons of each layer respectively
+            filters_shape: an array indicating filter shapes of each layer respectively
+            _input_shape: the input shape of the convolution layers
+            n_emotions: number of emotions to predict
+
+        Returns:
+            sequential model with two convolutional modules
         """
         model = Sequential()
      
@@ -84,15 +93,20 @@ class SequentialTwoConvModulesGenerator():
 
 class SequentialOneConvModuleGenerator():
     """
-    This class creates sequential architecture with three convolutional layers.
+    This class creates sequential architecture with one convolutional module.
     """
 
     def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
-        """
-        create a sequential model with one layer
-        :param: n_conv_filter:  number of neurons of the first layer
-        :param: filters_shape:  filter shapes of the first layer
-        :param: _input_shape: the input shape of the convolution layer
+        """creates a sequential model with one convolutional module
+
+        Args:
+            n_conv_filters: an array indicating number of neurons of each layer respectively
+            filters_shape: an array indicating filter shapes of each layer respectively
+            _input_shape: the input shape of the convolution layers
+            n_emotions: number of emotions to predict
+
+        Returns:
+            sequential model with one convolutional module
         """
         model = Sequential()
 

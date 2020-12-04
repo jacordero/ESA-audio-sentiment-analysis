@@ -1,25 +1,19 @@
 model:
-  dir: "siamese/saved_models"
-  file: "Emotion_Voice_Detection_Model.h5"
-  type: "Siamese"
-  n_mfcc: 50
-
-#model:
-#  dir: "seq_3conv_modules_5emotions_ret/saved_models"
-#  file: "Emotion_Voice_Detection_Model.h5"
-#  type: "Sequential"
-#  n_mfcc: 50
+ dir: "seq_3conv_modules_2layer_Raha_Siamese_44100/saved_models"
+ file: "Emotion_Voice_Detection_Model.h5"
+ type: "Siamese"
+ n_mfcc: 50
 
 test_data_dir: "./prod_data/test"
 prod_models_dir: "./prod_models/candidate"
 
-#audio recording properties
+# Audio recording properties
 audio_channels: 1
-audio_frequency: 22050 #it should be similar to the frequency of the dataset that the model was trained based on.
-audio_length: 7 # length of audio in seconds, these number should be similar to "chunk_length_in_milli_sec" in training yml
+audio_frequency: 44100 # This value should be similar to the frequency of the dataset that the model was trained based on.
+audio_length: 7 # Length of audio in seconds. This number should be similar to "chunk_length_in_milli_sec" in training yml
 
-#list of emotions being used in the prediction
-#These codes should comply with the feature extraction part in training code
+# List of emotions being used in the prediction
+# These codes should comply with the feature extraction part in training code
 emotions:
   0: "neutral"
   1: "happy"
@@ -27,9 +21,9 @@ emotions:
   3: "angry"
   4: "fearful"
 
-# interaction properties
-iterations: 2 # for an infinite number of iterations, use -1
-after_audio_analysis_pause: 1 # length of pause in seconds
+# Interaction properties
+iterations: 2 # For an infinite number of iterations, use -1
+after_audio_analysis_pause: 1 # Length of pause in seconds
 before_recording_pause: 1
 
 # logging

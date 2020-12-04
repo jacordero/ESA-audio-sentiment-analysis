@@ -1,10 +1,8 @@
 """
-Copyright (C) Tu/e.
-
-======================================================
-
-This is the util library.
-
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei P.mirshafiei@tue.nl; Tuvi Purevsuren t.purevsuren@tue.nl
+@ Contributors:  Jorge Cordero j.a.cordero.cruz@tue.nl; Niels Rood n.rood@tue.nl
+Last modified: 01-12-2020
 """
 
 import os
@@ -28,11 +26,6 @@ from pydub.utils import make_chunks
 from scipy.io import wavfile
 
 import math
-
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero", "Niels Rood"
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl", "n.rood@tue.nl"
-__copyright__ = "TU/e ST2019"
-
 
 class Utils:
     """
@@ -122,10 +115,11 @@ class Utils:
 
     @staticmethod
     def save_model(trained_model):
-        """
-        saving model as h5 file
-        :param trained_model the trained model to be saved
-        """
+        """ Saving model as h5 file
+
+        Args:
+            trained_model: the trained model to be saved
+        """        
 
         model_name = 'Emotion_Voice_Detection_Model.h5'
         save_dir = os.path.join(os.getcwd(), 'saved_models')
@@ -142,9 +136,10 @@ class Utils:
 
     @staticmethod
     def plot_trained_model(model_history):
-        """
-        plotting the model history, depicting its accuracy, useful in finding overfitting
-        :param model_history the history of the model (its accuracy in each epoch)
+        """plotting the model history, depicting its accuracy, useful in finding overfitting
+
+        Args:
+            model_history: the history of the model (its accuracy in each epoch)
         """
         # Loss plotting
         plt.plot(model_history.history['loss'])
@@ -167,6 +162,13 @@ class Utils:
 
     @staticmethod
     def model_summary(model, x_testcnn, y_test):
+        """Generates and prints a summary of the models accuracy on a given dataset
+
+        Args:
+            model: tone prediction model
+            x_testcnn: array of features
+            y_test: array of labels
+        """ 
         if len(x_testcnn) > 1:
             predict_vector = model.predict(x_testcnn)
             predictions = np.argmax(predict_vector, axis=1)
@@ -177,9 +179,13 @@ class Utils:
 
     @staticmethod
     def file_name_extractor(audio_file_path):
-        """
-        getting the file name, useful in case we want to replace a file.
-        :param audio_file_path: full path to the file (audio track)
-        """
+        """ extracts the name of an audio file from an file path
+
+        Args:
+            audio_file_path: file path
+
+        Returns:
+            name of the audio file
+        """ 
         name = (audio_file_path.split(".wav")[0]).split("/")[-1]
         return name

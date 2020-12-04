@@ -1,10 +1,12 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl; Parima Mirshafiei p.mirshafiei@tue.nl;
+Last modified: 01-12-2020
+"""
+
 from siamese_model_generator import SiameseModelGenerator, TwoLayerSiameseModelGenerator
 from sequential_model_generator import SequentialThreeConvModulesGenerator
 from sequential_model_generator import SequentialTwoConvModulesGenerator, SequentialOneConvModuleGenerator
-
-__authors__ = "Raha Sadeghi, Jorge Cordero",
-__email__ = "r.sadeghi@tue.nl; j.a.cordero.cruz@tue.nl;"
-__copyright__ = "TU/e ST2019"
 
 class ModelGeneratorFactory():
     """
@@ -20,5 +22,13 @@ class ModelGeneratorFactory():
         }
 
     def get_model_generator(self, model_name):
+        """ Returns an instance of one of the model generators stored in the generators dictionary.
+
+        Args:
+            model_name: name of the model generator to return
+
+        Returns:
+            model generator object
+        """        
         return self.generators[model_name]()
 
