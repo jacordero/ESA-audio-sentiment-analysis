@@ -37,3 +37,9 @@ The new dependencies that the testing pipeline introduces are:
   - pytest, 5.4.3
   - pytest-pep8
 
+# Description of the configuration file
+
+The testing pipeline is based on the configuration.yml file. It contains several fields, which are used for testing and assessment purposes. The fields *sequencial_model* and *siamese_model* contain the expected input and output shape of the respective models. These fields are used in order to verify that the model interfaces correctly with the native components. The last field is *target_metrics*. It contains values, such as accuracy, performance, f1 score, confidence, and per class accuracy. These values describe the hard requirements for the behavior of the model, which are specified by the architect. 
+
+
+
