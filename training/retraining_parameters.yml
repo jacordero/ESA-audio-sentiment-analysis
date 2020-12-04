@@ -1,12 +1,14 @@
-model_type: "sequential"
-parameters:
+model_type: "Sequential"
+parameters: 
   adam_lr: 0.001
   batch_size: 32
-  epochs: 10
-  pretrained_models_dir: "../prod_models/candidate" 
-  pretrained_model_name: "seq_3conv_modules_be_nice"
-  retrained_models_dir: "../prod_models/candidate"
-  retrained_model_name: "seq_3conv_modules_be_nice_ret_v1"
-  train_data_directory: "../data/features/sequential"
-  validation_data_directory: "../data/features/sequential"
-  test_data_directory: "../data/features/sequential"
+  epochs: 1
+  pretrained_models_dir: "./prod_models/candidate/seq_3conv_modules_2layer_Raha_Sequential/saved_models"
+  pretrained_model_name: "Emotion_Voice_Detection_Model.h5"
+  retrained_models_dir: ./prod_models/candidate/
+  retrained_model_name: seq_3conv_modules_be_nice_ret_v1
+  feature_test_data_directory: ./data/features/Sequential/test
+  feature_train_data_directory: ./data/features/Sequential/train
+  feature_validation_data_directory: ./data/features/Sequential/validation
+
+
