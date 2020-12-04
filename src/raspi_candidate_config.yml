@@ -18,6 +18,11 @@ audio_channels: 1
 audio_frequency: 22050 #it should be similar to the frequency of the dataset that the model was trained based on.
 audio_length: 7 # length of audio in seconds, these number should be similar to "chunk_length_in_milli_sec" in training yml
 
+# interaction properties
+iterations: 2 # for an infinite number of iterations, use -1
+after_audio_analysis_pause: 1 # length of pause in seconds
+before_recording_pause: 1
+
 #list of emotions being used in the prediction
 #These codes should comply with the feature extraction part in training code
 emotions:
@@ -27,10 +32,6 @@ emotions:
   3: "angry"
   4: "fearful"
 
-# interaction properties
-iterations: 2 # for an infinite number of iterations, use -1
-after_audio_analysis_pause: 1 # length of pause in seconds
-before_recording_pause: 1
 
 # logging
 logging_directory: './logs'
