@@ -17,12 +17,22 @@ Overall, ```SternAudio``` performs the sentiment analysis process in a loop as f
 3. show the emotions resulting from the analysis
 4. pause for a short period before recording the next audio (step 1)
 
-The ```SternAudio``` class uses the ```AudioAnalyzer``` class to perform the audio analysis operation. The user of the prediction engine can alter behavior of steps 1, 3, and 4 in the prediction loop by modifying several properties in the configuration file. In the next section we describe the contents of such configuration file.
+The ```SternAudio``` class uses the ```AudioAnalyzer``` class to perform the audio analysis operation. The behavior of the prediction loop can be altered by modifying the following properties in the configuration file: ```audio_length```, ```audio_frequency```, ```audio_channels```, ```before_recording_pause```, ```after_audio_analysis_pause```, and ```iterations```. In the next section we describe the contents of the configuration file.
 
 #### Audio analyzer
-**TODO**
+The audio analyzer functionality, which is described by the ```AudioAnalyzer``` class, uses a tone-based sentiment predictor to compute the emotions associated with a given audio. The computed emotions are then preprocessed to generate human-readable messages that will be presented to the users of the sentiment analysis prediction module. In addition, the computed emotions are logged in a file specified by the user.
+
+The behavior of the ```AudioAnalyzer``` can be altered by modifying the following properties in the configuration file: ```audio_frequency```, ```emotions```, ```logging_file_prefix```, and ```logging_directory```. In the next section we describe the contents of the configuration file.
+
 #### Tone-based sentiment predictor
-**TODO**
+The tone-based sentiment predictor component is responsible for computing features from a recorded audio and analyzing these features to predict its emotions. In the class diagram shown above, this component is represented as the ```ToneSentimentPredictor``` class. As shown in the class diagram, two specialized tone-based sentiment predictors inherit from this class: ```SequentialToneSentimentPredictor``` and ```SiameseToneSentimentPredictor```. 
+
+The ```SequentialToneSentimentPredictor``` class uses sequential CNN models trained with mfcc features. Therefore, in order to perform sentiment prediction using its CNN model, this class computes mfcc features of a given audio. In contrast, the ```SiameseToneSentimentPredictor``` uses siamese CNN models trained using mfcc and lmfe features. Thus, this class computes mfcc and lmfe features in order to predict the sentiment of a given audio.
+
+The ```src``` folder contains only the ```SequentialToneSentimentPredictor``` and ```SiameseToneSentimentPredictor```. The ```ToneSentimentPredictor``` class is part of the design but was not implemented. Nonetheless, if more tone-based predictors classes are required, the ```ToneSentimentPredictor``` could be implemented in order to couple the functionality of new tone-base predictors with the required interface.
+
+The behavior of the implemented tone-based predictor classes can be altered by modifying the following properties of the configuration file: ```prod_models_dir```, ```model_dir```, ```model_name```, ```model_type```, ```audio_frequency```, and ```n_mfcc```. In the next section we describe the contents of the configuration file.
+
 ### Configuration
 **TODO**
 
