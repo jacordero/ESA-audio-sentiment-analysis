@@ -135,4 +135,4 @@ The image below shows an output of the sentiment analysis script.
 
 
 ### Testing pipeline
-[Testing pipeline](./docs/Test.md)
+[Testing pipeline](./docs/Testing.md)
