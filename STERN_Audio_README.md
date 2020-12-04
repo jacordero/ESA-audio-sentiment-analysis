@@ -18,7 +18,7 @@
 [Retraining](./docs/Retraining.md)
 
 ### Sentiment Analysis
-This example shows how to perform tone sentiment analysis using a tone model previously (re)trained, as described in the steps above. A detailed description of this process is described in the [sentiment analysis process document](./docs/SentimentAnalysis.md).
+This example shows how to perform tone sentiment analysis using the ```stern_audio.py``` script. This script requires a configuration file to load the (re)trained tone detection model and setup the properties required for sentiment analysis. A detailed description about how this script works is available in the [sentiment analysis process document](./docs/sentiment_analysis.md).
 
 First, update the contents of the configuration files that can be used for tone sentiment analysis: either ```src\raspi_candidate_config.yml```or ```src\raspi_deployment_config.yml```. The contents of ```src\raspi_candidate_config.yml``` are shown below.
 
