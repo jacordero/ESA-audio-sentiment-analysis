@@ -3,21 +3,22 @@
 STERN Audio module repository contains the software, testing pipeline,and libraries such as traing and retraining the models. 
 
 - A preprocessing that extract [feautures](./docs/FeatureExtraction.md) from audial input data. 
-- A [training](./docs/Training.md) library provides the API to train the models on the extract features. 
-- A [retraining](./docs/Retraining.md) library provides the API to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
+- A [training](./docs/Training.md) library provides the functions to train the models on the extract features. 
+- A [retraining](./docs/Retraining.md) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
 - A [sentiment analysis](./docs/SentimentAnalysis.md) software that analyses the sentiment of the audial input. 
 - A [test](./Testing.md) pipeline that assess the models. 
 
 ## Repository structure
 
-- .dvc
-- docs
-- src
-- test
-- training
-- prod_data.dvc
-- prod_models.dvc
-- requirements.txt
+- code_verification: contains the configuration file for conditional testing pipeline.
+- data: contains images.
+- docs: contains the readme.md files for documentation.
+- model_verification: contains the configition file of Artificial Intelligence (AI) component for conditional pipeline.
+- prototypes: contains the scrips for development purpose.
+- src : contains the STERN software of audio module and including configuration files. 
+- test: contains test scripts with configuration file.
+- training: contains the libraries for training and retraining the models.
+- requirements.txt: contains all the dependencies which need to be installed in order to run the STERN software.
 
 ## Requirements
 
