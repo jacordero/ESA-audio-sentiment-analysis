@@ -40,6 +40,7 @@ Data_validation:
   stage: data
   script:
     - "echo Testing data schema and values"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
     - "pytest tests/test_cases/Data/"
 
   tags:
