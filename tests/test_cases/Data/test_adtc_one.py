@@ -12,6 +12,7 @@ def test_sequential_data_existence():
     test_mfcc_data = os.path.join(data_directory, "mfcc_test.joblib")
     test_labels_data = os.path.join(data_directory, "labels_test.joblib")
     data_exist = True
+    print(test_mfcc_data)
     if not os.path.exists(test_mfcc_data) or not os.path.exists(test_labels_data):
         data_exist = False
     assert data_exist
