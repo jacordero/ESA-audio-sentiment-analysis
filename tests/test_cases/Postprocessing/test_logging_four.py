@@ -35,10 +35,8 @@ def create_file_path(logging_file_name):
     return log_file_name
 
 @pytest.mark.parametrize("data,logging_file_name", [
-    ([], "audio-sentiment-analysis\\logs\\test_logging_file"),
-    (None, "audio-sentiment-analysis\\logs\\test_logging_file"),
-    ([['happy:0.00', 'sad:0.09', 'angry:0.30']], "audio-sentiment-analysis\\logs\\test_logging_file"), 
-     
+    ([], "audio-sentiment-analysis\\logs\\test_logging_file_four"),
+    (None, "audio-sentiment-analysis\\logs\\test_logging_file_four"),     
 ])
 def test_file_creation(data, logging_file_name):
     """This function tests if any file will be created if the input data is empty
