@@ -1,3 +1,8 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei p.mirshafiei@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
+Last modified: 01-12-2020
+"""
 import os
 import yaml
 import time
@@ -8,16 +13,15 @@ import keras
 import numpy as np
 import tensorflow as tf
 
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero ",
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl;j.a.cordero.cruz@tue.nl;"
-__copyright__ = "TU/e ST2019"
-
 def create_model_dir_path(models_dir, model_name):
-    """
-    This function creates the path to the model based on the training parameters yaml file.
-    :param trained_models_dir: the directory contatining the model
-    :param trained_model_name: the model name (.h5)
-    :Return the model path
+    """This function creates the path to the model based on the training parameters yaml file.
+
+    Args:
+        models_dir: the directory contatining the model
+        model_name: the model name (.h5)
+
+    Returns:
+        the model path
     """
     root_path = Path(os.getcwd())
     tmp_model_dir_path = os.path.join(root_path, models_dir, model_name)
@@ -25,11 +29,12 @@ def create_model_dir_path(models_dir, model_name):
 
 
 def save_retraining_info(model_type, parameters, retraining_history):
-    """
-    This function saves the retraining information.
-    :param  model_type: the type of the model, either sequential or siamese
-    :param  parameters: a dictionary of parameters defined in the retraining parameters yaml file
-    :param  retraining_history:    the hisory of the retraining as numpy array
+    """This function saves the retraining information.
+
+    Args:
+        model_type: the type of the model, either sequential or siamese
+        parameters: a dictionary of parameters defined in the retraining parameters yaml file
+        retraining_history: the history of the retraining as numpy array
     """
     trained_model_dir_path = create_model_dir_path(
         parameters['retrained_models_dir'], parameters['retrained_model_name'])
@@ -48,12 +53,12 @@ def save_retraining_info(model_type, parameters, retraining_history):
 
 
 def save_model(retrained_model, retrained_model_dir_path):
+    """This function saves the model as .h5 format in the saved_models directory
+
+    Args:
+        trained_model: model to be saved as .h5 format
+        trained_model_dir_path: directory where the trained model will be saved
     """
-    This function saves the model as .h5 format in the saved_models directory
-    params:
-        retrained_model : model to be saved as .h5 format
-        retrained_model_dir_path : directory where the trained model will be saved
-    """ 
     model_name = 'Emotion_Voice_Detection_Model.h5'
     save_dir = os.path.join(retrained_model_dir_path, 'saved_models')
     # Save model and weights
@@ -69,10 +74,14 @@ def save_model(retrained_model, retrained_model_dir_path):
 
 
 def load_model(model_dir, model_name):
-    """
-    This function loads the pretrained model and returns the model
-    :param model_dir: the path to the model
-    :param model_name: the name of the model (.h5 model)
+    """This function loads the pretrained model and returns the model
+
+    Args:
+        model_dir: the path to the model
+        model_name: the name of the model (.h5 model)
+
+    Returns:
+        loaded model
     """
     model_path = create_model_dir_path(model_dir, model_name)
     model = tf.keras.models.load_model(model_path)
@@ -80,11 +89,11 @@ def load_model(model_dir, model_name):
 
 
 def retrain_sequential_model(parameters):
-    """
-    This function loads the joblib (features) for retraining the sequential model,
+    """This function loads the joblib (features) for retraining the sequential model,
     additionally, it loads the previous model, and based on the parameters specified in the config file
     retrains the model and finally saves the model.
-    Params:
+
+    Args:
         parameters: a list of required parameters read from the retraining_parameters.yml file
     """
     # load data
@@ -125,11 +134,11 @@ def retrain_sequential_model(parameters):
 
 
 def retrain_siamese_model(parameters):
-    """
-    This function loads the joblib (features) for retraining the siamese model,
+    """This function loads the joblib (features) for retraining the siamese model,
     additionally, it loads the previous model, and based on the parameters specified in the config file
     retrains the model and finally saves the model.
-    Params:
+
+    Args:
         parameters: a list of required parameters read from the retraining_parameters.yml file
     """
     # load data
@@ -175,11 +184,15 @@ def retrain_siamese_model(parameters):
 
 
 def retrain(model_type, parameters):
-    """
-    This function call the required retraining function based on the model_type specified in the retraining_parameters.yml file
-    Params:
+    """This function call the required retraining function based on the model_type specified in the retraining_parameters.yml file
+
+    Args:
         model_type: the type of the model to be retrained: either "Sequential" or "Siamese"
-    """
+        parameters: parameters required for retraining a model
+
+    Raises:
+        ValueError: [description]
+    """ 
     if model_type == "Sequential":
         retrain_sequential_model(parameters)
     elif model_type == "Siamese":
@@ -189,9 +202,13 @@ def retrain(model_type, parameters):
 
 
 def load_retraining_parameters(retraining_parameters_filename):
-    """
-    This function read the training_parameters.yml file to train the model based on the specified configuration parameters.
-    Param: retraining_parameters_filename: the path/filename of the configuration file
+    """This function read the training_parameters.yml file to train the model based on the specified configuration parameters.
+
+    Args:
+        retraining_parameters_filename: the path/filename of the configuration file
+
+    Returns:
+        retraining parameters
     """
     # load retraining parameters from yaml file
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -205,7 +222,8 @@ def load_retraining_parameters(retraining_parameters_filename):
 
 
 if __name__ == "__main__":
-
+    """Main function used to retrain a model
+    """
     training_parameters_filename = "retraining_parameters.yml"
     model_type, parameters = load_retraining_parameters(training_parameters_filename)
     retrain(model_type, parameters)
