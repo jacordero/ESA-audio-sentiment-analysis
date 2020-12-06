@@ -6,7 +6,7 @@ stages:
   - fetch
   - data
   - interface
-  - threholds
+  - thresholds
   - smoke
   
 #Conformity Checks
@@ -61,7 +61,7 @@ Interface_validation:
 
 
 Threshold_validation: 
-  stage: threholds
+  stage: thresholds
   cache:
     key: default
     paths:
