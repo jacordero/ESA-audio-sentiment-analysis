@@ -1,11 +1,22 @@
 variables:
   GIT_DEPTH: 10
 
-stages:
+stages: 
+  - triggers
   - PEP8
   - unit tests
   - smoke tests
-  
+
+Candidate_model_assessment:
+  stage: triggers
+  trigger:
+    include: model_verification/.gitlab-ci.yml
+    strategy: depend
+  only:
+    changes:
+      - prod_models.dvc
+      - prod_data.dvc
+
 #Conformity Checks
 PEP8_Conformity:
  stage: PEP8
