@@ -1,11 +1,5 @@
-variables:
-  GIT_DEPTH: 10
-
-stages: 
+stages:
   - triggers
-  - PEP8
-  - unit tests
-  - smoke tests
 
 Candidate_model_assessment:
   stage: triggers
@@ -16,37 +10,10 @@ Candidate_model_assessment:
     changes:
       - prod_models.dvc
       - prod_data.dvc
+      
 
-#Conformity Checks
-PEP8_Conformity:
- stage: PEP8
- image: geoazis/sentimentanalysis:latest
- allow_failure: true
- script:
-   - "echo Running PEP8 Conformity checks to src folder"
-   - "cd src"
-   - "pytest --pep8 --disable-warnings"
- tags:
-   - jarvis
-
-
-# Unit tests
-Unit_Tests:
- stage: unit tests
- image: geoazis/sentimentanalysis:latest
- script:
-   - "echo Running Unit Tests"
-   #- "pytest tests/test_cases/Preprocessing/"
-   - "pytest tests/test_cases/Postprocessing/"
- tags:
-   - jarvis 
-   
-# Smoke tests
-Smoke_Tests:
- stage: smoke tests
- image: geoazis/sentimentanalysis:latest
- allow_failure: true
- script:
-   - "echo Running smoke Tests"
- tags:
-   - jarvis 
+Code_verification:
+  stage: triggers
+  trigger:
+    include: code_verification/.gitlab-ci.yml
+    strategy: depend
