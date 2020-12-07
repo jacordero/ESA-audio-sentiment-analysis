@@ -1,36 +1,58 @@
-model:
- dir: "seq_3conv_modules_vh5_retv2/saved_models"
- file: "Emotion_Voice_Detection_Model.h5"
- type: "Siamese"
- n_mfcc: 50
+stages:
+  - triggers
+  - PEP8
+  - unit tests
+  - smoke tests
 
-test_data_dir: "./prod_data/test"
-prod_models_dir: "./prod_models/candidate"
+Candidate_model_assessment:
+  stage: triggers
+  trigger:
+    include: model_verification/.gitlab-ci.yml
+    strategy: depend
+  only:
+    changes:
+      - prod_models.dvc
+      - prod_data.dvc
+      - src/raspi_candidate_config.yml
+
+Code_verification:
+  stage: triggers
+  trigger:
+    include: code_verification/.gitlab-ci.yml
+    strategy: depend
+variables:
+  GIT_DEPTH: 10
+
+#Conformity Checks
+PEP8_Conformity:
+ stage: PEP8
+ image: geoazis/sentimentanalysis:latest
+ allow_failure: true
+ script:
+   - "echo Running PEP8 Conformity checks to src folder"
+   - "cd src"
+   - "pytest --pep8 --disable-warnings"
+ tags:
+   - jarvis
 
 
-# Audio recording properties
-audio_channels: 1
-audio_frequency: 44100 # This value should be similar to the frequency of the dataset that the model was trained based on.
-audio_length: 7 # Length of audio in seconds. This number should be similar to "chunk_length_in_milli_sec" in training yml.
+# Unit tests
+Unit_Tests:
+ stage: unit tests
+ image: geoazis/sentimentanalysis:latest
+ script:
+   - "echo Running Unit Tests"
+#   - "pytest tests/test_cases/Preprocessing/"
+   - "pytest tests/test_cases/Postprocessing/"
+ tags:
+   - jarvis
 
-# List of emotions being used in the prediction
-# These codes should comply with the feature extraction part in training code
-emotions:
-  0: "neutral"
-  1: "happy"
-  2: "sad"
-  3: "angry"
-  4: "fearful"
-
-#Input type
-input_type: "recorded" #Specify the prediction input: 1)mic : to record from the device microphone 2)recorded
-input_directory: "./prod_data/prediction"  # if the "input_type" is set to "recorded", this property determines the recorded files directory.
-
-# Interaction properties
-iterations: 1 # For an infinite number of iterations, use -1
-after_audio_analysis_pause: 1 # Length of pause in seconds
-before_recording_pause: 1
-
-# logging
-logging_directory: './logs'
-logging_file_prefix: 'test_logging_file'
+# Smoke tests
+Smoke_Tests:
+ stage: smoke tests
+ image: geoazis/sentimentanalysis:latest
+ allow_failure: true
+ script:
+   - "echo Running smoke Tests"
+ tags:
+   - jarvis
