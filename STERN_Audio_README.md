@@ -2,11 +2,11 @@
 
 STERN Audio module repository contains the software, testing pipeline,and libraries such as traing and retraining the models. 
 
-- A preprocessing that extract [feautures](./docs/FeatureExtraction.md) from audial input data. 
-- A [training](./docs/Training.md) library provides the functions to train the models on the extract features. 
-- A [retraining](./docs/Retraining.md) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
-- The software implementation of the [emotion recognition](./docs/emotion_recognition.md) module.
-- A [testing pipeline](./docs/Testing.md) pipeline that assess the models. 
+- A [preprocessing](#preprossing ) that extract feautures from audial input data. 
+- A [training](#training) library provides the functions to train the models on the extract features. 
+- A [retraining](#retraining) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
+- An [emotion recognition](#emotion-recognition) software that detects emotions from audial input data. 
+- A [testing pipeline](#testing-pipeline) pipeline that assess the models. 
 
 ## Repository structure
 
@@ -153,4 +153,4 @@ python src\stern_audio.py src\raspi_deployment_config.yml
 
 
 ### Testing pipeline
-[Testing]('./docs/Testing.md')
+[Testing pipline](./docs/Testing.md)
