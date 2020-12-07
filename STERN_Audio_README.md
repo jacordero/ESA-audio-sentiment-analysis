@@ -70,8 +70,15 @@ To deactivate the python virtual environment by running the following command:
 ## Tutorials (Use cases)
 
 ### Preprossing 
+Audio preprocessing aims to make the audio files ready for being used in the training phase. There are various audio preprocessing techniques, including noise reduction, padding, and windowing. Different techniques can be used to extract audio features.
 
-[Feature extraction](./docs/feature_Extraction.md)
+According to the most recent researches, Mel-Frequency Cepstral Coefficients (MFCC) and Log Mel-Filter bank Energies (LMFE) are the most important audio features.
+
+Extracting the mentioned features requires techniques like windowing or making all the audio tracks the same length.
+
+Notably, features can be extracted once and be reused a hundred times for training or retraining purposes. Therefore, as feature extraction could be time-consuming depending on the feature to be extracted and data size, saving the required features can help.
+
+For more details on our feature extraction procedure, required libraries, and its usage, please check [here](/gitlab/st-c2019/esa/audio-sentiment-analysis/-/blob/add_readme/./docs/feature_Extraction.md)
 
 ### Training 
 
