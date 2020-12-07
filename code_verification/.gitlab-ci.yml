@@ -25,7 +25,7 @@ Unit_Tests:
  image: geoazis/sentimentanalysis:latest
  script:
    - "echo Running Unit Tests"
-   - "pytest tests/test_cases/Preprocessing/"
+   #- "pytest tests/test_cases/Preprocessing/"
    - "pytest tests/test_cases/Postprocessing/"
  tags:
    - jarvis 
