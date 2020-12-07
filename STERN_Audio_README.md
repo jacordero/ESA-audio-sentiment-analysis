@@ -67,6 +67,8 @@ To deactivate the python virtual environment by running the following command:
 
 `deactivate`
 
+In oder to setup the audio sentiment analysis modelule, [please check](README.md)
+
 ## Tutorials (Use cases)
 
 ### Preprossing 
