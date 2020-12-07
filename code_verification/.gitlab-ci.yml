@@ -1,27 +1,8 @@
 stages:
-  - triggers
   - PEP8
   - unit tests
   - smoke tests
 
-Candidate_model_assessment:
-  stage: triggers
-  trigger:
-    include: model_verification/.gitlab-ci.yml
-    strategy: depend
-  only:
-    changes:
-      - prod_models.dvc
-      - prod_data.dvc
-      - src/raspi_candidate_config.yml
-
-Code_verification:
-  stage: triggers
-  trigger:
-    include: code_verification/.gitlab-ci.yml
-    strategy: depend
-variables:
-  GIT_DEPTH: 10
 
 #Conformity Checks
 PEP8_Conformity:

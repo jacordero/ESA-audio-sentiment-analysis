@@ -2,7 +2,6 @@ variables:
   GIT_DEPTH: 10
 
 stages:
-  - PEP8
   - fetch
   - data
   - interface
