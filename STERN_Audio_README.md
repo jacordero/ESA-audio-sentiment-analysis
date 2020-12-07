@@ -2,11 +2,11 @@
 
 STERN Audio module repository contains the software, testing pipeline,and libraries such as traing and retraining the models. 
 
-- A [preprocessing](#Preprossing ) that extract feautures from audial input data. 
-- A [training](./docs/Training.md) library provides the functions to train the models on the extract features. 
-- A [retraining](./docs/Retraining.md) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
-- A [sentiment analysis](./docs/SentimentAnalysis.md) software that analyses the sentiment of the audial input. 
-- A [testing pipeline](./docs/Testing.md) pipeline that assess the models. 
+- A [preprocessing](#preprossing ) that extract feautures from audial input data. 
+- A [training](#training) library provides the functions to train the models on the extract features. 
+- A [retraining](#retraining) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
+- A [sentiment analysis](#sentiment-analysis) software that analyses the sentiment of the audial input. 
+- A [testing pipeline](#testing-pipeline) pipeline that assess the models. 
 
 ## Repository structure
 
