@@ -5,8 +5,10 @@ model:
  n_mfcc: 50
 
 
+
 test_data_dir: "./prod_data/test"
 prod_models_dir: "./prod_models/candidate"
+
 
 # Audio recording properties
 audio_channels: 1
