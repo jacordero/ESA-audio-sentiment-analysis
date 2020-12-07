@@ -8,6 +8,8 @@
 
 This file contains instructions for extracting features from datasets. The extracted features will be saved as .joblib format. The feature_extraction.py script can be used for extracting Mel-frequency cepstral coefficients (MFCC) or Log Mel Filterbank Energy (LMFE).
   
+Various libraries can be used for MFCC extraction. The MFCC feature extraction technique includes windowing the signal, applying the discrete Fourier transform (DFT), taking the log of the magnitude, and then warping the frequencies on a Mel scale, followed by applying the inverse discrete cosine transform (DCT.)
+The Log Filterbank Energy is obtained by applying filter banks to the signal periodogram. They are an intermediate step in obtaining MFCCs. Therefore, they have a higher correlation than MFCCs, but in some cases, they retain a more significant amount of information from the original signal. 
 
 Sequential model needs only either [MFCC](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum#:~:text=In%20sound%20processing,%20the%20mel,collectively%20make%20up%20an%20MFC.) or LMFE for emotion detection, while both MFCC and LMFE are required for the siamese model. However, sequential model expects the mean of the MFCC/LMFE. It's notable that MFCC seems to reveal more information than MFCC. Therefore, it's highly recommended to use MFCC for training the sequential model.
 
