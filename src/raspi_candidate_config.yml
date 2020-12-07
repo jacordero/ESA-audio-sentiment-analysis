@@ -4,8 +4,6 @@ model:
  type: "Siamese"
  n_mfcc: 50
 
-
-
 test_data_dir: "./prod_data/test"
 prod_models_dir: "./prod_models/candidate"
 
@@ -25,7 +23,7 @@ emotions:
   4: "fearful"
 
 #Input type
-input_type: "recorded" #Specify the prediction input: 1)mic : to record from the device microphone 2)recorded
+input_type: "mic" #Specify the prediction input: 1)mic : to record from the device microphone 2)recorded
 input_directory: "./prod_data/prediction"  # if the "input_type" is set to "recorded", this property determines the recorded files directory.
 
 # Interaction properties

@@ -1,16 +1,16 @@
 model:
-  dir: "seq_3conv_modules_vh5_retv2/saved_models"
-  file: "Emotion_Voice_Detection_Model.h5"
-  type: "Sequential"
-  n_mfcc: 50
+ dir: "seq_3conv_modules_vh5_retv2/saved_models"
+ file: "Emotion_Voice_Detection_Model.h5"
+ type: "Siamese"
+ n_mfcc: 50
 
 test_data_dir: "./prod_data/test"
 prod_models_dir: "./prod_models/deployed"
 
 #audio recording properties
 audio_channels: 1
-audio_frequency: 22050
-audio_length: 5 # length of audio in seconds
+audio_frequency: 44100
+audio_length: 7 # length of audio in seconds
 
 
 #list of emotions being used in the prediction
@@ -22,15 +22,17 @@ emotions:
   3: "angry"
   4: "fearful"
 
+
+#Input type
+input_type: "mic" #Specify the prediction input: 1)mic : to record from the device microphone 2)recorded
+input_directory: "./prod_data/prediction"  # if the "input_type" is set to "recorded", this property determines the recorded files directory.
+
+
 # interaction properties
 iterations: 2 # for an infinite number of iterations, use -1
 after_audio_analysis_pause: 1 # length of pause in seconds
 before_recording_pause: 1
 
-
-#Input type
-input_type: "mic" #Specify the prediction input: 1)mic : to record from the device microphone 2)recorded
-input_directory: "./prod_data/prediction"  # if the "input_type" is set to "recorded", this property determines the recorded files directory.
 
 # logging
 logging_directory: './logs'
