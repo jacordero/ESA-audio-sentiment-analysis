@@ -29,4 +29,4 @@ emotions:
 
 # logging
 logging_directory: './logs'
-logging_file_prefix: 'test_logging_file'
+logging_subdirectory_prefix: 'test_logging_file'

@@ -29,4 +29,4 @@ before_recording_pause: 1
 
 # logging
 logging_directory: './logs'
-logging_file_prefix: 'test_logging_file'
+logging_subdirectory_prefix: 'test_logging_file'
