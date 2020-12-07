@@ -5,7 +5,7 @@ STERN Audio module repository contains the software, testing pipeline,and librar
 - A preprocessing that extract [feautures](./docs/FeatureExtraction.md) from audial input data. 
 - A [training](./docs/Training.md) library provides the functions to train the models on the extract features. 
 - A [retraining](./docs/Retraining.md) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
-- A [sentiment analysis](./docs/SentimentAnalysis.md) software that analyses the sentiment of the audial input. 
+- The software implementation of the [emotion recognition](./docs/emotion_recognition.md) module.
 - A [testing pipeline](./docs/Testing.md) pipeline that assess the models. 
 
 ## Repository structure
@@ -83,12 +83,18 @@ Notably, features can be extracted once and be reused a hundred times for traini
 ### Retraining
 [Retraining](./docs/Retraining.md)
 
-### Sentiment Analysis
-This example shows how to perform tone sentiment analysis using the ```stern_audio.py``` script. This script requires a configuration file to load the (re)trained tone detection model and setup the properties required for sentiment analysis. A detailed description about how this script works is available in the [sentiment analysis process document](./docs/sentiment_analysis.md).
+### Emotion recognition
+This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description about the way this script works is available in the [emotion recognition](./docs/emotion_recognition.md) page.
 
-First, update the contents of the configuration files that can be used for tone sentiment analysis: either ```src\raspi_candidate_config.yml```or ```src\raspi_deployment_config.yml```. The contents of ```src\raspi_candidate_config.yml``` are shown below.
+
+This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two configuration files that can be used for this purpose: ```src\raspi_candidate_config.yml```or ```src\raspi_deployment_config.yml```. 
+
+Even thought both files contains the same information, during development tasks we recommend to use the candidate configuration file. In constrast, the deployment configuration file should be used to execute the emotion recognition software in the Raspberry Pi. The content of both configuration files is shown below.
 
 ```
+input_type: "mic" 
+input_directory: "./prod_data/prediction" # used only with input_type "recorded"
+
 model:
  dir: "seq_3conv_modules_5emotions_ret/saved_models"
  file: "Emotion_Voice_Detection_Model.h5"
@@ -100,7 +106,7 @@ prod_models_dir: "./prod_models/candidate"
 
 #audio recording properties
 audio_channels: 1
-audio_frequency: 22050 
+audio_frequency: 44100
 audio_length: 7
 
 #list of emotions being used in the prediction
@@ -123,16 +129,25 @@ logging_file_prefix: 'test_logging_file'
 ```
 
 This configuration indicates that:
-* The ```Emotion_Voice_Detection_model.h5``` model inside the ```seq_3conv_modules_5emotions_ret/saved_models``` directory will be used for sentiment analysis.
-* A frequency of 22050hz will be used to record audios.
+* The audio emotion recognition software uses the microphone to capture (record) input audio.
+* The ```Emotion_Voice_Detection_model.h5``` model inside the ```seq_3conv_modules_5emotions_ret/saved_models``` directory will be used for emotion recognition.
+* A frequency of 44100hz will be used to record audios.
 * The length of each recorded audio will be 7 seconds.
 * Only five emotions will be detected.
 
-Once the configuration file has been modified, execute the sentiment analysis script using the command below. For this example, we use the ```src\raspi_candidate_configuration.yml``` file.
+Once the configuration file is ready, run the emotion recognition software as follows.
 
-```python src\stern_audio.py src\raspi_candidate_configuration.yml```
+* In the development environment:
+```
+python src\stern_audio.py src\raspi_candidate_config.yml
+```
 
-The image below shows an output of the sentiment analysis script.
+* In the Raspberry Pi:
+```
+python src\stern_audio.py src\raspi_deployment_config.yml
+```
+
+** TODO: update this image **
 
 <img src="./docs/images/sentiment-analysis-prediction.PNG" alt="drawing" width="400"/>
 
