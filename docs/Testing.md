@@ -1,5 +1,5 @@
 # Testing
-To verify the correctness of the different software modules within the STERN audio module, this repository contains testing code. This testing code is mostly `TODO system tests?` implemented using PyTest 6.1.1. It consists of several test cases, which check different aspects of the STERN audio module. The test cases are split into the following categories:
+To verify the correctness of the different software modules within the STERN audio module, this repository contains testing code. This testing code is mostly implemented using PyTest 6.1.1. It consists of several test cases, which check different aspects of the STERN audio module. The test cases are split into the following categories:
 
 - **Model Interface test cases**, which test whether the interfaces of the deep learning model used by the system conform to the specification
 - **Threshold test cases**, which test whether the performance and quality metrics of the deep learning model used by the system are above a set threshold
@@ -8,11 +8,7 @@ To verify the correctness of the different software modules within the STERN aud
 - **Data test cases**, which check whether the datasets used during training and testing are of the correct format.
 - **System tests**, which test the complete system functionality.
 
-The structure of these tests is described under [Test structure](#test-structure). The test cases. The procedure to execute these test cases can be found at [Test procedure](#test-procedure). 
-
-Most tests have been included in a Gitlab CI/CD pipeline has also been used throughout the development of STERN. The section on [Testing pipeline](#testing-pipeline) describes how tests are integrated in this pipeline. 
-
-`TODO system tests?` 
+The structure of these tests is described under [Test structure](#test-structure). The test cases. The procedure to execute these test cases can be found at [Test procedure](#test-procedure). A complete definition of all test cases can be found in the Software Transfer Document.
 
 ## Test structure
 
@@ -32,12 +28,12 @@ tests
     ├─Data
     └─Threshold_test_cases
 ```
-`TODO system tests location!` 
 
-The [test_cases](/test_cases/) contains the code for all the test cases. There are multiple folders inside of the [test_cases](/test_cases/)  folder, representing the different test case categories.
+The [test_cases](/tests/test_cases/) folder contains the code for all the test cases. There are multiple folders inside of the [test_cases](/tests/test_cases/) folder, representing the different test case categories.
 
 Some test-related files are also located directly inside the [tests](/tests/)  folder. These are not related to any specific test case, but they are used in the testing process. 
 
+Note that there is no code available relating to the System tests. Executing the System tests involves running the STERN audio module itself, which is located in the [src](/src/) folder.
 
 ## Test procedure
 
@@ -47,12 +43,4 @@ Test cases can be run using PyTest. The following command can be used from the r
 pytest tests/test_cases/ --disable-warnings
 ```
 
-`TODO system tests`
-
-## Testing Pipeline
-
-While it is possible to run all test cases manually, they are also included in the CI/CD pipeline. The main definition of the pipeline can be found in the [.gitlab-ci.yml](/.gitlab-ci.yml) file at the root of the repository. The pipeline is split into two parts. 
-- The [Code verification](/Code_verification/.gitlab-ci.yml) part performs tests which check the code itself. Specifically, it performs all test cases in the Preprocessing and Postprocessing categories. 
-- The [Model verification](/Model_verification/.gitlab-ci.yml) part performs checks on the deep learning model and the data that is being used in the STERN audio module. Specifically, the model verification part includes test cases from the Data, Model interface, and Threshold categories.
-
-System tests are not included in the pipeline, since they also require real-time input.
+To run the System tests, one has to run the STERN audio module itself. instructions on how to do that can be found in the [main readme file](/STERN_Audio_README.md). The `input_type` option found in [raspi_candidate_config.yml](/src/raspi_candidate_config.yml) can be used to configure which System test is run.
