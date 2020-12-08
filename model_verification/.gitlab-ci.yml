@@ -2,12 +2,11 @@ variables:
   GIT_DEPTH: 10
 
 stages:
-  - PEP8
   - fetch
   - data
   - interface
   - threholds
-  - integration
+  - smoke
   
 #Conformity Checks
 #PEP8_Conformity:
@@ -77,8 +76,8 @@ Threshold_validation:
   tags:
     - audio
     
-Integration_test:
-  stage: integration
+Smoke_test:
+  stage: smoke
   cache:
     key: default
     paths:

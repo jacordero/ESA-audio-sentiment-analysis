@@ -1,11 +1,9 @@
-variables:
-  GIT_DEPTH: 10
-
 stages:
   - PEP8
   - unit tests
   - smoke tests
-  
+
+
 #Conformity Checks
 PEP8_Conformity:
  stage: PEP8
@@ -23,12 +21,13 @@ PEP8_Conformity:
 Unit_Tests:
  stage: unit tests
  image: geoazis/sentimentanalysis:latest
- allow_failure: true
  script:
    - "echo Running Unit Tests"
+#   - "pytest tests/test_cases/Preprocessing/"
+   - "pytest tests/test_cases/Postprocessing/"
  tags:
-   - jarvis 
-   
+   - jarvis
+
 # Smoke tests
 Smoke_Tests:
  stage: smoke tests
@@ -37,4 +36,4 @@ Smoke_Tests:
  script:
    - "echo Running smoke Tests"
  tags:
-   - jarvis 
+   - jarvis
