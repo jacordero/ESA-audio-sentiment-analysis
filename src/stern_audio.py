@@ -1,9 +1,12 @@
 """
-Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved.
 @ Authors: Jorge Cordero j.a.cordero.cruz@tue.nl;
-@ Contributors: Parima Mirshafiei P.mirshafiei@tue.nl; Tuvi Purevsuren t.purevsuren@tue.nl; Niels Rood n.rood@tue.nl; 
-Description: Module that performs sentiment analysis using tone models previously trained with the scripts available 
-             in the training module
+@ Contributors: Parima Mirshafiei P.mirshafiei@tue.nl;
+                Tuvi Purevsuren t.purevsuren@tue.nl;
+                Niels Rood n.rood@tue.nl;
+Description: Module that performs sentiment analysis using tone models
+             previously trained with the scripts available in the training
+             module
 Last modified: 01-12-2020
 """
 
@@ -32,8 +35,9 @@ from sentiment_analyzer import AudioAnalyzer
 
 
 class SternAudio:
-    """ Class that records and analyses audio using tone sentiment analysis modules.
-	"""
+    """ Class that records and analyses audio using tone sentiment analysis
+        modules.
+        """
 
     def __init__(self, audio_analyzer, parameters):
         self.audio_analyzer = audio_analyzer
@@ -41,19 +45,23 @@ class SternAudio:
         self.audio_channels = parameters['audio_channels']
         self.audio_frequency = parameters['audio_frequency']
         self.before_recording_pause = parameters['before_recording_pause']
-        self.after_audio_analysis_pause = parameters['after_audio_analysis_pause']
+        self.after_audio_analysis_pause = \
+            parameters['after_audio_analysis_pause']
         self.iterations = parameters['iterations']
         self.input_type = parameters['input_type']
         self.input_directory = parameters['input_directory']
 
     def print_emotions(self, emotion_probabilities):
-        """ Prints a formatted message showing the top 3 emotions detected in an audio frame.
+        """ Prints a formatted message showing the top 3 emotions detected in
+            an audio frame.
 
-		Args:
-			title: Title of the message to be displayed.
-			emotion_probabilities: Tuple containing emotions and probabilities to be displayed.
-		"""
-        sorted_probabilities = sorted(emotion_probabilities, key=lambda x: x[1], reverse=True)
+        Args:
+                title: Title of the message to be displayed.
+                emotion_probabilities: Tuple containing emotions and
+                                       probabilities to be displayed.
+            """
+        sorted_probabilities = sorted(
+            emotion_probabilities, key=lambda x: x[1], reverse=True)
 
         print("\t***************************")
         for e, p in sorted_probabilities[:3]:
@@ -62,15 +70,15 @@ class SternAudio:
 
     def print_welcome_message(self):
         """ Supporting function that prints a welcome message.
-		"""
+            """
         print("\n\n\n\n\n\n\n\n** Audio analysis started!**\n")
         script_dir = os.path.dirname(os.path.abspath(__file__))
         with open(os.path.join(script_dir, "ascii_astronaut.txt")) as f:
             print(f.read())
 
     def run(self):
-        """ Main function that peforms continuous emotion detection from audios.
-		"""
+        """ Main function that peforms continuous emotion detection from audios
+            """
         self.print_welcome_message()
         if self.input_type == "mic":
             self.mic_predict()
@@ -86,26 +94,37 @@ class SternAudio:
             recorded_audio_counter = 0
             while keep_running:
 
-                print("\n\n==================================================================\n")
-                print("1) Recording. Speak for the next {} seconds".format(self.audio_length))
+                print(
+                    "\n\n=====================================================\
+=============\n")
+                print("1) Recording. Speak for the next {} seconds".format(
+                    self.audio_length))
                 time.sleep(self.before_recording_pause)
 
-                recorded_audio = sd.rec(int(self.audio_length * self.audio_frequency),
-                                        samplerate=self.audio_frequency, channels=self.audio_channels)
+                recorded_audio = sd.rec(
+                    int(self.audio_length * self.audio_frequency),
+                    samplerate=self.audio_frequency,
+                    channels=self.audio_channels)
                 sd.wait()
 
-                predicted_emotion_probs = audio_analyzer.analyze(recorded_audio)
+                predicted_emotion_probs = audio_analyzer.analyze(
+                    recorded_audio)
 
-                ordinal = lambda n: "%d%s" % (n, "tsnrhtdd"[(n // 10 % 10 != 1) * (n % 10 < 4) * n % 10::4])
+                def ordinal(n):
+                    ord_index = (n // 10 % 10 != 1) * (n % 10 < 4) * n % 10
+                    ord_string = "tsnrhtdd"
+                    return "%d%s" % (n, ord_string[ord_index::4])
 
-                print("\n- Predictions for the {} record: ".format(str(ordinal(recorded_audio_counter + 1))))
+                print("\n- Predictions for the {} record: ".format(
+                    str(ordinal(recorded_audio_counter + 1))))
                 self.print_emotions(predicted_emotion_probs)
 
                 recorded_audio_counter += 1
                 if -1 < self.iterations <= recorded_audio_counter:
                     keep_running = False
 
-                print("\n3) Pause for {} second(s)".format(self.after_audio_analysis_pause))
+                print("\n3) Pause for {} second(s)".format(
+                    self.after_audio_analysis_pause))
                 time.sleep(self.after_audio_analysis_pause)
         except ValueError as err:
             print(err)
@@ -115,9 +134,11 @@ class SternAudio:
             for subdir, dirs, files in os.walk(self.input_directory):
                 for file in files:
                     try:
-                        # Load librosa array, obtain lmfe, store the file and the lmfe information in a new array
-                        audio, sample_rate = librosa.load(os.path.join(subdir, file),
-                                                          res_type='kaiser_fast', sr=self.audio_frequency)
+                        # Load librosa array, obtain lmfe, store the file and
+                        # the lmfe information in a new array
+                        audio, sample_rate = librosa.load(
+                            os.path.join(subdir, file),
+                            res_type='kaiser_fast', sr=self.audio_frequency)
                         predicted_emotion_probs = audio_analyzer.analyze(audio)
                         print("\n- Predictions for: " + file)
                         self.print_emotions(predicted_emotion_probs)
@@ -134,53 +155,65 @@ class SternAudio:
 def load_tone_model(prod_models_dir, tone_model_dir, tone_model_name):
     """ Supporting function that loads tone models
 
-	Args:
-		prod_models_dir : relative path of the production models directory
-		tone_model_dir : name of the directory containing the tone model to be loaded
-		tone_model_name : name of the tone model
+        Args:
+                prod_models_dir : relative path of the production models
+                                  directory
+                tone_model_dir : name of the directory containing the tone
+                                 model to be loaded
+                tone_model_name : name of the tone model
 
-	Returns:
-		A tone model
-	"""
+        Returns:
+                A tone model
+        """
     root_path = Path(os.getcwd())
-    tone_model_dir_path = os.path.normpath(os.path.join(root_path, prod_models_dir, tone_model_dir, tone_model_name))
+    tone_model_dir_path = os.path.normpath(os.path.join(
+        root_path, prod_models_dir, tone_model_dir, tone_model_name))
     return tf.keras.models.load_model(tone_model_dir_path)
 
 
 def create_tone_predictor(parameters):
     """ Factory function that creates a tone predictor.
 
-	Args:
-		parameters : Dictionary containing the parameters required to initialize the
-		appropriate tone predictor.
+        Args:
+                parameters : Dictionary containing the parameters required to
+                             initialize the
+                appropriate tone predictor.
 
-	Raises:
-		ValueError: model type is not yet supported
+        Raises:
+                ValueError: model type is not yet supported
 
-	Returns:
-		Tone predictor.
-	"""
-    tone_model = load_tone_model(parameters['prod_models_dir'], parameters['model_dir'], parameters['model_name'])
+        Returns:
+                Tone predictor.
+        """
+    tone_model = load_tone_model(
+        parameters['prod_models_dir'], parameters['model_dir'],
+        parameters['model_name'])
     print(tone_model.summary())
     if parameters['model_type'] == "Sequential":
-        tone_predictor = SequentialToneSentimentPredictor(tone_model, parameters)
+        tone_predictor = SequentialToneSentimentPredictor(
+            tone_model, parameters)
     elif parameters['model_type'] == "Siamese":
         tone_predictor = SiameseToneSentimentPredictor(tone_model, parameters)
     else:
-        raise ValueError("Invalid tone model type: {}".format(parameters['model_type']))
+        raise ValueError("Invalid tone model type: {}".format(
+            parameters['model_type']))
 
     return tone_predictor
 
 
 def parse_parameters(parameters):
-    """Supporting function that parses the configuration parameters loaded from the configuration file.
+    """Supporting function that parses the configuration parameters loaded from
+       the configuration file.
 
-	Args:
-		parameters : Dictionary containing the parameters of the configuration file
+        Args:
+                parameters : Dictionary containing the parameters of the
+                             configuration file
 
-	Returns:
-		Four dictionaries containing parameters to initialize model predictors, the audio analyzer class, the stern audio class, and tone emotion mapping.
-	"""
+        Returns:
+                Four dictionaries containing parameters to initialize model
+                predictors, the audio analyzer class, the stern audio class,
+                and tone emotion mapping.
+        """
 
     tone_emotions = {}
     for key, value in parameters['emotions'].items():
@@ -207,7 +240,8 @@ def parse_parameters(parameters):
         'audio_frequency': int(parameters['audio_frequency']),
         'audio_channels': int(parameters['audio_channels']),
         'before_recording_pause': int(parameters['before_recording_pause']),
-        'after_audio_analysis_pause': int(parameters['after_audio_analysis_pause']),
+        'after_audio_analysis_pause': int(
+            parameters['after_audio_analysis_pause']),
         'iterations': int(parameters['iterations']),
         'input_type': parameters['input_type'],
         'input_directory': parameters['input_directory']
@@ -217,10 +251,12 @@ def parse_parameters(parameters):
 
 
 if __name__ == "__main__":
-    """Configures and executes the program that performs sentiment analysis on audio recorded from a microphone.
-	"""
+    """Configures and executes the program that performs sentiment analysis on
+       audio recorded from a microphone.
+        """
 
-    usage = "\n\nError: Configuration file for stern_audio not found.\n\nUsage:\n> python src/stern_audio.py configuration_file.yml\n"
+    usage = "\n\nError: Configuration file for stern_audio not found.\n\n"\
+        "Usage:\n> python src/stern_audio.py configuration_file.yml\n"
 
     if len(sys.argv) > 1:
         configuration_file = sys.argv[1]

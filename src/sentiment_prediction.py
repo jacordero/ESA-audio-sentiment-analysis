@@ -1,7 +1,9 @@
 """
-Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
-@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei P.mirshafiei@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
-@ Contributors: Niels Rood n.rood@tue.nl; 
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved.
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl;
+           Parima Mirshafiei P.mirshafiei@tue.nl;
+           Jorge Cordero j.a.cordero.cruz@tue.nl;
+@ Contributors: Niels Rood n.rood@tue.nl;
 Description: Module that contains several tone sentiment analyzers.
 Last modified: 01-12-2020
 """
@@ -17,7 +19,9 @@ from librosa.feature import mfcc as lb_mfcc
 
 
 class SiameseToneSentimentPredictor:
-    """Feature extractor that computes audio features required for emotion detection using siamese tone models based on the architecture described in [ref].
+    """Feature extractor that computes audio features required for emotion
+       detection using siamese tone models based on the architecture described
+       in [ref].
     """
 
     def __init__(self, model, parameters):
@@ -32,8 +36,10 @@ class SiameseToneSentimentPredictor:
 
         Having an FFT less than the window length loses precision by dropping
         many of the samples; a longer FFT than the window allows zero-padding
-        of the FFT buffer which is neutral in terms of frequency domain conversion.
-        :param samplerate: The sample rate of the signal we are working with, in Hz.
+        of the FFT buffer which is neutral in terms of frequency domain
+        conversion.
+        :param samplerate: The sample rate of the signal we are working with,
+                           in Hz.
         :param winlen: The length of the analysis window in seconds.
         """
         window_length_samples = winlen * samplerate
@@ -43,7 +49,8 @@ class SiameseToneSentimentPredictor:
         return n_fft
 
     def __compute_lmfe_features(self, audio_array, sample_rate):
-        """Computes lmfe features used as one of the inputs of siamese tone models.
+        """Computes lmfe features used as one of the inputs of siamese tone
+           models.
 
         Args:
             audio_array : Array containing an audio signal
@@ -58,17 +65,20 @@ class SiameseToneSentimentPredictor:
         return transposed_fbank_feat
 
     def __compute_mfcc_features(self, audio_array, sample_rate, _n_mfcc=13):
-        """Computes mfcc features used as one of the inputs of siamese tone models.
+        """Computes mfcc features used as one of the inputs of siamese tone
+           models.
 
         Args:
             audio_array : Array containing an audio signal.
             sample_rate : Sample rate used to record the audio signal.
-            _n_mfcc (int, optional): Number of mffc values computed per audio signal. Defaults to 13.
+            _n_mfcc (int, optional): Number of mffc values computed per audio
+                                     signal. Defaults to 13.
 
         Returns:
             The mfcc features corresponding to the input audio signal
         """
-        return librosa.feature.mfcc(y=audio_array, sr=sample_rate, n_mfcc=_n_mfcc)
+        return librosa.feature.mfcc(y=audio_array, sr=sample_rate,
+                                    n_mfcc=_n_mfcc)
 
     def __compute_features(self, audio_array):
         """Computes mfcc and lmfe features for an audio signal.
@@ -93,16 +103,18 @@ class SiameseToneSentimentPredictor:
             audio_array : array containing an audio to be analyzed
 
         Returns:
-            probabilities of the emotions that can be predicted by a siamese tone model
+            probabilities of the emotions that can be predicted by a siamese
+            tone model
         """
         mfcc_features, lmfe_features = self.__compute_features(audio_array)
-        new_mfcc=np.expand_dims(mfcc_features,axis=0)
-        new_lmfe=np.expand_dims(lmfe_features,axis=0)
+        new_mfcc = np.expand_dims(mfcc_features, axis=0)
+        new_lmfe = np.expand_dims(lmfe_features, axis=0)
         return np.squeeze(self.model.predict([new_mfcc, new_lmfe]))
 
 
 class SequentialToneSentimentPredictor:
-    """Feature extractor that computes audio features required for emotion detection using sequential tone models.
+    """Feature extractor that computes audio features required for emotion
+       detection using sequential tone models.
     """
 
     def __init__(self, model, parameters):
@@ -111,12 +123,14 @@ class SequentialToneSentimentPredictor:
         self.n_mfcc = parameters['n_mfcc']
 
     def __compute_mfcc_features(self, audio_array, sample_rate, _n_mfcc=40):
-        """Computes mfcc features used as one of the inputs of siamese tone models.
+        """Computes mfcc features used as one of the inputs of siamese tone
+           models.
 
         Args:
             audio_array : Array containing an audio signal.
             sample_rate : Sample rate used to record the audio signal.
-            _n_mfcc (int, optional): Number of mffc values computed per audio signal. Defaults to 13.
+            _n_mfcc (int, optional): Number of mffc values computed per audio
+                                     signal. Defaults to 13.
 
         Returns:
             The mfcc features corresponding to the input audio signal
@@ -128,7 +142,8 @@ class SequentialToneSentimentPredictor:
         return x
 
     def __compute_features(self, audio_array):
-        """Wrapper function used to compute mfcc features corresponding to an audio signal.
+        """Wrapper function used to compute mfcc features corresponding to an
+           audio signal.
 
         Args:
             audio_array : Array containing an audio signal.
@@ -137,7 +152,8 @@ class SequentialToneSentimentPredictor:
         Returns:
             The mfcc features computed from the input audio signal.
         """
-        return self.__compute_mfcc_features(audio_array, self.sample_rate, self.n_mfcc)
+        return self.__compute_mfcc_features(audio_array, self.sample_rate,
+                                            self.n_mfcc)
 
     def predict(self, audio_array):
         """Predicts the sentiment in an audio
@@ -146,10 +162,9 @@ class SequentialToneSentimentPredictor:
             audio_array : array containing an audio to be analyzed
 
         Returns:
-            Probabilities of the emotions that can be predicted by a sequential tone model
+            Probabilities of the emotions that can be predicted by a sequential
+            tone model
         """
 
         mfcc_features = self.__compute_features(audio_array)
         return np.squeeze(self.model.predict(mfcc_features))
-
-
