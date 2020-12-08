@@ -1,7 +1,10 @@
 """
-Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
-@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei P.mirshafiei@tue.nl; Tuvi Purevsuren t.purevsuren@tue.nl
-@ Contributors:  Jorge Cordero j.a.cordero.cruz@tue.nl; Niels Rood n.rood@tue.nl
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved.
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl;
+           Parima Mirshafiei P.mirshafiei@tue.nl;
+           Tuvi Purevsuren t.purevsuren@tue.nl
+@ Contributors:  Jorge Cordero j.a.cordero.cruz@tue.nl;
+                 Niels Rood n.rood@tue.nl
 Last modified: 01-12-2020
 """
 
@@ -27,9 +30,11 @@ from scipy.io import wavfile
 
 import math
 
+
 class Utils:
     """
-    this class provides some functions that could be used for preprocessing, saving or sketching the model result
+    this class provides some functions that could be used for preprocessing,
+    saving or sketching the model result
     """
 
     @staticmethod
@@ -38,7 +43,8 @@ class Utils:
 
         Args:
             audio_array ([type]): Audio signal to be stored.
-            output_audio_filename ([type]): Path where the audio signal is stored.
+            output_audio_filename ([type]): Path where the audio signal is
+                                            stored.
             audio_frequency ([type]): Frequency required to save the signal.
         """
         tmp_audio = np.copy(audio_array)
@@ -49,7 +55,8 @@ class Utils:
 
     @staticmethod
     def get_path(dir_name):
-        """Find path of requested directory such as 'models' and 'data' and 'docs'.
+        """Find path of requested directory such as 'models' and 'data' and
+           'docs'.
 
         Args:
           dir_name: A name of directory.
@@ -85,12 +92,14 @@ class Utils:
           logging_file_name: A name of logging file.
 
         """
-        if data is None or len(data) == 0 :
+        if data is None or len(data) == 0:
             return
 
         root_folder = os.path.dirname(os.path.normpath(os.getcwd()))
-        folder_name = os.path.join(root_folder, logging_file_name + '_' + str(date.today()))
-        
+        folder_name = os.path.join(
+            root_folder,
+            logging_file_name + '_' + str(date.today()))
+
         # if directory does not exist , create
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
@@ -119,7 +128,7 @@ class Utils:
 
         Args:
             trained_model: the trained model to be saved
-        """        
+        """
 
         model_name = 'Emotion_Voice_Detection_Model.h5'
         save_dir = os.path.join(os.getcwd(), 'saved_models')
@@ -136,10 +145,12 @@ class Utils:
 
     @staticmethod
     def plot_trained_model(model_history):
-        """plotting the model history, depicting its accuracy, useful in finding overfitting
+        """plotting the model history, depicting its accuracy, useful in
+           finding overfitting
 
         Args:
-            model_history: the history of the model (its accuracy in each epoch)
+            model_history: the history of the model (its accuracy in each
+                           epoch)
         """
         # Loss plotting
         plt.plot(model_history.history['loss'])
@@ -162,13 +173,14 @@ class Utils:
 
     @staticmethod
     def model_summary(model, x_testcnn, y_test):
-        """Generates and prints a summary of the models accuracy on a given dataset
+        """Generates and prints a summary of the models accuracy on a given
+           dataset
 
         Args:
             model: tone prediction model
             x_testcnn: array of features
             y_test: array of labels
-        """ 
+        """
         if len(x_testcnn) > 1:
             predict_vector = model.predict(x_testcnn)
             predictions = np.argmax(predict_vector, axis=1)
@@ -186,6 +198,6 @@ class Utils:
 
         Returns:
             name of the audio file
-        """ 
+        """
         name = (audio_file_path.split(".wav")[0]).split("/")[-1]
         return name
