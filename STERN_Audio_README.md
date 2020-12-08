@@ -78,10 +78,11 @@ Notably, features can be extracted once and be reused a hundred times for traini
 
 ### Training 
 
-[Training](./docs/Training.md)
+In this stage, the model is trained with the training data to generate the right output. In the learning phase, the system uses a configuration file to manage the inputs. This configuration file consists of different editable factors in the model training, such as the model type, batch size, number of epochs, train, test, and validation data directory. After training the model, the result will be saved for further use. For more information about training the model, please check [here](./docs/Training.md).
 
 ### Retraining
-[Retraining](./docs/Retraining.md)
+
+After training the model, it is possible to retrain it with a different dataset and improve accuracy. In order to retrain the model, some parameters should be set in the related configuration file. This information includes the model type, batch size, number of epochs, train, test, and validation data. It is good to mention that the dataset should be in the “.joblib” format. To find more about the retraining procedure, please visit [here](./docs/Retraining.md).
 
 ### Emotion recognition
 This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description about the way this script works is available in the [emotion recognition](./docs/emotion_recognition.md) page.
