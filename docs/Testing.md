@@ -8,7 +8,7 @@ To verify the correctness of the different software modules within the STERN aud
 - **Data test cases**, which check whether the datasets used during training and testing are of the correct format.
 - **System tests**, which test the complete system functionality.
 
-The structure of these tests is described under [Test structure](#test-structure). The test cases. The procedure to execute these test cases can be found at [Test procedure](#test-procedure). 
+The structure of these tests is described under [Test structure](#test-structure). The test cases. The procedure to execute these test cases can be found at [Test procedure](#test-procedure). A complete definition of all test cases can be found in the Software Transfer Document.
 
 ## Test structure
 
@@ -43,8 +43,4 @@ Test cases can be run using PyTest. The following command can be used from the r
 pytest tests/test_cases/ --disable-warnings
 ```
 
-To run the System tests, the STERN audio module can be run using the following command from the root of the repository:
-```
-python src/stern_audio.py src/raspi_candidate_config.yml
-```
-The `input_type` option found in [raspi_candidate_config.yml](/src/raspi_candidate_config.yml) can be used to configure the System test.
+To run the System tests, one has to run the STERN audio module itself. instructions on how to do that can be found in the [main readme file](/STERN_Audio_README.md). The `input_type` option found in [raspi_candidate_config.yml](/src/raspi_candidate_config.yml) can be used to configure which System test is run.
