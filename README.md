@@ -22,7 +22,7 @@ STERN Audio module repository contains the software, testing pipeline,and librar
 
 ## Requirements
 
-The code in this repository requires several libraries, which are listed in the [requirements.txt](requirements.txt) document. In particular, the [use cases](#use-cases)  asume that you have installed `Python3.7+` and `TensorFlow2.2.0`.
+The code in this repository requires several libraries, which are listed in the [requirements.txt](requirements.txt) document. In particular, the [use cases](#use-cases) in this document asume that you have installed `Python3.7+` and `TensorFlow2.2.0`.
 
 Before installing the required libraries, we recomend to create a dedicated virtual environment. In Python 3, virtual environments are created as follows: 
 ```
