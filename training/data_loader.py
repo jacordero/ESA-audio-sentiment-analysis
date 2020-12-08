@@ -1,11 +1,12 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl; Parima Mirshafiei p.mirshafiei@tue.nl;
+Last modified: 01-12-2020
+"""
+
 import os
 import joblib
 import numpy as np
-
-__authors__ = "Raha Sadeghi, Jorge Cordero, Parima Mirshafiei",
-__email__ = "r.sadeghi@tue.nl; j.a.cordero.cruz@tue.nl; p.mirshafiei@tue.nl;"
-__copyright__ = "TU/e ST2019"
-
 
 class SequentialDataLoader():
     """ 
@@ -14,12 +15,17 @@ class SequentialDataLoader():
 
 
     def load_train_data(self, data_directory):
-        """
-        Loads preprocessed testing audios and their correspondig labels.
+        """Loads preprocessed training audios and their correspondig labels.
 
-        Param: data_directory : Path of the directory containing audios.
+        Args:
+            data_directory: Path of the directory containing audios.
 
-        Returns: mfcc features and their corresponding labels.
+        Raises:
+            Exception: Cannot find features file.
+            Exception: Cannot find labels file.
+
+        Returns:
+            mfcc features and their corresponding labels.
         """
 
         features_path = os.path.join(data_directory, "mfcc_train.joblib")
@@ -45,12 +51,17 @@ class SequentialDataLoader():
 
 
     def load_validation_data(self, data_directory):
-        """
-        Loads preprocessed testing audios and their correspondig labels.
+        """Loads preprocessed validation audios and their correspondig labels.
 
-        Param: data_directory : Path of the directory containing audios.
+        Args:
+            data_directory: Path of the directory containing audios.
 
-        Returns: mfcc features and their corresponding labels.
+        Raises:
+            Exception: Cannot find the validation feature files
+            Exception: Cannot find the validation labels
+
+        Returns:
+            mfcc features and their corresponding labels.
         """
 
         features_path = os.path.join(data_directory, "mfcc_validation.joblib")
@@ -76,12 +87,17 @@ class SequentialDataLoader():
 
 
     def load_test_data(self, data_directory):
-        """
-        Loads preprocessed testing audios and their correspondig labels.
+        """Loads preprocessed testing audios and their correspondig labels.
 
-        Param: data_directory : Path of the directory containing audios.
+        Args:
+            data_directory: Path of the directory containing audios.
 
-        Returns: mfcc features and their corresponding labels.
+        Raises:
+            Exception: Cannot find the testing feature files
+            Exception: Cannot find the testing labels
+
+        Returns:
+            mfcc features and their corresponding labels.
         """
         features_path = os.path.join(data_directory, "mfcc_test.joblib")
         labels_path = os.path.join(data_directory, "labels_test.joblib")
@@ -110,12 +126,13 @@ class SiameseDataLoader():
     Data loader for Siamese-based CNN tone models that perform sentiment analysis.
     """
     def load_train_data(self, data_directory):
-        """
-        Loads preprocessed validation audios and their correspondig labels.
+        """Loads preprocessed training audios and their correspondig labels.
 
-        :Param: data_directory: Path of the directory containing processed audio features.
+        Args:
+            data_directory: Path of the directory containing processed audio features.
 
-        Returns: mfcc/lmfe features and their corresponding labels.
+        Returns:
+            mfcc/lmfe features and their corresponding labels.
         """
 
         mfcc_feature_path = os.path.join(data_directory, "mfcc_train.joblib")
@@ -134,12 +151,13 @@ class SiameseDataLoader():
 
 
     def load_validation_data(self, data_directory):
-        """
-        Loads preprocessed validation audios and their correspondig labels.
+        """Loads preprocessed validation audios and their correspondig labels.
 
-        :Param: data_directory: Path of the directory containing processed audio features.
+        Args:
+            data_directory: Path of the directory containing processed audio features.
 
-        Returns: mfcc/lmfe features and their corresponding labels.
+        Returns:
+            mfcc/lmfe features and their corresponding labels.
         """
 
         mfcc_feature_path = os.path.join(data_directory, "mfcc_validation.joblib")
@@ -159,12 +177,13 @@ class SiameseDataLoader():
 
 
     def load_test_data(self, data_directory):
-        """
-        Loads preprocessed testing audios and their correspondig labels.
+        """Loads preprocessed testing audios and their correspondig labels.
 
-        :Param :data_directory : Path of the directory containing processed audio features.
+        Args:
+            data_directory: Path of the directory containing processed audio features.
 
-        Returns: mfcc/lmfe features and their corresponding labels.
+        Returns:
+            mfcc/lmfe features and their corresponding labels.
         """
 
         mfcc_feature_path = os.path.join(data_directory, "mfcc_test.joblib")

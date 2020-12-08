@@ -1,7 +1,13 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved.
+@ Authors: George Azis gazis@tue.nl; Niels Rood n.rood@tue.nl;
+@ Contributors: Jorge Cordero j.a.cordero.cruz@tue.nl
+Last modified: 01-12-2020
+"""
+
 import os
 import joblib
 import numpy as np
-
 
 
 class TextModelDataLoader():
@@ -16,7 +22,7 @@ class TextModelDataLoader():
 
         Returns:
             List of wav filenames.
-        """        
+        """
         audios = []
         audio_formats = ['wav']
 
@@ -29,10 +35,12 @@ class TextModelDataLoader():
         return audios
 
     def load_test_data(self, filename):
-        """Loads tests sentences used to evaluate the performance of text-based sentiment detection models.
+        """Loads tests sentences used to evaluate the performance of text-based
+           sentiment detection models.
 
         Args:
-            data_directory : Path of the directory containing audios used to generate text sentences.
+            data_directory : Path of the directory containing audios used to
+                             generate text sentences.
 
         Returns:
             A list of sentences corresponding to a set of test audios.
@@ -50,7 +58,8 @@ class TextModelDataLoader():
 
 
 class SequentialDataLoader():
-    """ Data loader for sequential-based CNN tone models that perform sentiment analysis.
+    """ Data loader for sequential-based CNN tone models that perform sentiment
+        analysis.
     """
 
     def load_test_data(self, data_directory):
@@ -62,8 +71,10 @@ class SequentialDataLoader():
         Returns:
             Xmfcc features and their corresponding labels.
         """
-        mfcc_path = os.path.join(data_directory, "sequential", "mfcc_test.joblib")
-        labels_path = os.path.join(data_directory, "sequential", "labels_test.joblib")
+        mfcc_path = os.path.join(data_directory, "sequential",
+                                 "mfcc_test.joblib")
+        labels_path = os.path.join(data_directory, "sequential",
+                                   "labels_test.joblib")
 
         mfcc = joblib.load(mfcc_path)
         labels = joblib.load(labels_path)
@@ -71,12 +82,12 @@ class SequentialDataLoader():
         # Expanding dimension
         x = np.expand_dims(mfcc, axis=2)
 
-
         return x, labels
 
 
 class SiameseDataLoader():
-    """ Data loader for siamese-based CNN tone models that perform sentiment analysis.
+    """ Data loader for siamese-based CNN tone models that perform sentiment
+        analysis.
     """
 
     def load_test_data(self, data_directory):

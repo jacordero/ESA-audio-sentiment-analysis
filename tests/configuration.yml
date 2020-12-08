@@ -3,7 +3,7 @@ sequential_model:
   output_shape: "(None, 5)"
 siamese_model: 
 #  input_shape: "[(None, 13, 216, 1), (None, 26, 498, 1)]"
-  input_shape: "[(None, 50, 302, 1), (None, 26, 697, 1)]"
+  input_shape: "[(None, 50, 603, 1), (None, 26, 699, 1)]"
   output_shape: "(None, 5)"
 target_metrics:
   accuracy: 0

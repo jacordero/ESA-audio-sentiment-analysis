@@ -1,10 +1,11 @@
 """
-Copyright (C) Tu/e.
-
-======================================================
-
-This is the util library.
-
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved.
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl;
+           Parima Mirshafiei P.mirshafiei@tue.nl;
+           Tuvi Purevsuren t.purevsuren@tue.nl
+@ Contributors:  Jorge Cordero j.a.cordero.cruz@tue.nl;
+                 Niels Rood n.rood@tue.nl
+Last modified: 01-12-2020
 """
 
 import os
@@ -29,14 +30,11 @@ from scipy.io import wavfile
 
 import math
 
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero", "Niels Rood"
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl; j.a.cordero.cruz@tue.nl", "n.rood@tue.nl"
-__copyright__ = "TU/e ST2019"
-
 
 class Utils:
     """
-    this class provides some functions that could be used for preprocessing, saving or sketching the model result
+    this class provides some functions that could be used for preprocessing,
+    saving or sketching the model result
     """
 
     @staticmethod
@@ -45,7 +43,8 @@ class Utils:
 
         Args:
             audio_array ([type]): Audio signal to be stored.
-            output_audio_filename ([type]): Path where the audio signal is stored.
+            output_audio_filename ([type]): Path where the audio signal is
+                                            stored.
             audio_frequency ([type]): Frequency required to save the signal.
         """
         tmp_audio = np.copy(audio_array)
@@ -56,7 +55,8 @@ class Utils:
 
     @staticmethod
     def get_path(dir_name):
-        """Find path of requested directory such as 'models' and 'data' and 'docs'.
+        """Find path of requested directory such as 'models' and 'data' and
+           'docs'.
 
         Args:
           dir_name: A name of directory.
@@ -92,9 +92,14 @@ class Utils:
           logging_file_name: A name of logging file.
 
         """
+        if data is None or len(data) == 0:
+            return
+
         root_folder = os.path.dirname(os.path.normpath(os.getcwd()))
-        folder_name = os.path.join(root_folder, logging_file_name + '_' + str(date.today()))
-        
+        folder_name = os.path.join(
+            root_folder,
+            logging_file_name + '_' + str(date.today()))
+
         # if directory does not exist , create
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
@@ -106,7 +111,6 @@ class Utils:
 
         log_file_name = os.path.join(
             folder_name, 'log_' + Utils.get_time() + '.json')
-            
         if os.path.exists(log_file_name):
             with open(log_file_name) as logging_file:
                 temp = json.load(logging_file)
@@ -120,9 +124,10 @@ class Utils:
 
     @staticmethod
     def save_model(trained_model):
-        """
-        saving model as h5 file
-        :param trained_model the trained model to be saved
+        """ Saving model as h5 file
+
+        Args:
+            trained_model: the trained model to be saved
         """
 
         model_name = 'Emotion_Voice_Detection_Model.h5'
@@ -140,9 +145,12 @@ class Utils:
 
     @staticmethod
     def plot_trained_model(model_history):
-        """
-        plotting the model history, depicting its accuracy, useful in finding overfitting
-        :param model_history the history of the model (its accuracy in each epoch)
+        """plotting the model history, depicting its accuracy, useful in
+           finding overfitting
+
+        Args:
+            model_history: the history of the model (its accuracy in each
+                           epoch)
         """
         # Loss plotting
         plt.plot(model_history.history['loss'])
@@ -165,6 +173,14 @@ class Utils:
 
     @staticmethod
     def model_summary(model, x_testcnn, y_test):
+        """Generates and prints a summary of the models accuracy on a given
+           dataset
+
+        Args:
+            model: tone prediction model
+            x_testcnn: array of features
+            y_test: array of labels
+        """
         if len(x_testcnn) > 1:
             predict_vector = model.predict(x_testcnn)
             predictions = np.argmax(predict_vector, axis=1)
@@ -175,9 +191,13 @@ class Utils:
 
     @staticmethod
     def file_name_extractor(audio_file_path):
-        """
-        getting the file name, useful in case we want to replace a file.
-        :param audio_file_path: full path to the file (audio track)
+        """ extracts the name of an audio file from an file path
+
+        Args:
+            audio_file_path: file path
+
+        Returns:
+            name of the audio file
         """
         name = (audio_file_path.split(".wav")[0]).split("/")[-1]
         return name
