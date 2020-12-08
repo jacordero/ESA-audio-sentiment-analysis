@@ -10,8 +10,6 @@ To verify the correctness of the different software modules within the STERN aud
 
 The structure of these tests is described under [Test structure](#test-structure). The test cases. The procedure to execute these test cases can be found at [Test procedure](#test-procedure). 
 
-Most tests have been included in a Gitlab CI/CD pipeline has also been used throughout the development of STERN. The section on [Testing pipeline](#testing-pipeline) describes how tests are integrated in this pipeline. 
-
 ## Test structure
 
 All testing code is located in the [tests](/tests/) folder of this repository. A complete overview of the files in this folder is show below.
@@ -50,10 +48,3 @@ To run the System tests, the STERN audio module can be run using the following c
 python src/stern_audio.py src/raspi_candidate_config.yml
 ```
 The `input_type` option found in [raspi_candidate_config.yml](/src/raspi_candidate_config.yml) can be used to configure the System test.
-## Testing Pipeline
-
-While it is possible to run all test cases manually, they are also included in the CI/CD pipeline. The main definition of the pipeline can be found in the [.gitlab-ci.yml](/.gitlab-ci.yml) file at the root of the repository. The pipeline is split into two parts. 
-- The [Code verification](/Code_verification/.gitlab-ci.yml) part performs tests which check the code itself. Specifically, it performs all test cases in the Preprocessing and Postprocessing categories. 
-- The [Model verification](/Model_verification/.gitlab-ci.yml) part performs checks on the deep learning model and the data that is being used in the STERN audio module. Specifically, the model verification part includes test cases from the Data, Model interface, and Threshold categories.
-
-System tests are not included in the pipeline, since they also require real-time input.
