@@ -10,6 +10,7 @@ Candidate_model_assessment:
     changes:
       - prod_models.dvc
       - prod_data.dvc
+      - src/raspi_candidate_config.yml
 
 Code_verification:
   stage: triggers
