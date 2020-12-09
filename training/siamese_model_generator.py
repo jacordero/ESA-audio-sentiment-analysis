@@ -94,7 +94,7 @@ class SiameseModelGenerator():
 class TwoLayerSiameseModelGenerator():
 
     def create_siamese_branch_architecture(self, n_conv_filters, filters_shape,  input_shape_x, input_shape_y):
-         """creating a the model architecture of each branch, to be used for both mffc and lmfe
+        """creating a the model architecture of each branch, to be used for both mffc and lmfe
 
         Args:
             n_conv_filters: default values based on the paper are 128, 256, 512
@@ -105,7 +105,6 @@ class TwoLayerSiameseModelGenerator():
         Returns:
             Input and ouput tensors of the branch
         """       
-
         input_ = Input(shape=[input_shape_x, input_shape_y, 1])
         hidden1 = Conv2D(n_conv_filters[0], kernel_size=filters_shape[0], activation='relu',
                             padding='same',
