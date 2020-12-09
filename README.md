@@ -52,7 +52,7 @@ pip install -r requirements.txt
 ```
 
 ### On a Raspberry Pi V4
-First install the [appropriate version of TensorFlow](https://qengineering.eu/install-tensorflow-2.2.0-on-raspberry-pi-4.html)
+First install the [TensorFlow2.2.0 version](https://qengineering.eu/install-tensorflow-2.2.0-on-raspberry-pi-4.html)
 
 ```
 sudo apt-get install gfortran libhdf5-dev libc-ares-dev libeigen3-dev libatlas-base-dev libopenblas-dev libblas-dev 
@@ -76,7 +76,7 @@ The following use cases show the main functionality of the source code in this r
 ### Preprocessing
 Audio preprocessing aims to make the audio files ready for being used in the training phase. There are various audio preprocessing techniques, including noise reduction, padding, and windowing. Different techniques can be used to extract audio features. According to the most recent researches, Mel-Frequency Cepstral Coefficients (MFCC) and Log Mel-Filter bank Energies (LMFE) are the most important audio features. Extracting the mentioned features requires techniques like windowing or making all the audio tracks the same length.
 
-Notably, features can be extracted once and be reused a hundred times for training or retraining purposes. Therefore, as feature extraction could be time-consuming depending on the feature to be extracted and data size, saving the required features can help. For more details on our feature extraction procedure, required libraries, and its usage, please check [here](./docs/FeatureExtraction.md)
+Notably, features can be extracted once and be reused a hundred times for training or retraining purposes. Therefore, as feature extraction could be time-consuming depending on the feature to be extracted and data size, saving the required features can help. For more details on our feature extraction procedure, required libraries, and its usage, please check [feature extraction](./docs/FeatureExtraction.md) page.
 
 ### Training 
 
@@ -84,7 +84,7 @@ In this stage, the model is trained with the training data to generate the right
        
        python training/model_trainer.py
   
-For more information about training the model and configuration file, please check [here](./docs/Training.md).
+For more information about training the model and configuration file, please check [training](./docs/Training.md) page.
 
 ### Retraining
 After training the model, it is possible to retrain it with a different dataset and improve accuracy. In order to retrain the model, some parameters should be set in the related configuration file named _retraining_parameters.yml_. This information includes the model type, batch size, number of epochs, train, test, and validation data. To retrain the model, the follwoing command should be executed in command line:
@@ -92,7 +92,7 @@ After training the model, it is possible to retrain it with a different dataset 
     python training/model_retrainer.py
 
 
-It is good to mention that the dataset should be in the “.joblib” format.To find more about the retraining procedure and specifying the parameters in configuration file, please visit [here](./docs/Retraining.md).
+It is good to mention that the dataset should be in the “.joblib” format.To find more about the retraining procedure and specifying the parameters in configuration file, please visit [retraining](./docs/Retraining.md) page.
 ### Emotion recognition
 
 #### Description
@@ -124,5 +124,5 @@ To verify the correctness of the different software modules within the STERN aud
 pytest tests/test_cases/ --disable-warnings
 ```
 
-More information about the testing code can be found in the [testing documentation](/docs/Testing.md).
+More information about the testing code can be found in the [testing](/docs/Testing.md) page.
 
