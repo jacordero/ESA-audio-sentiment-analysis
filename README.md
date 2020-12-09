@@ -225,13 +225,6 @@ python src/stern_audio.py src/raspi_deployment_config.yml
 
 ```
 
-<<<<<<< HEAD
-  
-
-### Testing pipeline
-
-[Testing pipline](./docs/Testing.md)
-=======
 ### Testing
 
 To verify the correctness of the different software modules within the STERN audio module, this repository contains testing code. All automated test cases can be executed with the following command:
