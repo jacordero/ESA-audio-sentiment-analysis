@@ -89,7 +89,7 @@ After training the model, it is possible to retrain it with a different dataset 
 #### Description
 This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description about how this script works is available in the [emotion recognition](./docs/emotion_recognition.md) page.
 
-This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two similar configuration files: ```src/raspi_candidate_config.yml``` for development tasks and ```src/raspi_deployment_config.yml``` for deployment on the Raspberry Pi.
+This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two similar configuration files: ```src/raspi_candidate_config.yml``` for development tasks and ```src/raspi_deployment_config.yml``` for deployment on the Raspberry Pi. The content of these files is described in the [emotion recognition](./docs/emotion_recognition.md) page.
 
 #### Execution during the development process
 * First,  modify the `raspi_candidate_config.yml` file.
@@ -107,51 +107,6 @@ python src/stern_audio.py src/raspi_candidate_config.yml
 python src/stern_audio.py src/raspi_deployment_config.yml
 ```
 
-#### Configuration example
-The configuration file below indicates that:
-* The audio emotion recognition software uses the microphone to capture (record) input audio.
-* The ```Emotion_Voice_Detection_model.h5``` model inside the ```seq_3conv_modules_5emotions_ret/saved_models``` directory will be used for emotion recognition.
-* A frequency of 44100hz will be used to record audios.
-* The length of each recorded audio will be 7 seconds.
-* Only five emotions will be detected.
-
-```
-input_type: "mic" 
-input_directory: "./prod_data/prediction" # used only with input_type "recorded"
-
-model:
- dir: "seq_3conv_modules_5emotions_ret/saved_models"
- file: "Emotion_Voice_Detection_Model.h5"
- type: "Sequential"
- n_mfcc: 50
-
-test_data_dir: "./prod_data/test"
-prod_models_dir: "./prod_models/candidate"
-
-#audio recording properties
-audio_channels: 1
-audio_frequency: 44100
-audio_length: 7
-
-#list of emotions being used in the prediction
-#These codes should comply with the feature extraction part in training code
-emotions:
-  0: "neutral"
-  1: "happy"
-  2: "sad"
-  3: "angry"
-  4: "fearful"
-
-# interaction properties
-iterations: 2 # for an infinite number of iterations, use -1
-after_audio_analysis_pause: 1 # length of pause in seconds
-before_recording_pause: 1
-
-# logging
-logging_directory: './logs'
-logging_file_prefix: 'test_logging_file'
-```
-
 ### Testing
 
 To verify the correctness of the different software modules within the STERN audio module, this repository contains testing code. All automated test cases can be executed with the following command:
@@ -161,3 +116,4 @@ pytest tests/test_cases/ --disable-warnings
 ```
 
 More information about the testing code can be found in the [testing documentation](/docs/Testing.md).
+
