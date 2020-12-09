@@ -37,8 +37,17 @@ Fetch_data_and_models:
 
 Data_validation:
   stage: data
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
+        - prod_models/deployed/
   script:
     - "echo Testing data schema and values"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "pytest tests/test_cases/Data/"
+
   tags:
     - audio
     
