@@ -25,7 +25,7 @@ In the training directory you can find a YAML file, called _retraining_parameter
  ***Note***: Make sure you are passing the correct features to the model. for More information please read [this](/docs/feature_Extraction.md).
 
 ## A sample configuration file
-Here you can find a sample of *training_parameter.yml* file.
+Here you can find a sample of *retraining_parameter.yml* file.
 
     
     model_type: "Sequential"
