@@ -229,7 +229,7 @@ def parse_parameters(parameters):
     }
 
     analyzer_parameters = {
-        'logging_file_prefix': parameters['logging_file_prefix'],
+        'logging_file_prefix': parameters['logging_subdirectory_prefix'],
         'logging_directory': parameters['logging_directory'],
         'audio_frequency': parameters['audio_frequency'],
         'emotions': tone_emotions

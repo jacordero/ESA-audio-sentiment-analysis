@@ -28,4 +28,4 @@ before_recording_pause: int(min=0)
 
 # logging
 logging_directory: str()
-logging_file_prefix: str()
+logging_subdirectory_prefix: str()
