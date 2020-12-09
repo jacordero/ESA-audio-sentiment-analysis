@@ -1,3 +1,10 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved.
+@ Authors: George Azis gazis@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
+@ Contributors: Niels Rood n.rood@tue.nl;
+Last modified: 07-12-2020
+"""
+
 import json
 import yaml
 import os
@@ -9,7 +16,7 @@ import tensorflow as tf
 
 import numpy as np
 from sklearn.metrics import multilabel_confusion_matrix, accuracy_score, f1_score, classification_report
-from context import SequentialDataLoader, SiameseDataLoader, TextModelDataLoader
+from context import SequentialDataLoader, SiameseDataLoader
 
 
 

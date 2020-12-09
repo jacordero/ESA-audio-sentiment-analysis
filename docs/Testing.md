@@ -19,8 +19,7 @@ tests
 ├─compute_models_performance.py
 ├─configuration.yml
 ├─context.py
-├─copy_model_to_deployment.py
-├─update_configuration_file.py
+├─data_loader.py
 └───test_cases
     ├─Model_test_cases
     ├─Postprocessing
