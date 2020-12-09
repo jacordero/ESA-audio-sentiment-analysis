@@ -89,6 +89,8 @@ class SternAudio:
         print("\n** Audio analysis finished!**")
 
     def mic_predict(self):
+        """ Predicting based on the microphone audio
+            """
         try:
             keep_running = True
             recorded_audio_counter = 0
@@ -130,6 +132,8 @@ class SternAudio:
             print(err)
 
     def recorded_predict(self):
+        """ prediction based on the .wav files
+            """
         try:
             for subdir, dirs, files in os.walk(self.input_directory):
                 for file in files:
