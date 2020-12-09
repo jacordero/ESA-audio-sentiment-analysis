@@ -1,24 +1,24 @@
 # STERN Audio module
 
-STERN Audio module repository contains the software, testing pipeline,and libraries such as traing and retraining the models. 
+STERN Audio module repository contains the STERN software, test cases, and libraries for traing and retraining the models. 
 
-- A [preprocessing](#preprossing ) that extract feautures from audial input data. 
+- A [preprocessing](#preprocessing) library provides the functions to extract feautures from audial input data. 
 - A [training](#training) library provides the functions to train the models on the extract features. 
 - A [retraining](#retraining) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
 - The [emotion recognition](#emotion-recognition) software that detects emotions from audial input data. 
-- A [testing pipeline](#testing-pipeline) pipeline that assess the models. 
+- A [testing](#testing) that verifies the correctness of the STERN audio module.
 
 ## Repository structure
 
-- code_verification: contains the configuration file for conditional testing pipeline.
-- data: contains images.
-- docs: contains the readme.md files for documentation.
-- model_verification: contains the configition file of Artificial Intelligence (AI) component for conditional pipeline.
-- prototypes: contains the scrips for development purpose.
-- src : contains the STERN software of audio module and including configuration files. 
-- test: contains test scripts with configuration file.
-- training: contains the libraries for training and retraining the models.
-- requirements.txt: contains all the dependencies which need to be installed in order to run the STERN software.
+- **prod_data:** contains datasets such as raw data, preprocessed data, test data, and description.md for training and retraining the models.
+- **prod_models:** contains trained or retrained models such as Sequential and Siamese model. 
+- **prototypes:** contains the scrips for development purpose with description readme.md file.
+- **src:** contains the STERN software of audio module and including configuration files. 
+- **training:** contains the libraries for training and retraining the models.
+- **tests:** contains test scripts with configuration file.
+- **docs:** contains the readme.md files for documentation.
+- **README.md:** contains the instruction of setting up environment and how to run the STERN software.
+- **requirements.txt:** contains all the dependencies which need to be installed in order to run the STERN software.
 
 ## Requirements
 
@@ -111,9 +111,9 @@ should be in the “.joblib” format.To find more about the retraining procedur
 ### Emotion recognition
 
 #### Description
-This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description about how this script works is available in the [emotion recognition](./docs/emotion_recognition.md) page.
+This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description about how this script works is available in the [emotion recognition](./docs/EmotionRecognition.md) page.
 
-This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two similar configuration files: ```src/raspi_candidate_config.yml``` for development tasks and ```src/raspi_deployment_config.yml``` for deployment on the Raspberry Pi. The content of these files is described in the [emotion recognition](./docs/emotion_recognition.md) page.
+This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two similar configuration files: ```src/raspi_candidate_config.yml``` for development tasks and ```src/raspi_deployment_config.yml``` for deployment on the Raspberry Pi. The content of these files is described in the [emotion recognition](./docs/EmotionRecognition.md) page.
 
 #### Execution during the development process
 * First,  modify the `raspi_candidate_config.yml` file.
