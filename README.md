@@ -242,4 +242,3 @@ pytest tests/test_cases/ --disable-warnings
 
 More information about the testing code can be found in the [testing documentation](/docs/Testing.md).
 
->>>>>>> 667affbb80e3db957191a259ee79049c14903b32
