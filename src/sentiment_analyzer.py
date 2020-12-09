@@ -1,8 +1,9 @@
 """
-Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved.
 @ Authors: Niels Rood n.rood@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
-@ Contributors: Jobaer Khan j.i.khan@tue.nl; 
-Description: Class that performs audio analysis using different sentiment analyzers.
+@ Contributors: Jobaer Khan j.i.khan@tue.nl;
+Description: Class that performs audio analysis using different sentiment
+             analyzers.
 Last modified: 01-12-2020
 """
 
@@ -15,9 +16,10 @@ from scipy.io.wavfile import write
 
 
 class AudioAnalyzer:
-    """ This class is used to analyze audio recordings using tone model predictors.
+    """ This class is used to analyze audio recordings using tone model
+        predictors.
 	"""
-    
+
     def __init__(self, tone_predictor, parameters):
         self.frame_rate = parameters['audio_frequency']
         self.tone_predictor = tone_predictor
@@ -52,20 +54,23 @@ class AudioAnalyzer:
         Utils.logging(data, logging_file_path)
 
     def analyze(self, audio):
-        """Predicts emotions in an audio using tone based sentiment prediction models.
+        """Predicts emotions in an audio using tone based sentiment prediction
+           models.
 
 		Args:
 			audio : Audio to be analyzed.
 
 		Returns:
-			List containing pairs of sentiments and their corresponding predictions.
+			List containing pairs of sentiments and their corresponding
+            predictions.
 		"""
 
         tone_predictions = self.tone_predictor.predict(np.squeeze(audio))
         tone_emotion_probabilities = []
         i = 0
         for key in self.emotions:
-            tone_emotion_probabilities.append((self.emotions[key], tone_predictions[i]))
+            tone_emotion_probabilities.append((self.emotions[key],
+                                              tone_predictions[i]))
             i = i + 1
         self.emotion_logbook(tone_emotion_probabilities)
         return tone_emotion_probabilities
