@@ -14,37 +14,37 @@ from context import SequentialDataLoader, SiameseDataLoader, TextModelDataLoader
 
 
 def compute_measures(predicted_values, truth_values, emotions):
-    """[summary]
+    """This function will perform an assessment of the model
+        based on the truth values. I will return a dictionary,
+        which contains all the fields of this assessment.
 
     Args:
-        predicted_values ([type]): [description]
-        truth_values ([type]): [description]
-    """    
+        predicted_values (list): candidate model predictions of the testing data
+        truth_values (list): labels of the testing
+        emotions (dictionary): dictionary of the predefined set of classes
 
-    '''
-    {
-        model_name: 
-        model_type:
+    Returns:
+        A dictionary with the following schema
+        {
         general_metrics:
-            accuracy:
-            f1_score:
-            performance:
-            confidence:
+            accuracy: num(max=1.0, min=0.0)
+            f1_score: num(max=1.0, min=0.0)
+            confidence: num(max=1.0, min=0.0)
         perclass_metrics:
             confidence:
-                happy:
-                sad:
-                .
-                .
-
-            accuracy:
-                happy:
-                sad:
-                .
-                .
-
-    }
-    '''
+                neutral: num(max=1.0, min=0.0)
+                happy: num(max=1.0, min=0.0)
+                sad: num(max=1.0, min=0.0)
+                angry: num(max=1.0, min=0.0)
+                fearful: num(max=1.0, min=0.0)
+           accuracy:
+                neutral: num(max=1.0, min=0.0)
+                happy: num(max=1.0, min=0.0)
+                sad: num(max=1.0, min=0.0)
+                angry: num(max=1.0, min=0.0)
+                fearful: num(max=1.0, min=0.0)
+        }
+    """
 
     measures = dict()
 
@@ -99,30 +99,82 @@ def compute_measures(predicted_values, truth_values, emotions):
     return measures
 
 def load_tone_model(model_dir, model_name, script_dir):
+    """This function loads the tone model based on the input
+        of the configuration file.
+    Args:
+        model_dir (string): candidate model directory
+        model_name (string): candidate model name
+        script_dir (string): script directory
+
+    Returns:
+        Model
+    """
+
     full_path_to_model =  os.path.normpath(os.path.join(script_dir, "../prod_models/candidate", model_dir, model_name))
     print("Full path to model: {}".format(full_path_to_model))
     model = keras.models.load_model(full_path_to_model)
     return model
 
 def predict_sequential_tone_model(model, mfcc_features):
+    """This function performs a prediction based on the mfcc features
+        with the sequential tone model.
+
+    Args:
+        model (model): candidate model
+        mfcc_features (list): mfcc features of the testing data set
+
+    Returns:
+        List of predictions based on testing data set.
+    """  
     return np.squeeze(model.predict(mfcc_features))
 
 def predict_siamese_tone_model(model, mfcc_features, lmfe_features):
+    """This function performs a prediction based on the mfcc and lmfe features
+        with the siamese tone model.
+        
+    Args:
+        model (model): candidate model
+        mfcc_features (list): mfcc features of the testing data set
+        lmfe_features (list): lmfe features of the testing data set
+
+    Returns:
+        List of predictions based on testing data set.
+    """  
     return np.squeeze(model.predict([mfcc_features, lmfe_features]))
 
 
-def predict_text_model(model, test_data_dir_path):
-    data_loader = TextModelDataLoader()
-    sentences = data_loader.load_test_data(test_data_dir_path)
-    return model.predict(np.squeeze(sentences))
-
-
 def compute_tone_model_performance(model_dir, model_name, model_type, test_data_dir, emotions):
-    """[summary]
+    """This function performns the assessment of the model based on the testing data.
 
     Args:
-        model_dir ([type]): [description]
-        test_data_dir ([type]): [description]
+        model_dir (string): candidate model directory
+        model_name (string): candidate model name
+        model_type (string): candidate model type
+        test_data_dir(string): testing data directory
+        emotions(dictionary): dictionary of the predefined set of classes
+
+    Returns:
+        A dictionary with the following schema
+        {
+        general_metrics:
+            accuracy: num(max=1.0, min=0.0)
+            f1_score: num(max=1.0, min=0.0)
+            performance: num(min=0.0)
+            confidence: num(max=1.0, min=0.0)
+        perclass_metrics:
+            confidence:
+                neutral: num(max=1.0, min=0.0)
+                happy: num(max=1.0, min=0.0)
+                sad: num(max=1.0, min=0.0)
+                angry: num(max=1.0, min=0.0)
+                fearful: num(max=1.0, min=0.0)
+           accuracy:
+                neutral: num(max=1.0, min=0.0)
+                happy: num(max=1.0, min=0.0)
+                sad: num(max=1.0, min=0.0)
+                angry: num(max=1.0, min=0.0)
+                fearful: num(max=1.0, min=0.0)
+        }        
     """
 
     print("compute_tone_model_performance")    
@@ -164,11 +216,12 @@ def compute_tone_model_performance(model_dir, model_name, model_type, test_data_
     return performance_metrics
 
 def save_performance_results(performance_results):
-    """[summary]
+    """This function saves the results of the candidate assessment
+        to a json file.
 
     Args:
-        performance_results ([type]): [description]
-    """    
+        performance_results (dictionary): Results of the candidate model assessment
+    """
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_filename = os.path.join(script_dir, "candidate_models_performance.json")
@@ -177,11 +230,12 @@ def save_performance_results(performance_results):
 
 
 def generate_performance_summary(prod_config_file):
-    """[summary]
+    """This function loads the configurations from the file, computes the
+        candidate model assessment, and saves the results.
 
     Args:
-        prod_config_file ([type]): [description]
-    """    
+        prod_config_file (string): Path to configuration file
+    """
 
     with open(prod_config_file) as input_file:
         prod_config_parameters = yaml.load(input_file, Loader=yaml.FullLoader)

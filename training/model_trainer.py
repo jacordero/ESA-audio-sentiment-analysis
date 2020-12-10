@@ -1,3 +1,8 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei p.mirshafiei@tue.nl; Jorge Cordero j.a.cordero.cruz@tue.nl;
+Last modified: 01-12-2020
+"""
 import os
 import yaml
 import time
@@ -7,28 +12,27 @@ import keras
 import numpy as np
 from pathlib import Path
 
-
-__authors__ = "Raha Sadeghi, Parima Mirshafiei, Jorge Cordero ",
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl;j.a.cordero.cruz@tue.nl;"
-__copyright__ = "TU/e ST2019"
-
 def create_trained_model_path(trained_models_dir, trained_model_name):
-    """
-    This function creates the path to the model based on the training parameters yaml file.
-    :param trained_models_dir: the directory contatining the model
-    :param trained_model_name: the model name (.h5)
-    :Return the model path
+    """This function creates the path to the model based on the training parameters yaml file.
+
+    Args:
+        trained_models_dir: the directory contatining the model
+        trained_model_name: the model name (.h5)
+
+    Returns:
+        the model path
     """
     root_path = Path(os.getcwd())
     tmp_trained_model_dir_path = os.path.join(root_path, trained_models_dir, trained_model_name)
     return os.path.normpath(tmp_trained_model_dir_path)
 
 def save_training_info(model_type, parameters, training_history):
-    """
-    This function saves the training information.
-    :param  model_type: the type of the model, either sequential or siamese
-    :param  parameters: a dictionary of parameters defined in the training parameters yaml file
-    :param  training_history:    the hisory of the training as numpy array
+    """This function saves the training information.
+
+    Args:
+        model_type: the type of the model, either sequential or siamese
+        parameters: a dictionary of parameters defined in the training parameters yaml file
+        training_history: the history of the training as numpy array
     """
     trained_model_dir_path = create_trained_model_path(parameters['trained_models_dir'], parameters['trained_model_name'])
 
@@ -45,12 +49,12 @@ def save_training_info(model_type, parameters, training_history):
     np.save(history_file_path, training_history.history)
 
 def save_model(trained_model, trained_model_dir_path):
+    """This function saves the model as .h5 format in the saved_models directory
+
+    Args:
+        trained_model: model to be saved as .h5 format
+        trained_model_dir_path: directory where the trained model will be saved
     """
-    This function saves the model as .h5 format in the saved_models directory
-    params:
-        trained_model : model to be saved as .h5 format
-        trained_model_dir_path : directory where the trained model will be saved
-    """    
     model_name = 'Emotion_Voice_Detection_Model.h5'
     save_dir = os.path.join(trained_model_dir_path, 'saved_models')
     # Save model and weights
@@ -66,11 +70,14 @@ def save_model(trained_model, trained_model_dir_path):
 
 
 def train_sequential_model(parameters):
-    """
-    This function loads the joblib (features) for training the sequential model, and based on the parameters specified in the config file
+    """This function loads the joblib (features) for training the sequential model, and based on the parameters specified in the config file
     trains the model and finally saves the model.
-    Params:
+
+    Args:
         parameters: a list of required parameters read from the training_parameters.yml file
+
+    Raises:
+        ValueError: the number of emotions does not match the number of unique training labels
     """
     # load data
     root_path = Path(os.getcwd())
@@ -122,10 +129,10 @@ def train_sequential_model(parameters):
     save_training_info(model_type, parameters, history)
 
 def train_siamese_model(parameters):
-    """
-    This function loads the joblib (features) for training the siamese model, and based on the parameters specified in the config file
+    """This function loads the joblib (features) for training the siamese model, and based on the parameters specified in the config file
     trains the model and finally saves the model.
-    Params:
+
+    Args:
         parameters: a list of required parameters read from the training_parameters.yml file
     """
     # load data
@@ -176,10 +183,14 @@ def train_siamese_model(parameters):
 
 
 def train(model_type, parameters):
-    """
-    This function call the required training function based on the model_type specified in the training_parameters.yml file
-    Params:
+    """This function call the required training function based on the model_type specified in the training_parameters.yml file
+
+    Args:
         model_type: the type of the model to be trained: either "Sequential" or "Siamese"
+        parameters: parameters required to train the models
+
+    Raises:
+        ValueError: model type is invalid
     """
     if model_type == "Sequential":
         train_sequential_model(parameters)
@@ -189,10 +200,13 @@ def train(model_type, parameters):
         raise ValueError("Invalid model type: {}".format(model_type))
 
 def load_training_parameters(training_parameters_filename):
-    """
-    This function read the training_parameters.yml file to train the model based on the specified configuration parameters.
-    Param: 
+    """This function read the training_parameters.yml file to train the model based on the specified configuration parameters.
+
+    Args:
         training_parameters_filename: the path/filename of the configuration file
+
+    Returns:
+        loaded training parameters
     """
     # load training parameters from yaml file
     root_path = Path(os.getcwd())
@@ -209,7 +223,7 @@ def load_training_parameters(training_parameters_filename):
 
 if __name__ == "__main__":
     """
-    main function to define the configuration file and train the model
+    Loads training parameters from a configuration file and trains a tone sentiment detection model.
     """
     training_parameters_filename = "training_parameters.yml"
     model_type, parameters = load_training_parameters(training_parameters_filename)

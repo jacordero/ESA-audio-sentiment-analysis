@@ -1,13 +1,13 @@
+"""
+Copyright (c) 2020 TU/e - PDEng Software Technology C2019. All rights reserved. 
+@ Authors: Raha Sadeghi r.sadeghi@tue.nl; Parima Mirshafiei p.mirshafiei@tue.nl;
+Last modified: 01-12-2020
+"""
+
 from keras.layers import SpatialDropout2D, Activation, Input, Concatenate, Dense
 from keras.layers.normalization import BatchNormalization
 from keras.layers import Conv2D, MaxPooling2D, Flatten, Dropout
 import keras
-
-
-__authors__ = "Raha Sadeghi, Parima Mirshafiei",
-__email__ = "r.sadeghi@tue.nl; P.mirshafiei@tue.nl;"
-__copyright__ = "TU/e ST2019"
-
 
 class SiameseModelGenerator():
     """
@@ -15,13 +15,17 @@ class SiameseModelGenerator():
     This model is based on this paper [https://link.springer.com/chapter/10.1007%2F978-3-030-51999-5_18]
     """
     def create_siamese_branch_architecture(self, n_conv_filters, filters_shape,  input_shape_x, input_shape_y):
-        """
-        creating a the model architecture of each branch, to be used for both mffc and lmfe
-        :param n_conv_filters: default values based on the paper are 128, 256, 512
-        :param filters_shape: default values based on the paper are [3,3,3]
-        :param input_shape_x: the input shape of features
-        :param input_shape_y: the input shape of labels
-        """
+        """creating a the model architecture of each branch, to be used for both mffc and lmfe
+
+        Args:
+            n_conv_filters: default values based on the paper are 128, 256, 512
+            filters_shape: default values based on the paper are [3,3,3]
+            input_shape_x: the input shape of features
+            input_shape_y: the input shape of labels
+
+        Returns:
+            Input and ouput tensors of the branch
+        """       
 
         input_ = Input(shape=[input_shape_x, input_shape_y, 1])
         hidden1 = Conv2D(n_conv_filters[0], kernel_size=filters_shape[0], activation='relu',
@@ -50,25 +54,36 @@ class SiameseModelGenerator():
         return input_, bn
 
     def concatenate_models(self, branch1, branch2, input1, input2, n_emotions):
-        """
-        Creating the final model by concatinating two branches (mfcc and lmfe)
-        :param branch1: the model created based on mfcc feature
-        :param branch2: the model created based on lmfe feature
-        :param input1: the first input for Siamese model
-        :param input2: the second input for Siamese model
-        """
+        """Creating the final model by concatinating two branches (mfcc and lmfe)
+
+        Args:
+            branch1: the model created based on mfcc feature
+            branch2: the model created based on lmfe feature
+            input1: the first input for Siamese model
+            input2: the second input for Siamese model
+            n_emotions: number of emotions to predict
+
+        Returns:
+            concatenated model
+        """        
+        
         concat_ = Concatenate()([branch1, branch2])
         output = Dense(n_emotions, activation='softmax')(concat_)
         model = keras.Model(inputs=[input1, input2], outputs=[output])
         return model
 
     def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
-        """
-        create a Siamese model.
-        :param: n_conv_filter:  neurons should we used in each layer of branches
-        :param: filters_shape:  filter shapes of the first layer
-        :param: _input_shape: the input shape is an array with the first two paramters define the mfcc shape (X, y) 
-        and the last two parameters define the lmfe shape (X, y)
+        """Create a Siamese model.
+
+        Args:
+            n_conv_filters : neurons should we used in each layer of branches
+            filters_shape: filter shapes of the first layer
+            _input_shape: the input shape is an array with the first two paramters define the mfcc shape (X, y) 
+                and the last two parameters define the lmfe shape (X, y)
+            n_emotions: number of emotions to predict
+
+        Returns:
+            Siamese model
         """
         mfcc_input, mfcc_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[0], _input_shape[1])
         lmfe_input, lmfe_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[2], _input_shape[3])
@@ -79,13 +94,17 @@ class SiameseModelGenerator():
 class TwoLayerSiameseModelGenerator():
 
     def create_siamese_branch_architecture(self, n_conv_filters, filters_shape,  input_shape_x, input_shape_y):
-        """
-        Creating a general model to be used for both mffc and lmfe.
-        :param n_conv_filters: default values based on the paper are 128, 256, 512
-        :param filters_shape: default values based on the paper are [3,3,3]
-        :param input_shape_x: the input shape of features
-        :param input_shape_y: the input shape of labels
-        """
+         """creating a the model architecture of each branch, to be used for both mffc and lmfe
+
+        Args:
+            n_conv_filters: default values based on the paper are 128, 256, 512
+            filters_shape: default values based on the paper are [3,3,3]
+            input_shape_x: the input shape of features
+            input_shape_y: the input shape of labels
+
+        Returns:
+            Input and ouput tensors of the branch
+        """       
 
         input_ = Input(shape=[input_shape_x, input_shape_y, 1])
         hidden1 = Conv2D(n_conv_filters[0], kernel_size=filters_shape[0], activation='relu',
@@ -108,25 +127,35 @@ class TwoLayerSiameseModelGenerator():
         return input_, bn
 
     def concatenate_models(self, branch1, branch2, input1, input2, n_emotions):
-        """
-        Creating the final model by concatinating two branches (mfcc and lmfe).
-        :param branch1: the first branch in Siamese model
-        :param branch2: the second branch in Siamese model
-        :param input1: the first input for Siamese model
-        :param input2: the second input for Siamese model
-        """
+        """Creating the final model by concatinating two branches (mfcc and lmfe)
+
+        Args:
+            branch1: the model created based on mfcc feature
+            branch2: the model created based on lmfe feature
+            input1: the first input for Siamese model
+            input2: the second input for Siamese model
+            n_emotions: number of emotions to predict
+
+        Returns:
+            concatenated model
+        """        
         concat_ = Concatenate()([branch1, branch2])
         output = Dense(n_emotions, activation='softmax')(concat_)
         model = keras.Model(inputs=[input1, input2], outputs=[output])
         return model
 
     def generate_model(self, n_conv_filters, filters_shape, _input_shape, n_emotions):
-        """
-        Create a Siamese model.
-        :param: n_conv_filter:  neurons should we used in each layer of branches
-        :param: filters_shape:  filter shapes of the first layer
-        :param: _input_shape: the input shape is an array with the first two paramters define the mfcc shape (X, y) 
-        and the last two parameters define the lmfe shape (X, y)
+        """Create a Siamese model.
+
+        Args:
+            n_conv_filters : neurons should we used in each layer of branches
+            filters_shape: filter shapes of the first layer
+            _input_shape: the input shape is an array with the first two paramters define the mfcc shape (X, y) 
+                and the last two parameters define the lmfe shape (X, y)
+            n_emotions: number of emotions to predict
+
+        Returns:
+            Siamese model
         """
         mfcc_input, mfcc_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[0], _input_shape[1])
         lmfe_input, lmfe_output = self.create_siamese_branch_architecture(n_conv_filters, filters_shape, _input_shape[2], _input_shape[3])

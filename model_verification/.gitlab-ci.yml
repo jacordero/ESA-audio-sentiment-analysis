@@ -2,12 +2,11 @@ variables:
   GIT_DEPTH: 10
 
 stages:
-  - PEP8
   - fetch
   - data
   - interface
-  - threholds
-  - integration
+  - thresholds
+  - smoke
   
 #Conformity Checks
 #PEP8_Conformity:
@@ -38,8 +37,17 @@ Fetch_data_and_models:
 
 Data_validation:
   stage: data
+  cache:
+    key: default
+    paths:
+        - prod_data/test/
+        - prod_models/candidate/
+        - prod_models/deployed/
   script:
     - "echo Testing data schema and values"
+    - "source /home/pi/Documents/esa/venv/bin/activate"
+    - "pytest tests/test_cases/Data/"
+
   tags:
     - audio
     
@@ -61,7 +69,7 @@ Interface_validation:
 
 
 Threshold_validation: 
-  stage: threholds
+  stage: thresholds
   cache:
     key: default
     paths:
@@ -77,8 +85,8 @@ Threshold_validation:
   tags:
     - audio
     
-Integration_test:
-  stage: integration
+Smoke_test:
+  stage: smoke
   cache:
     key: default
     paths:
