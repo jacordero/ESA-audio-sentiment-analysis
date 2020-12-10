@@ -143,7 +143,7 @@ def build_model(vectorizer, emotions):
 def save_model(model):
     model_name = "emotion_text_model"
     save_dir = os.path.dirname(os.path.normpath(os.getcwd()))
-    save_dir = os.path.join(save_dir, 'models')
+    save_dir = os.path.join(save_dir, 'prod_models')
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
 

@@ -55,7 +55,7 @@ def load_model():
     # model is located at model directory
     model_name = "emotion_text_model"
     load_dir = os.path.dirname(os.path.normpath(os.getcwd()))
-    load_dir = os.path.join(load_dir, 'models')
+    load_dir = os.path.join(load_dir, 'prod_models')
     if not os.path.isdir(load_dir):
         print("NO MODEL DIRECTORY")
     else: 
@@ -68,21 +68,11 @@ def load_model():
             return model
 
 def load_text(input_file):
-    #text_file_name = "empty.txt"
-    # to get parent directory of current directory
-    #load_dir = os.path.dirname(os.path.normpath(os.getcwd()))
-    #load_dir = os.path.join(load_dir, 'data')
-    #if not os.path.isdir(load_dir):
-    #    print("No input directory.")
-    #else:
-        #text_file_path = os.path.join(load_dir, text_file_name)
     if not os.path.isfile(input_file):
         print("NO INPUT")
     else:
         with open(input_file, 'r', encoding='latin1') as reader:
             data = reader.read().replace('\n', ' ')
-            #for line in reader:
-            #    samples += line
         input_text = np.array([[data]], dtype='object')
         return input_text
 
