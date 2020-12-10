@@ -1,4 +1,4 @@
-Text classification, Natural Language Processing (NLP) task such as sentiment analysis, categories text according to its content into eight emotions such as ` [01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgusting, 08 = surprised].`.
+Text classification, Natural Language Processing (NLP) task such as sentiment analysis, categories text according to its content into eight emotions such as ` [01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgusting, 08 = surprised].`
 
 This folder contains ` sentiment_analysis_text_based_model.py` and ` train_text_based_neural_network.py ` scripts. 
 
@@ -10,11 +10,11 @@ This folder contains ` sentiment_analysis_text_based_model.py` and ` train_text_
 
 The dataset is created by combining three datasets, [MELD](https://affective-meld.github.io/), [ISEAR](https://github.com/sinmaniphel/py_isear_dataset), and [Tweet](https://github.com/shaypal5/awesome-twitter-data#id8), with labelled eight emotions. For equal emotion distribution, the datasets are shuffled with random seed = ` 1337`. The text dataset is split into training and validation datasets with proportion of 80 and 20 per cent respectively. The figure shows the total number, `12,208`, and split. 
 
-![text based model dataset](//url/to/img.png)
+![text based model dataset](../../docs/images/text_datasets.png)
 
 - **build_model()**
 
-Convolutional Neural Network (CNN) and Recurrent Neural Network(RNN), specially LSTM, architecture approach are used to build the text based model. The latest text based model with (LSTM) has 48.79 per cent val_accuracy. 
+Convolutional Neural Network (CNN) and Recurrent Neural Network(RNN), specially LSTM, architecture approach are used to build the text based model. The latest text based model with (LSTM) has **48.79** per cent val_accuracy. 
 
 - **train_model()**
 
@@ -37,7 +37,7 @@ A text [vectorization](https://www.tensorflow.org/api_docs/python/tf/keras/layer
 ```
 Vectorization layer is called by adapt() method on a dataset. When this layer is adapted, it will analyze the dataset, determine the frequency of individual string values, and create a 'vocabulary' from them. This vocabulary can have unlimited size or be capped, depending on the configuration options for this layer; if there are more unique values in the input than the maximum vocabulary size, the most frequent terms will be used to create the vocabulary. The text vectorization is illustrated in the following figure.
 
-![text vectorization](//url/to/img.png)
+![text vectorization](../../docs/images/text_vectorization.png)
 
 - **save_model()**
 
@@ -59,7 +59,7 @@ python train_text_based_neural_network.py [dataset file path]
 
 :two: How to use the trained text based model 
 
-` sentiment_analysis_text_based_model.py` is used to analysis sentiment of the given text.
+` sentiment_analysis_text_based_model.py` is used to analyse sentiment of the given text.
 
 The script contains the following functions:
 - **load_model()**
