@@ -1,6 +1,6 @@
 :one: To run the `convert_tf_to_lite.py ` script:
 
-The script contains four functions 
+The script contains the following functions 
 
 ` load_model():`   loads the models from ` prod_models/candidate/sequential ` and ` prod_models/candidate/siamese ` by default. 
 
@@ -47,7 +47,7 @@ Example: `python prototype/convert_tf_to_lite.py A 1 [version] `
 
 :two: To run (` execute_lite_model.py `) script:
 
-The script contains three functions.
+The script contains the following functions.
 
 ` load_test_data(): ` loads the test dataset ((to total number of record is 624)) for sequential and siamese models from `prod_data/test/sequential` .
 
