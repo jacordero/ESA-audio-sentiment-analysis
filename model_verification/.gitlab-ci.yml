@@ -27,11 +27,10 @@ Fetch_data_and_models:
     paths:
         - prod_data/test/
         - prod_models/candidate/
-        - prod_models/deployed/
   script:
     - "source /home/pi/Documents/esa/venv/bin/activate"
     - "dvc remote modify --local nielspi password projectesa"
-    - "dvc pull -f"
+    - "dvc pull -f prod_models/candidate/ prod_data/test/"
   tags:
     - audio
 
@@ -42,7 +41,6 @@ Data_validation:
     paths:
         - prod_data/test/
         - prod_models/candidate/
-        - prod_models/deployed/
   script:
     - "echo Testing data schema and values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
@@ -58,7 +56,6 @@ Interface_validation:
     paths:
         - prod_data/test/
         - prod_models/candidate/
-        - prod_models/deployed/
   script:
     - "echo Testing DNNs interface specification"
     - "source /home/pi/Documents/esa/venv/bin/activate"
@@ -75,7 +72,6 @@ Threshold_validation:
     paths:
         - prod_data/test/
         - prod_models/candidate/
-        - prod_models/deployed/
   script: 
     - "echo Testing DNN metrics against threshold values"
     - "source /home/pi/Documents/esa/venv/bin/activate"
@@ -92,7 +88,6 @@ Smoke_test:
     paths:
         - prod_data/test/
         - prod_models/candidate/
-        - prod_models/deployed/
   script:
     - "echo Executing smoke test on the Raspberry Pi"
     - "source /home/pi/Documents/esa/venv/bin/activate"
