@@ -76,7 +76,17 @@ The following use cases show the main functionality of the source code in this r
 ### Preprocessing
 Audio preprocessing aims to make the audio files ready for being used in the training phase. There are various audio preprocessing techniques, including noise reduction, padding, and windowing. Different techniques can be used to extract audio features. According to the most recent researches, Mel-Frequency Cepstral Coefficients (MFCC) and Log Mel-Filter bank Energies (LMFE) are the most important audio features. Extracting the mentioned features requires techniques like windowing or making all the audio tracks the same length.
 
-Notably, features can be extracted once and be reused a hundred times for training or retraining purposes. Therefore, as feature extraction could be time-consuming depending on the feature to be extracted and data size, saving the required features can help. For more details on our feature extraction procedure, required libraries, and its usage, please check [feature extraction](./docs/FeatureExtraction.md) page.
+Notably, features can be extracted once and be reused a hundred times for training or retraining purposes. Therefore, as feature extraction could be time-consuming depending on the feature to be extracted and data size, saving the required features can help. 
+
+The ```feature_extraction.py``` script requires a configuration file to set up the properties, specifically the file path to dataset. Once the setup is configured you could simply run the below command. For detailed information on the configuration file, the required libraries, and  feature extraction procedure, please read the [feature extraction](./docs/FeatureExtraction.md) page.
+
+	python training/feature_extraction.py [desired_feature]
+
+> [desired_feature] can be "mfcc", "lmfe", "mfcc_sequential", or
+> "lmfe_sequential"
+
+  ***Note:*** You need to extract both mfcc and lmfe for training the siamese model. This means you need to run the above command twice, one using "mfcc" and one more time with "lmfe" as *'desired_feature'*.
+  
 
 ### Training 
 
