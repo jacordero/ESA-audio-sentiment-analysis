@@ -1,24 +1,23 @@
-#Input type
-input_type: "mic" #Specify the prediction input: 1)mic : to record from the device microphone 2)recorded
+# Input type
+input_type: "mic" # Specify the prediction input: 1)mic : to record from the device microphone 2)recorded
 input_directory: "./prod_data/prediction"  # if the "input_type" is set to "recorded", this property determines the recorded files directory.
+test_data_dir: "./prod_data/test"
 
+prod_models_dir: "./prod_models/deployed"
 model:
  dir: "sequential/saved_models"
  file: "Emotion_Voice_Detection_Model.h5"
  type: "Sequential"
  n_mfcc: 50
 
-test_data_dir: "./prod_data/test"
-prod_models_dir: "./prod_models/deployed"
 
-#audio recording properties
+# Audio recording properties
 audio_channels: 1
 audio_frequency: 44100
-audio_length: 7 # length of audio in seconds
+audio_length: 7 # Length of audio in seconds
 
-
-#list of emotions being used in the prediction
-#These codes should comply with the feature extraction part in training code
+# List of emotions being used in the prediction
+# These codes should comply with the feature extraction part in training code
 emotions:
   0: "neutral"
   1: "happy"
@@ -27,12 +26,11 @@ emotions:
   4: "fearful"
 
 
-# interaction properties
-iterations: 2 # for an infinite number of iterations, use -1
-after_audio_analysis_pause: 1 # length of pause in seconds
+# Interaction properties
+iterations: 2 # For an infinite number of iterations, use -1
 before_recording_pause: 1
+after_audio_analysis_pause: 1 # Length of pause in seconds
 
-
-# logging
+# Logging
 logging_directory: './logs'
 logging_subdirectory_prefix: 'test_logging_file'

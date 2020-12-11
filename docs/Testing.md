@@ -12,7 +12,7 @@ The structure of these tests is described under [Test structure](#test-structure
 
 ## Test structure
 
-All testing code is located in the [tests](/tests/) folder of this repository. A complete overview of the files in this folder is show below.
+All testing code is located in the [tests](/tests/) folder of this repository. A complete overview of the files in this folder is shown below.
 
 ```
 tests
@@ -42,4 +42,4 @@ Test cases can be run using PyTest. The following command can be used from the r
 pytest tests/test_cases/ --disable-warnings
 ```
 
-To run the System tests, one has to run the STERN audio module itself. instructions on how to do that can be found in the [main readme file](/STERN_Audio_README.md). The `input_type` option found in [raspi_candidate_config.yml](/src/raspi_candidate_config.yml) can be used to configure which System test is run.
+To run the System tests, one has to run the STERN audio module itself. instructions on how to do that can be found in the [main readme file](/README.md). The `input_type` option found in [raspi_candidate_config.yml](/src/raspi_candidate_config.yml) can be used to configure which System test is run.
