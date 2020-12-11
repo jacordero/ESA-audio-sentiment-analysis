@@ -1,8 +1,8 @@
 # STERN Audio module
 
-STERN Audio module repository contains the STERN software, test cases, and libraries for traing and retraining the models. 
+STERN Audio module repository contains the STERN software, test cases, and libraries for training and retraining the models. 
 
-- A [preprocessing](#preprocessing) library provides the functions to extract feautures from audial input data. 
+- A [preprocessing](#preprocessing) library provides the functions to extract features from audial input data. 
 - A [training](#training) library provides the functions to train the models on the extract features. 
 - A [retraining](#retraining) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
 - The [emotion recognition](#emotion-recognition) software that detects emotions from audial input data. 
@@ -22,9 +22,9 @@ STERN Audio module repository contains the STERN software, test cases, and libra
 
 ## Requirements
 
-The code in this repository requires several libraries, which are listed in the [requirements.txt](requirements.txt) document. In particular, the [use cases](#use-cases) in this document asume that you have installed `Python3.7+` and `TensorFlow2.2.0`.
+The code in this repository requires several libraries, which are listed in the [requirements.txt](requirements.txt) document. In particular, the [use cases](#use-cases) in this document assume that you have installed `Python3.7+` and `TensorFlow2.2.0`.
 
-Before installing the required libraries, we recomend creating a dedicated virtual environment. In Python 3, virtual environments are created as follows: 
+Before installing the required libraries, we recommend creating a dedicated virtual environment. In Python 3, virtual environments are created as follows: 
 ```
 python -m venv [name] 
 ```
@@ -80,7 +80,7 @@ Notably, features can be extracted once and be reused a hundred times for traini
 
 The ```feature_extraction.py``` script requires a configuration file to set up the properties, specifically the file path to dataset. Once the setup is configured you could simply run the below command. For detailed information on the configuration file, the required libraries, and  feature extraction procedure, please read the [feature extraction](./docs/FeatureExtraction.md) page.
 
-	python training/feature_extraction.py [desired_feature]
+  python training/feature_extraction.py [desired_feature]
 
 > [desired_feature] can be "mfcc", "lmfe", "mfcc_sequential", or
 > "lmfe_sequential"
@@ -97,12 +97,12 @@ In this stage, the model is trained with the training data to generate the right
 For more information about training the model and configuration file, please check [training](./docs/Training.md) page.
 
 ### Retraining
-After training the model, it is possible to retrain it with a different dataset and improve accuracy. In order to retrain the model, some parameters should be set in the related configuration file named _retraining_parameters.yml_. This information includes the model type, batch size, number of epochs, train, test, and validation data. To retrain the model, the follwoing command should be executed in command line:
+After training the model, it is possible to retrain it with a different dataset and improve accuracy. In order to retrain the model, some parameters should be set in the related configuration file named _retraining_parameters.yml_. This information includes the model type, batch size, number of epochs, train, test, and validation data. To retrain the model, the following command should be executed in the command line:
 
     python training/model_retrainer.py
 
 
-It is good to mention that the dataset should be in the “.joblib” format.To find more about the retraining procedure and specifying the parameters in configuration file, please visit [retraining](./docs/Retraining.md) page.
+It is good to mention that the dataset should be in the “.joblib” format. To find more about the retraining procedure and specifying the parameters in the configuration file, please visit [retraining](./docs/Retraining.md) page.
 ### Emotion recognition
 
 #### Description

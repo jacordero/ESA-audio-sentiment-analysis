@@ -12,7 +12,7 @@ The structure of these tests is described under [Test structure](#test-structure
 
 ## Test structure
 
-All testing code is located in the [tests](/tests/) folder of this repository. A complete overview of the files in this folder is show below.
+All testing code is located in the [tests](/tests/) folder of this repository. A complete overview of the files in this folder is shown below.
 
 ```
 tests

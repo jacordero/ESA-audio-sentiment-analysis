@@ -1,14 +1,14 @@
 # Model Retraining
 
-This file contains instructions for retraining the model. one can retrain either the existing Sequential or Siamese (non-sequential) model with setting proper parameters in the _retraining_parameters.yml_ file.
-Another prerequisite is the features as joblib files. For more information how to extract features and save them as joblib files, please read this [instruction](/docs/feature_Extraction.md).
+This file contains instructions for retraining the model. one can retrain either the existing Sequential or Siamese (non-sequential) model by setting proper parameters in the _retraining_parameters.yml_ file.
+Another prerequisite is the features as joblib files. For more information on how to extract features and save them as joblib files, please read this [instruction](/docs/feature_Extraction.md).
 
-For retraining the model you should specify the type of the model, and also directories containing the features, as well as some other parameters described in more details in further sections.
+For retraining the model you should specify the type of the model, and also directories containing the features, as well as some other parameters described in more detail in further sections.
 
 
 ## Configuration File
 
-In the training directory you can find a YAML file, called _retraining_parameters.yml_. It contains all the parameters required for loading the trained  model, accessing features, retraining the model, and saving the retrained model. Below you can learn about each of these paramaters in detail.
+In the training directory, you can find a YAML file, called _retraining_parameters.yml_. It contains all the parameters required for loading the trained model, accessing features, retraining the model, and saving the retrained model. Below you can learn about each of these parameters in detail.
 
  -  ***model_type***: It can be either "Sequential" or "Siamese". It specifies the type of the trained model .
  -  ***adam_lr***: The learning rate of Adam optimizer.
@@ -29,18 +29,18 @@ Here you can find a sample of *retraining_parameter.yml* file.
 
     
     model_type: "Sequential"
-	parameters:		
-		adam_lr: 0.001
-		batch_size: 32
-		epochs: 1
-		pretrained_models_dir: "./prod_models/candidate/seq_3conv_modules_2layer_Sequential/saved_models"
-		pretrained_model_name: "Emotion_Voice_Detection_Model.h5"
-		retrained_models_dir: ./prod_models/candidate/
-		retrained_model_name: seq_3conv_modules_be_nice_ret_v1
-		feature_test_data_directory: ./data/features/Sequential/test
-		feature_train_data_directory: ./data/features/Sequential/train
-		feature_validation_data_directory: ./data/features/Sequential/validation
-	
+    parameters:     
+        adam_lr: 0.001
+        batch_size: 32
+        epochs: 1
+        pretrained_models_dir: "./prod_models/candidate/seq_3conv_modules_2layer_Sequential/saved_models"
+        pretrained_model_name: "Emotion_Voice_Detection_Model.h5"
+        retrained_models_dir: ./prod_models/candidate/
+        retrained_model_name: seq_3conv_modules_be_nice_ret_v1
+        feature_test_data_directory: ./data/features/Sequential/test
+        feature_train_data_directory: ./data/features/Sequential/train
+        feature_validation_data_directory: ./data/features/Sequential/validation
+    
 
 ## Usage
 
