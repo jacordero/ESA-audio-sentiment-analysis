@@ -106,9 +106,9 @@ It is good to mention that the dataset should be in the “.joblib” format.To 
 ### Emotion recognition
 
 #### Description
-This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description about how this script works is available in the [emotion recognition](./docs/EmotionRecognition.md) page.
+This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description of how this script works is available on the [emotion recognition](./docs/EmotionRecognition.md) page.
 
-This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two similar configuration files: ```src/raspi_candidate_config.yml``` for development tasks and ```src/raspi_deployment_config.yml``` for deployment on the Raspberry Pi. The content of these files is described in the [emotion recognition](./docs/EmotionRecognition.md) page.
+This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two similar configuration files: ```src/raspi_candidate_config.yml``` for development tasks and ```src/raspi_deployment_config.yml``` for deployment on the Raspberry Pi. The content of these files is described on the [emotion recognition](./docs/EmotionRecognition.md) page.
 
 #### Execution during the development process
 * First,  modify the `raspi_candidate_config.yml` file.

@@ -9,21 +9,21 @@ The emotion recognition software uses a tone-based CNN model to detect emotions 
 
 
 #### Emotion recognition engine
-The emotion recognition engine handles the general emotion recognition process. This engine reads input audio from a  microphone or directory and then displays the emotions predicted for each input audio. The ```SternAudio``` class models the functionality of this engine and the ```stern_audio.py``` script implements such functionality. 
+The emotion recognition engine handles the general emotion recognition process. This engine reads input audio from a  microphone or directory then displays the emotions predicted for each input audio. The ```SternAudio``` class models the functionality of this engine and the ```stern_audio.py``` script implements such functionality. 
 
 Overall, ```SternAudio``` performs emotion recognition in a loop as follows:
 1. read input audio from a microphone or directory
-2. analyze the recorded audio using an implementation of the ```AudioAnalyzer``` class
+2. analyze the audio using an implementation of the ```AudioAnalyzer``` class
 3. display the recognized emotions
-4. pause for a short period before going back to step 1
+4. pause for a short period before going back to step 1 in case of reading from the microphone
 
-The behavior of the emotion recognition engine can be altered by modifying the following configuration properties: ```audio_length```, ```audio_frequency```, ```audio_channels```, ```before_recording_pause```, ```after_audio_analysis_pause```, and ```iterations```. In the [Configuration section](#configuration) we describe these configuration properties.
+The emotion recognition engine's behavior can be altered by modifying the following configuration properties: ```audio_length```, ```audio_frequency```, ```audio_channels```, ```before_recording_pause```, ```after_audio_analysis_pause```, and ```iterations```. In the [Configuration section](#configuration), we describe these configuration properties.
 
 #### Audio analyzer
-The audio analyzer uses a tone-based emotion predictor to compute the emotions associated with a given audio. The ```AudioAnalyzer``` class in the class diagram models the functionality of the audio analyzer, while the implementation of such functionality is available in the ```sentiment_analyzer.py``` file. 
+The audio analyzer uses a tone-based emotion predictor to compute the emotions associated with given audio. The ```AudioAnalyzer``` class in the class diagram models the audio analyzer's functionality, while the implementation of such functionality is available in the ```sentiment_analyzer.py``` file. 
 
 Overall, the ```AudioAnalyzer``` works as follows: 
-1. given an input audio, compute emotions using an implementation of a ```ToneSentimentPredictor```
+1. given input audio, compute emotions using an implementation of a ```ToneSentimentPredictor```
 2. preprocess the predicted emotions to human-readable messages that can be shown to the users of the emotion recognition software
 3. Log the predicted emotions into a file specified by the user
 
@@ -32,7 +32,7 @@ The behavior of the ```AudioAnalyzer``` can be altered by modifying the followin
 #### Tone-based emotion predictor
 The tone-based emotion (sentiment) predictor is responsible for computing features from a input audio and analyzing these features to predict its emotions. In the class diagram shown above, the sentiment predictor is modeled by the ```ToneSentimentPredictor``` class. As shown in the class diagram, two specialized sentiment predictors inherit from this class: ```SequentialToneSentimentPredictor``` and ```SiameseToneSentimentPredictor```. 
 
-The ```SequentialToneSentimentPredictor``` class uses sequential CNN models trained with mfcc features. Therefore, in order to perform sentiment prediction using its CNN model, this class computes mfcc features of a given audio. In contrast, the ```SiameseToneSentimentPredictor``` uses siamese CNN models trained using mfcc and lmfe features. Thus, this class computes mfcc and lmfe features in order to predict the sentiment of a given audio.
+The ```SequentialToneSentimentPredictor``` class uses sequential CNN models trained with mfcc features. Therefore, in order to perform sentiment prediction using its CNN model, this class computes mfcc features of given audio. In contrast, the ```SiameseToneSentimentPredictor``` uses siamese CNN models trained using mfcc and lmfe features. Thus, this class computes mfcc and lmfe features in order to predict the sentiment of given audio.
 
 The ```sentiment_prediction.py``` file the implementations of ```SequentialToneSentimentPredictor``` and ```SiameseToneSentimentPredictor```. The ```ToneSentimentPredictor``` class is part of the design but was not implemented. Nonetheless, if more tone-based predictors classes are required, the ```ToneSentimentPredictor``` could be implemented in order to couple the functionality of new tone-base predictors with the required interface.
 
@@ -45,7 +45,7 @@ These configuration files contain the following parameters:
 * ```input_type``` is a value that indicates whether audios are recorded from a microphone (```"mic"```) or loaded from a directory (```"recorded"```).
 * ```input_directory``` indicates the directory containing recorded audios to be analyzed. This property is used only when the ```input_type``` is set to ```"recorded"```.
 * ```test_data_dir``` corresponds to the directory containing test data. This value is used by the testing scripts inside the ```tests``` directory.
-* ```prod_models_dir``` is the path of directory that contains candidate models for emotion recognition (sentiment prediction). This path must also be specified relative to the root folder of the source code repository.
+* ```prod_models_dir``` is the path of the directory that contains candidate models for emotion recognition (sentiment prediction). This path must also be specified relative to the root folder of the source code repository.
 * ```model``` corresponds to a dictionary containing information about the tone-based model to be used for sentiment prediction.
     * ```model_dir``` corresponds to the path of the directory that contains the tone-based model to be used by emotion recognition software. This path must be indicated relative to the directory indicated in the ```prod_models_dir``` parameter.
     * ```model_name``` corresponds to the name of the ```.h5``` model inside ```model_dir```.
