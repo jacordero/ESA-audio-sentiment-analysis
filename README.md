@@ -1,30 +1,30 @@
 # STERN Audio module
 
-STERN Audio module repository contains the software, testing pipeline,and libraries such as traing and retraining the models. 
+STERN Audio module repository contains the STERN software, test cases, and libraries for training and retraining the models. 
 
-- A [preprocessing](#preprossing ) that extract feautures from audial input data. 
+- A [preprocessing](#preprocessing) library provides the functions to extract features from audial input data. 
 - A [training](#training) library provides the functions to train the models on the extract features. 
 - A [retraining](#retraining) library provides the functions to retrain the models on the new extracted features or with hyperparameters (.yml) files. 
 - The [emotion recognition](#emotion-recognition) software that detects emotions from audial input data. 
-- A [testing pipeline](#testing-pipeline) pipeline that assess the models. 
+- A [testing](#testing) that verifies the correctness of the STERN audio module.
 
 ## Repository structure
 
-- code_verification: contains the configuration file for conditional testing pipeline.
-- data: contains images.
-- docs: contains the readme.md files for documentation.
-- model_verification: contains the configition file of Artificial Intelligence (AI) component for conditional pipeline.
-- prototypes: contains the scrips for development purpose.
-- src : contains the STERN software of audio module and including configuration files. 
-- test: contains test scripts with configuration file.
-- training: contains the libraries for training and retraining the models.
-- requirements.txt: contains all the dependencies which need to be installed in order to run the STERN software.
+- **prod_data:** contains datasets such as raw data, preprocessed data, test data, and description.md for training and retraining the models.
+- **prod_models:** contains trained or retrained models such as Sequential and Siamese model. 
+- **prototypes:** contains the scrips and their description for development purposes.
+- **src:** contains the STERN software of the audio module and includes configuration files. 
+- **training:** contains the libraries for training and retraining the models.
+- **tests:** contains test scripts with the configuration file.
+- **docs:** contains the readme.md files for documentation.
+- **README.md:** contains the instruction for setting up the environment and running the STERN software.
+- **requirements.txt:** contains all the dependencies, which need to be installed in order to run the STERN software.
 
 ## Requirements
 
-The code in this repository requires several libraries, which are listed in the [requirements.txt](requirements.txt) document. In particular, the [use cases](#use-cases) in this document asume that you have installed `Python3.7+` and `TensorFlow2.2.0`.
+The code in this repository requires several libraries, which are listed in the [requirements.txt](requirements.txt) document. In particular, the [use cases](#use-cases) in this document assume that you have installed `Python3.7+` and `TensorFlow2.2.0`.
 
-Before installing the required libraries, we recomend to create a dedicated virtual environment. In Python 3, virtual environments are created as follows: 
+Before installing the required libraries, we recommend creating a dedicated virtual environment. In Python 3, virtual environments are created as follows: 
 ```
 python -m venv [name] 
 ```
@@ -52,7 +52,7 @@ pip install -r requirements.txt
 ```
 
 ### On a Raspberry Pi V4
-First install the [appropriate version of TensorFlow](https://qengineering.eu/install-tensorflow-2.2.0-on-raspberry-pi-4.html)
+First install the [TensorFlow2.2.0 version](https://qengineering.eu/install-tensorflow-2.2.0-on-raspberry-pi-4.html)
 
 ```
 sudo apt-get install gfortran libhdf5-dev libc-ares-dev libeigen3-dev libatlas-base-dev libopenblas-dev libblas-dev 
@@ -76,20 +76,39 @@ The following use cases show the main functionality of the source code in this r
 ### Preprocessing
 Audio preprocessing aims to make the audio files ready for being used in the training phase. There are various audio preprocessing techniques, including noise reduction, padding, and windowing. Different techniques can be used to extract audio features. According to the most recent researches, Mel-Frequency Cepstral Coefficients (MFCC) and Log Mel-Filter bank Energies (LMFE) are the most important audio features. Extracting the mentioned features requires techniques like windowing or making all the audio tracks the same length.
 
-Notably, features can be extracted once and be reused a hundred times for training or retraining purposes. Therefore, as feature extraction could be time-consuming depending on the feature to be extracted and data size, saving the required features can help. For more details on our feature extraction procedure, required libraries, and its usage, please check [here](./docs/FeatureExtraction.md)
+Notably, features can be extracted once and be reused a hundred times for training or retraining purposes. Therefore, as feature extraction could be time-consuming depending on the feature to be extracted and data size, saving the required features can help. 
+
+The ```feature_extraction.py``` script requires a configuration file to set up the properties, specifically the file path to dataset. Once the setup is configured you could simply run the below command. For detailed information on the configuration file, the required libraries, and  feature extraction procedure, please read the [feature extraction](./docs/FeatureExtraction.md) page.
+
+  python training/feature_extraction.py [desired_feature]
+
+> [desired_feature] can be "mfcc", "lmfe", "mfcc_sequential", or
+> "lmfe_sequential"
+
+  ***Note:*** You need to extract both mfcc and lmfe for training the siamese model. This means you need to run the above command twice, one using "mfcc" and one more time with "lmfe" as *'desired_feature'*.
+  
 
 ### Training 
 
-In this stage, the model is trained with the training data to generate the right output. In the learning phase, the system uses a configuration file to manage the inputs. This configuration file consists of different editable factors in the model training, such as the model type, batch size, number of epochs, train, test, and validation data directory. After training the model, the result will be saved for further use. For more information about training the model, please check [here](./docs/Training.md).
+In this stage, the model is trained with the training data to generate the right output. In the learning phase, the system uses a configuration file named _training_parameters.yml_ to manage the inputs. _training_parameters.yml_ consists of different editable factors in the model training, such as the model type, batch size, number of epochs, train, test, and validation data directory. After training the model, the result will be saved for further use. After setting the parameters in the configuration file, training will be started by running the following command:
+       
+       python training/model_trainer.py
+  
+For more information about training the model and configuration file, please check [training](./docs/Training.md) page.
 
 ### Retraining
-After training the model, it is possible to retrain it with a different dataset and improve accuracy. In order to retrain the model, some parameters should be set in the related configuration file. This information includes the model type, batch size, number of epochs, train, test, and validation data. It is good to mention that the dataset should be in the “.joblib” format. To find more about the retraining procedure, please visit [here](./docs/Retraining.md).
+After training the model, it is possible to retrain it with a different dataset and improve accuracy. In order to retrain the model, some parameters should be set in the related configuration file named _retraining_parameters.yml_. This information includes the model type, batch size, number of epochs, train, test, and validation data. To retrain the model, the following command should be executed in the command line:
+
+    python training/model_retrainer.py
+
+
+It is good to mention that the dataset should be in the “.joblib” format. To find more about the retraining procedure and specifying the parameters in the configuration file, please visit [retraining](./docs/Retraining.md) page.
 ### Emotion recognition
 
 #### Description
-This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description about how this script works is available in the [emotion recognition](./docs/emotion_recognition.md) page.
+This example shows how to perform audio emotion recognition using the ```stern_audio.py``` script. A detailed description of how this script works is available on the [emotion recognition](./docs/EmotionRecognition.md) page.
 
-This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two similar configuration files: ```src/raspi_candidate_config.yml``` for development tasks and ```src/raspi_deployment_config.yml``` for deployment on the Raspberry Pi.
+This ```stern_audio.py``` script requires a configuration file to set up the properties and load the tone-based model required for emotion recognition. The ```src``` directory contains two similar configuration files: ```src/raspi_candidate_config.yml``` for development tasks and ```src/raspi_deployment_config.yml``` for deployment on the Raspberry Pi. The content of these files is described on the [emotion recognition](./docs/EmotionRecognition.md) page.
 
 #### Execution during the development process
 * First,  modify the `raspi_candidate_config.yml` file.
@@ -107,50 +126,13 @@ python src/stern_audio.py src/raspi_candidate_config.yml
 python src/stern_audio.py src/raspi_deployment_config.yml
 ```
 
-#### Configuration example
-The configuration file below indicates that:
-* The audio emotion recognition software uses the microphone to capture (record) input audio.
-* The ```Emotion_Voice_Detection_model.h5``` model inside the ```seq_3conv_modules_5emotions_ret/saved_models``` directory will be used for emotion recognition.
-* A frequency of 44100hz will be used to record audios.
-* The length of each recorded audio will be 7 seconds.
-* Only five emotions will be detected.
+### Testing
+
+This repository contains testing codes to verify the STERN audio module. All automated test cases can be executed with the following command:
 
 ```
-input_type: "mic" 
-input_directory: "./prod_data/prediction" # used only with input_type "recorded"
-
-model:
- dir: "seq_3conv_modules_5emotions_ret/saved_models"
- file: "Emotion_Voice_Detection_Model.h5"
- type: "Sequential"
- n_mfcc: 50
-
-test_data_dir: "./prod_data/test"
-prod_models_dir: "./prod_models/candidate"
-
-#audio recording properties
-audio_channels: 1
-audio_frequency: 44100
-audio_length: 7
-
-#list of emotions being used in the prediction
-#These codes should comply with the feature extraction part in training code
-emotions:
-  0: "neutral"
-  1: "happy"
-  2: "sad"
-  3: "angry"
-  4: "fearful"
-
-# interaction properties
-iterations: 2 # for an infinite number of iterations, use -1
-after_audio_analysis_pause: 1 # length of pause in seconds
-before_recording_pause: 1
-
-# logging
-logging_directory: './logs'
-logging_file_prefix: 'test_logging_file'
+pytest tests/test_cases/ --disable-warnings
 ```
 
-### Testing pipeline
-[Testing pipline](./docs/Testing.md)
+More information about the testing code can be found on the [testing](/docs/Testing.md) page.
+
