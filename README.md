@@ -12,13 +12,13 @@ STERN Audio module repository contains the STERN software, test cases, and libra
 
 - **prod_data:** contains datasets such as raw data, preprocessed data, test data, and description.md for training and retraining the models.
 - **prod_models:** contains trained or retrained models such as Sequential and Siamese model. 
-- **prototypes:** contains the scrips for development purpose with description readme.md file.
-- **src:** contains the STERN software of audio module and including configuration files. 
+- **prototypes:** contains the scrips and their description for development purposes.
+- **src:** contains the STERN software of the audio module and includes configuration files. 
 - **training:** contains the libraries for training and retraining the models.
-- **tests:** contains test scripts with configuration file.
+- **tests:** contains test scripts with the configuration file.
 - **docs:** contains the readme.md files for documentation.
-- **README.md:** contains the instruction of setting up environment and how to run the STERN software.
-- **requirements.txt:** contains all the dependencies which need to be installed in order to run the STERN software.
+- **README.md:** contains the instruction for setting up the environment and running the STERN software.
+- **requirements.txt:** contains all the dependencies, which need to be installed in order to run the STERN software.
 
 ## Requirements
 
@@ -118,11 +118,11 @@ python src/stern_audio.py src/raspi_deployment_config.yml
 
 ### Testing
 
-To verify the correctness of the different software modules within the STERN audio module, this repository contains testing code. All automated test cases can be executed with the following command:
+This repository contains testing codes to verify the STERN audio module. All automated test cases can be executed with the following command:
 
 ```
 pytest tests/test_cases/ --disable-warnings
 ```
 
-More information about the testing code can be found in the [testing](/docs/Testing.md) page.
+More information about the testing code can be found on the [testing](/docs/Testing.md) page.
 
