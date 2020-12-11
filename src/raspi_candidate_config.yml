@@ -5,7 +5,7 @@ test_data_dir: "./prod_data/test"
 
 prod_models_dir: "./prod_models/candidate"
 model:
- dir: "seq_3conv_modules_2layer_Raha_Siamese_44100/saved_models"
+ dir: "siamese/saved_models"
  file: "Emotion_Voice_Detection_Model.h5"
  type: "Siamese"
  n_mfcc: 50
