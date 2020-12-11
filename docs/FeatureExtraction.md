@@ -1,13 +1,14 @@
 
-
   
 
 # Extracting Features
 
   
 
-This file contains instructions for extracting features from datasets. The extracted features will be saved as .joblib format. The feature_extraction.py script can be used for extracting Mel-frequency cepstral coefficients (MFCC) or Log Mel Filterbank Energy (LMFE).
-  
+This file contains instructions for extracting features from datasets. The extracted features will be saved as .joblib format. The feature_extraction.py script can be used for extracting Mel-frequency cepstral coefficients (MFCC) or Log Mel Filterbank Energy (LMFE). The feature extraction procedure is illustrated in the following figure.
+
+![feature_extraction](images/feature_extraction.png)
+
 Various libraries can be used for MFCC extraction. The MFCC feature extraction technique includes windowing the signal, applying the discrete Fourier transform (DFT), taking the log of the magnitude, and then warping the frequencies on a Mel scale, followed by applying the inverse discrete cosine transform (DCT.)
 The Log Filterbank Energy is obtained by applying filter banks to the signal periodogram. They are an intermediate step in obtaining MFCCs. Therefore, they have a higher correlation than MFCCs, but in some cases, they retain a more significant amount of information from the original signal. 
 
