@@ -1,11 +1,14 @@
+#Input type
+input_type: str() 
+input_directory: str()
+test_data_dir: str()
+
+prod_models_dir: str()
 model:
   dir: str()
   file: str()
   type: str()
   n_mfcc: int(min=0)
-
-test_data_dir: str()
-prod_models_dir: str()
 
 #audio recording properties
 audio_channels: int(min=1)
